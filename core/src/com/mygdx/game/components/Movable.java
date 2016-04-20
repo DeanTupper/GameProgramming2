@@ -16,4 +16,14 @@ public class Movable implements Component
     public void move()
     {
     }
+
+    public Vector2 getPosition()
+    {
+        return position;
+    }
+
+    public Vector2 getVelocity()
+    {
+        return velocity;
+    }
 }

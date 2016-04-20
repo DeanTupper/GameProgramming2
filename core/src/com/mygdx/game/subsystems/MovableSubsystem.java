@@ -31,14 +31,14 @@ public class MovableSubsystem implements Subsystem
 
     }
 
-    public void register(Movable movable)
-    {
-        movables.add(movable);
-    }
-
     public void remove(Movable movable)
     {
         movables.remove(movable);
+    }
+
+    public void register(Movable movable)
+    {
+        movables.add(movable);
     }
 
     public static void move(Movable movable)
