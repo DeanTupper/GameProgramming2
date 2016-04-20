@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -50,6 +51,7 @@ public class Viewports extends ApplicationAdapter
     private ShaderProgram shader;
     private Mesh mesh;
     private Texture texture;
+    private TextureRegion texRegion;
 
     private OrthographicCamera[] cameras = new OrthographicCamera[NUM_VIEWPORTS];
     private Box2DDebugRenderer debugRenderer;
@@ -74,6 +76,11 @@ public class Viewports extends ApplicationAdapter
         buildGoal(0, -249, 320, 0, world);
         buildGoal(-249, 0, 0, 320, world);
         buildGoal(249, 0, 0, 320, world);
+
+        texture = new Texture(Gdx.files.internal("badlogic.jpg"));
+        texRegion = new TextureRegion(texture);
+
+        spriteBatch = new SpriteBatch();
 
         return world;
     }
@@ -258,21 +265,39 @@ public class Viewports extends ApplicationAdapter
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        spriteBatch.begin();
+
+        int width = Gdx.graphics.getWidth();
+        int height = Gdx.graphics.getHeight();
+
+        int renderWidth = width / 2;
+        int renderHeight = height / 2;
+
+        spriteBatch.draw(texRegion, 0, 0, renderWidth, renderHeight);
+
+        spriteBatch.draw(texRegion, 0, 0, renderWidth, 0, renderWidth, renderHeight, 1.0f, 1.0f, -90f);
+        spriteBatch.draw(texRegion, 0, 0, renderWidth, renderHeight, renderWidth, renderHeight, 1.0f, 1.0f, -180f);
+
+        spriteBatch.draw(texRegion, 0, 0, 0, renderHeight, renderWidth, renderHeight, 1.0f, 1.0f, -270f);
+
+
+        spriteBatch.end();
+
         // Bottom left
-        Gdx.gl.glViewport(0, 0, viewportWidth, viewportHeight);
-        renderCamera(cameras[0]);
-
-        // Top left
-        Gdx.gl.glViewport(0, viewportHeight, viewportWidth, viewportHeight);
-        renderCamera(cameras[1]);
-
-        // Top right
-        Gdx.gl.glViewport(viewportWidth, viewportHeight, viewportWidth, viewportHeight);
-        renderCamera(cameras[2]);
-
-        // Bottom Right
-        Gdx.gl.glViewport(viewportWidth, 0, viewportWidth, viewportHeight);
-        renderCamera(cameras[3]);
+//        Gdx.gl.glViewport(0, 0, viewportWidth, viewportHeight);
+//        renderCamera(cameras[0]);
+//
+//        // Top left
+//        Gdx.gl.glViewport(0, viewportHeight, viewportWidth, viewportHeight);
+//        renderCamera(cameras[1]);
+//
+//        // Top right
+//        Gdx.gl.glViewport(viewportWidth, viewportHeight, viewportWidth, viewportHeight);
+//        renderCamera(cameras[2]);
+//
+//        // Bottom Right
+//        Gdx.gl.glViewport(viewportWidth, 0, viewportWidth, viewportHeight);
+//        renderCamera(cameras[3]);
 
         if (Gdx.input.isKeyPressed(Input.Keys.A))
         {
