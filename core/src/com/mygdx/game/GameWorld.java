@@ -1,7 +1,11 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.entities.CornerBumper;
+import com.mygdx.game.subsystems.BoardManagerSubSystem.BoardManager;
+import com.mygdx.game.subsystems.RenderSubsystem;
 import com.mygdx.game.utils.Rectangle;
 
 public class GameWorld
@@ -13,26 +17,24 @@ public class GameWorld
     private static final int NUM_PLAYERS = 4;
 
     private final Rectangle worldBounds;
-    private final ShapeRenderer renderer;
-
-    private final OrthographicCamera[] cameras = new OrthographicCamera[NUM_PLAYERS];
 
     private long timeOfLastUpdate;
 
     public GameWorld()
     {
         worldBounds = new Rectangle(0f, 0f, DEFAULT_WORLD_WIDTH, DEFAULT_WORLD_HEIGHT);
+        buildWorld();
 
-        for (int i = 0; i < cameras.length; i++)
-        {
-            cameras[i] = new OrthographicCamera();
-            cameras[i].rotate(i * 90f);
-        }
+        //Shouldnt this be just 0 no game time has elapsed
+        timeOfLastUpdate = 0;
+    }
 
-        renderer = new ShapeRenderer();
-        renderer.set(ShapeRenderer.ShapeType.Filled);
-
-        timeOfLastUpdate = System.currentTimeMillis();
+    private void buildWorld()
+    {
+        new CornerBumper(new Vector2(0,0),new Vector2(0,10),new Vector2(10,0), Color.WHITE);
+        new CornerBumper(new Vector2(100,0),new Vector2(90,0),new Vector2(100,10), Color.WHITE);
+        new CornerBumper(new Vector2(0,100),new Vector2(0,90),new Vector2(10,100), Color.WHITE);
+        new CornerBumper(new Vector2(100,100),new Vector2(100,90),new Vector2(90,100), Color.WHITE);
     }
 
     public Rectangle getWorldBounds()
@@ -40,34 +42,20 @@ public class GameWorld
         return worldBounds;
     }
 
-    public void tick()
+    public void tick(float deltaInMillis)
     {
-        render();
-
-        long currentTime = System.currentTimeMillis();
-
-        long delta = currentTime - timeOfLastUpdate;
-
-        if (delta > THRESHOLD_UPDATE_DELTA)
-        {
-            updateWorld(delta);
-        }
+        float elapsedTime = deltaInMillis - timeOfLastUpdate;
+//        updateWorld(elapsedTime);
+        render(deltaInMillis);
     }
 
-    private void updateWorld(long deltaInMillis)
+    private void updateWorld(float deltaInMillis)
     {
-
+        BoardManager.get().update(deltaInMillis);
     }
 
-    private void render()
+    private void render(float deltaInMillis)
     {
-        for (OrthographicCamera camera : cameras)
-        {
-            renderer.setProjectionMatrix(camera.combined);
-            renderer.begin();
-
-
-            renderer.end();
-        }
+        RenderSubsystem.get().update(deltaInMillis);
     }
 }
