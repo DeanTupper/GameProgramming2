@@ -12,15 +12,14 @@ public class Ball extends Entity
     private final Movable movable;
     private final BallRenderable renderable;
 
-    public Ball(Vector2 position, Vector2 velocity, ColorType colorType)
+    public Ball(Vector2 position, Vector2 velocity, ColorType colorType, float radius)
     {
-        System.out.println("ball creation");
         BoardManager.get().registerBall(this);
 
         movable = new Movable(position, velocity);
         MovableSubsystem.get().register(movable);
 
-        renderable = new BallRenderable(position,colorType);
+        renderable = new BallRenderable(position,colorType,radius);
         RenderSubsystem.get().register(renderable);
     }
 

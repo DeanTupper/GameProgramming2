@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.entities.ColorType;
 import com.mygdx.game.subsystems.RenderSubsystem;
 
-public class Renderable extends java.awt.Component
+public class Renderable implements Component
 {
     private final Vector2 position;
     private final ColorType colorType;

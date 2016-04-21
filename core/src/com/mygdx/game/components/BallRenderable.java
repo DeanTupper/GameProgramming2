@@ -7,15 +7,18 @@ import com.mygdx.game.entities.ColorType;
 
 public class BallRenderable extends Renderable
 {
-    public BallRenderable(Vector2 position, ColorType color)
+    private final float radius;
+
+    public BallRenderable(Vector2 position, ColorType color, float radius)
     {
         super(position, color);
+        this.radius = radius;
     }
 
     @Override
     public void render(ShapeRenderer renderer)
     {
         renderer.setColor(this.getColorType().getColor());
-        renderer.circle(this.getPosition().x ,this.getPosition().y ,5);
+        renderer.circle(this.getPosition().x ,this.getPosition().y ,radius);
     }
 }

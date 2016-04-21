@@ -1,11 +1,14 @@
 package com.mygdx.game.components;
 
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.subsystems.MovableSubsystem;
 
 public class Movable implements Component
 {
-    private final Vector2 position;
-    private final Vector2 velocity;
+
+
+    private Vector2 position;
+    private Vector2 velocity;
 
     public Movable(Vector2 position, Vector2 velocity)
     {
@@ -15,11 +18,17 @@ public class Movable implements Component
 
     public void move()
     {
+        MovableSubsystem.move(this);
     }
 
     public Vector2 getPosition()
     {
         return position;
+    }
+
+    public void setPosition(Vector2 position)
+    {
+        this.position.set(position);
     }
 
     public Vector2 getVelocity()

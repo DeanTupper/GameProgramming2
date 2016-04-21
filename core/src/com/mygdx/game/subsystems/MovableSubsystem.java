@@ -28,7 +28,10 @@ public class MovableSubsystem implements Subsystem
     @Override
     public void update(float deltaInMillis)
     {
-
+        for(Movable current: movables)
+        {
+            current.move();
+        }
     }
 
     public void remove(Movable movable)
@@ -43,5 +46,6 @@ public class MovableSubsystem implements Subsystem
 
     public static void move(Movable movable)
     {
+        movable.setPosition(movable.getPosition().add(movable.getVelocity()));
     }
 }

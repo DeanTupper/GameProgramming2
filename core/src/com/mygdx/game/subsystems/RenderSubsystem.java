@@ -32,8 +32,7 @@ public class RenderSubsystem implements Subsystem
 
     public void initCamera()
     {
-        System.out.println("INIT");
-        camera.viewportHeight = 100 *(Gdx.graphics.getHeight()/Gdx.graphics.getWidth());
+        camera.viewportHeight = 100;
         camera.viewportWidth = 100;
         camera.position.set(camera.viewportWidth/2,camera.viewportHeight/2,0f);
         camera.update();

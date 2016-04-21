@@ -17,8 +17,6 @@ public class DeanTestGame extends ApplicationAdapter
     @Override
     public void resize(int width, int height)
     {
-        System.out.println("resize");
-        RenderSubsystem.get().initCamera();
     }
 
     @Override

@@ -15,6 +15,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class BoardManager implements Subsystem
 {
+    private static final float BALL_RADIUS = 1f;
     private static BoardManager instance;
 
     private static final ThreadLocalRandom random = ThreadLocalRandom.current();
@@ -45,7 +46,7 @@ public class BoardManager implements Subsystem
 
     private void spawnBall(BallSpawns ballSpawns)
     {
-        new Ball(ballSpawns.getPosition(), ballSpawns.getVelocity(), ColorType.BLUE);
+        new Ball(ballSpawns.getPosition(), ballSpawns.getVelocity(), ColorType.BLUE, BALL_RADIUS);
     }
 
     public void registerBall(Ball ball)
@@ -132,10 +133,10 @@ public class BoardManager implements Subsystem
 
     public enum BallSpawns
     {
-        BOTTOM_LEFT(new Vector2(10, 10), new Vector2(10, 10)),
-        BOTTOM_RIGHT(new Vector2(90, 10), new Vector2(10, 10)),
-        TOP_LEFT(new Vector2(10, 90), new Vector2(10, 10)),
-        TOP_RIGHT(new Vector2(90, 90), new Vector2(10, 10));
+        BOTTOM_LEFT(new Vector2(10, 10), new Vector2(1, 1)),
+        BOTTOM_RIGHT(new Vector2(90, 10), new Vector2(-1, 1)),
+        TOP_LEFT(new Vector2(10, 90), new Vector2(1, -1)),
+        TOP_RIGHT(new Vector2(90, 90), new Vector2(-1, -1));
 
         private final Vector2 position;
         private final Vector2 velocity;
