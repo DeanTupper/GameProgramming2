@@ -19,7 +19,7 @@ public class BoardManager implements Subsystem
     private static BoardManager instance;
 
     private static final ThreadLocalRandom random = ThreadLocalRandom.current();
-    private static final List<Ball> balls = new ArrayList<Ball>();
+    private final List<Ball> balls = new ArrayList<Ball>();
     private final List<Object> pylons = new ArrayList<Object>();
     private static final DefaultStateMachine<BoardManager, BallState> ballState = new DefaultStateMachine(BoardManager.get(), BallState.INITIAL_STATE);
     private float lastUpdate = 0;
@@ -84,7 +84,8 @@ public class BoardManager implements Subsystem
                     public void update(BoardManager entity)
                     {
                         System.out.println("ballStateeee");
-                        instance.spawnBall(BallSpawns.values()[random.nextInt(BallSpawns.values().length)]);
+                        instance.spawnBall(BallSpawns.values()[0]);
+                        instance.spawnBall(BallSpawns.values()[3]);
                         ballState.changeState(BallState.NORMAL_STATE);
                     }
 

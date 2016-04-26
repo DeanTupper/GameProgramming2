@@ -1,18 +1,19 @@
 package com.mygdx.game.utils;
 
-import com.mygdx.game.components.Movable;
+import com.mygdx.game.components.Collidable;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public final class Quad
 {
     private final int row;
     private final int col;
 
-    private final List<Movable> movables = new ArrayList<Movable>();
+    private final List<Collidable> collidables = new ArrayList<Collidable>();
 
     private final EnumMap<Direction, Quad> neighborMap = new EnumMap<Direction, Quad>(Direction.class);
     private final HashSet<Quad> neighbors = new HashSet<Quad>();
@@ -49,18 +50,32 @@ public final class Quad
         return neighborMap.get(dir);
     }
 
+    public Set<Collidable> getCollidableEntitiesInRegion()
+    {
+        Set<Collidable> collidableEntities = new HashSet<Collidable>();
+
+        for (Quad neighbor : neighbors)
+        {
+            collidableEntities.addAll(neighbor.collidables);
+        }
+
+        collidableEntities.addAll(collidables);
+
+        return collidableEntities;
+    }
+
     public String toString()
     {
         return "[" + row + "," + col + "]";
     }
 
-    void clearMovablesList()
+    void clearCollidablesList()
     {
-        movables.clear();
+        collidables.clear();
     }
 
-    public void addMovable(Movable movable)
+    public void addCollidable(Collidable collidable)
     {
-        movables.add(movable);
+        collidables.add(collidable);
     }
 }

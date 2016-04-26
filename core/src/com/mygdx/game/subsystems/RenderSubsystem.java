@@ -45,9 +45,12 @@ public class RenderSubsystem implements Subsystem
     {
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         renderer.setProjectionMatrix(camera.combined);
+
         renderer.begin();
         renderer.set(ShapeRenderer.ShapeType.Filled);
+
         for (Renderable current : renderables)
         {
             current.render(renderer);

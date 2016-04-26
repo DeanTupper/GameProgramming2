@@ -22,7 +22,7 @@ public class DeanTestGame extends ApplicationAdapter
     @Override
     public void render()
     {
-        gameWorld.tick(Gdx.graphics.getDeltaTime());
+        gameWorld.tick();
     }
 
     @Override

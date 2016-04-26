@@ -2,9 +2,10 @@ package com.mygdx.game.utils;
 
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.GameWorld;
-import com.mygdx.game.components.Movable;
+import com.mygdx.game.components.Collidable;
 
 import java.util.List;
+import java.util.Set;
 
 public class QuadMap
 {
@@ -72,24 +73,24 @@ public class QuadMap
         return i;
     }
 
-    public void update(List<Movable> movables)
+    public void update(Set<Collidable> collidables)
     {
-        clearQuadMapMovables();
+        clearQuadMapCollidables();
 
-        for (Movable movable : movables)
+        for (Collidable collidable : collidables)
         {
-            Quad quad = getQuad(movable.getPosition());
-            quad.addMovable(movable);
+            Quad quad = getQuad(collidable.getPosition());
+            quad.addCollidable(collidable);
         }
     }
 
-    private void clearQuadMapMovables()
+    private void clearQuadMapCollidables()
     {
         for (Quad[] row : quadMap)
         {
             for (Quad quad : row)
             {
-                quad.clearMovablesList();
+                quad.clearCollidablesList();
             }
         }
     }
