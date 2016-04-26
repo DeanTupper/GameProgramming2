@@ -32,18 +32,12 @@ public class CollidableSubsystem implements Subsystem
     @Override
     public void update(float deltaInMillis)
     {
-        System.out.println("CollidableSubsystem.update - deltaInMillis: " + deltaInMillis);
-
         for (Collidable collidable : collidables)
         {
             Quad collidableQuad = quadSubsystem.getQuad(collidable.getPosition());
 
             Set<Collidable> potentialCollidables = collidableQuad.getCollidableEntitiesInRegion();
 
-            if (potentialCollidables.size() > 0)
-            {
-                System.err.println("potentialCollidables: " + potentialCollidables);
-            }
 
             for (Collidable potentialCollidable : potentialCollidables)
             {

@@ -7,11 +7,8 @@ import com.mygdx.game.entities.ColorType;
 import com.mygdx.game.entities.CornerBumper;
 import com.mygdx.game.entities.HorizontalPlayer;
 import com.mygdx.game.entities.VerticalPlayer;
+import com.mygdx.game.subsystems.*;
 import com.mygdx.game.subsystems.BoardManagerSubSystem.BoardManager;
-import com.mygdx.game.subsystems.CollidableSubsystem;
-import com.mygdx.game.subsystems.MovableSubsystem;
-import com.mygdx.game.subsystems.QuadSubsystem;
-import com.mygdx.game.subsystems.RenderSubsystem;
 import com.mygdx.game.utils.Rectangle;
 
 public class GameWorld
@@ -19,8 +16,8 @@ public class GameWorld
     public static final float DEFAULT_WORLD_WIDTH = 100f;
     public static final float DEFAULT_WORLD_HEIGHT = 100f;
 
-    //private static final float THRESHOLD_UPDATE_DELTA = 1000L / 60L;
-    private static final float THRESHOLD_UPDATE_DELTA = 1000L;
+    private static final float THRESHOLD_UPDATE_DELTA = 1000L / 60L;
+//    private static final float THRESHOLD_UPDATE_DELTA = 1000L;
 
     private static final int NUM_PLAYERS = 4;
 
@@ -77,6 +74,7 @@ public class GameWorld
         MovableSubsystem.get().update(deltaInMillis);
         QuadSubsystem.get().update(deltaInMillis);
         CollidableSubsystem.get().update(deltaInMillis);
+        PylonSubSystem.get().update(deltaInMillis);
     }
 
     private void render(float deltaInMillis)
