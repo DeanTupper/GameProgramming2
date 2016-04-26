@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.entities.ColorType;
 import com.mygdx.game.subsystems.RenderSubsystem;
 
-public class Renderable implements Component
+public abstract class Renderable implements Component
 {
     private final Vector2 position;
     private final ColorType colorType;
@@ -24,7 +24,6 @@ public class Renderable implements Component
 
     public void render(ShapeRenderer renderer)
     {
-        RenderSubsystem.render(this);
     }
 
     public Vector2 getPosition()

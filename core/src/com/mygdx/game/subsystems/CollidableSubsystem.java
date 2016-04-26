@@ -30,35 +30,34 @@ public class CollidableSubsystem implements Subsystem
     }
 
     @Override
-    public void update(float deltaInMillis)
+    public void update(long deltaInMillis)
     {
         System.out.println("CollidableSubsystem.update - deltaInMillis: " + deltaInMillis);
 
         for (Collidable collidable : collidables)
         {
-            Quad collidableQuad = quadSubsystem.getQuad(collidable.getPosition());
+            checkForPotentialCollisions(collidable);
+        }
+    }
 
-            Set<Collidable> potentialCollidables = collidableQuad.getCollidableEntitiesInRegion();
+    private void checkForPotentialCollisions(Collidable collidable)
+    {
+        Quad collidableQuad = quadSubsystem.getQuad(collidable.getPosition());
 
-            if (potentialCollidables.size() > 0)
+        Set<Collidable> potentialCollidables = collidableQuad.getCollidableEntitiesInRegion();
+
+        for (Collidable potentialCollidable : potentialCollidables)
+        {
+            if (!potentialCollidable.equals(collidable))
             {
-                System.err.println("potentialCollidables: " + potentialCollidables);
-            }
-
-            for (Collidable potentialCollidable : potentialCollidables)
-            {
-                if (!potentialCollidable.equals(collidable))
+                if (potentialCollidable.collidesWith(collidable))
                 {
-                    if (potentialCollidable.collidesWith(collidable))
-                    {
-                        potentialCollidable.resolveCollision(collidable);
-                        collidable.resolveCollision(potentialCollidable);
-                    }
+                    potentialCollidable.resolveCollision(collidable);
+                    collidable.resolveCollision(potentialCollidable);
                 }
             }
         }
     }
-
 
     public void register(Collidable collidable)
     {
