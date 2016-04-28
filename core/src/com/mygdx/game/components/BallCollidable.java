@@ -11,8 +11,6 @@ public class BallCollidable extends CircleCollidable
 
     public void resolveCollision(Collidable other)
     {
-        System.out.println("BallCollidable.resolveCollision collided");
-
         if (other instanceof BallCollidable)
         {
             BallCollidable otherBall = ((BallCollidable) other);

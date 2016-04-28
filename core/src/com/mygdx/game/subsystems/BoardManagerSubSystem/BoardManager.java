@@ -20,7 +20,7 @@ public class BoardManager implements Subsystem
 
     private static final ThreadLocalRandom random = ThreadLocalRandom.current();
     private final List<Ball> balls = new ArrayList<Ball>();
-    private final List<Object> pylons = new ArrayList<Object>();
+    private final List<Pylon> pylons = new ArrayList<Pylon>();
     private static final DefaultStateMachine<BoardManager, BallState> ballState = new DefaultStateMachine(BoardManager.get(), BallState.INITIAL_STATE);
     private float lastUpdate = 0;
 
@@ -129,7 +129,12 @@ public class BoardManager implements Subsystem
                     {
                         return false;
                     }
-                };
+                }
+    }
+
+    private void spawnPylon(int x, int y)
+    {
+        new Pylon(new Vector2(x,y),ColorType.BLUE);
     }
 
     public enum BallSpawns

@@ -17,6 +17,7 @@ public class DeanTestGame extends ApplicationAdapter
     @Override
     public void resize(int width, int height)
     {
+
     }
 
     @Override

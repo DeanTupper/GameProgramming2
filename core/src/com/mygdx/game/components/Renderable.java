@@ -20,4 +20,9 @@ public abstract class Renderable implements Component
     }
 
     public abstract void render(ShapeRenderer renderer);
+
+    public Vector2 getPosition()
+    {
+        return position;
+    }
 }
