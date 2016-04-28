@@ -39,7 +39,7 @@ public class BoardManager implements Subsystem
     }
 
     @Override
-    public void update(float deltaInMillis)
+    public void update(long deltaInMillis)
     {
         ballState.update();
     }
@@ -84,9 +84,8 @@ public class BoardManager implements Subsystem
                     public void update(BoardManager entity)
                     {
                         System.out.println("ballStateeee");
-                        instance.spawnBall(BallSpawns.values()[0]);
-//                        instance.spawnBall(BallSpawns.values()[3]);
-                        instance.spawnPylon(50,50);
+                        //instance.spawnBall(BallSpawns.values()[0]);
+                        //instance.spawnBall(BallSpawns.values()[3]);
                         ballState.changeState(BallState.NORMAL_STATE);
                     }
 
@@ -115,7 +114,7 @@ public class BoardManager implements Subsystem
                     {
                         if (instance.balls.isEmpty())
                         {
-                            instance.spawnBall(BallSpawns.values()[random.nextInt(BallSpawns.values().length)]);
+                            //instance.spawnBall(BallSpawns.values()[random.nextInt(BallSpawns.values().length)]);
                         }
                     }
 

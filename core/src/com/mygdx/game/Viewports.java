@@ -236,7 +236,7 @@ public class Viewports extends ApplicationAdapter
 //		shader.begin();
 //		shader.setUniformi("u_texture", 0);
 //		shader.setUniformMatrix("u_projTrans", camera.combined);
-//		mesh.render(shader, GL20.GL_TRIANGLE_STRIP);
+//		mesh.renderWorld(shader, GL20.GL_TRIANGLE_STRIP);
         debugRenderer.render(world, camera.combined);
 //		shader.end();
     }

@@ -7,6 +7,8 @@ import com.mygdx.game.subsystems.RenderSubsystem;
 
 public class CornerBumper extends Entity
 {
+    public static final float SIZE = 13f;
+
     private final CornerBumperRenderable renderable;
 
     public CornerBumper(Vector2 point1, Vector2 point2, Vector2 point3, Color color)

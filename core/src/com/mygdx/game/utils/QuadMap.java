@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.GameWorld;
 import com.mygdx.game.components.Collidable;
 
-import java.util.List;
 import java.util.Set;
 
 public class QuadMap
@@ -64,8 +63,7 @@ public class QuadMap
         {
             i = max - 1;
         }
-
-        if (i == max)
+        else if (i == max)
         {
             i = 0;
         }
@@ -102,8 +100,8 @@ public class QuadMap
 
     public Quad getQuad(float x, float y)
     {
-        int row = (int) (x / GameWorld.DEFAULT_WORLD_WIDTH);
-        int col = (int) (x / GameWorld.DEFAULT_WORLD_HEIGHT);
+        int row = (int) (y / GameWorld.DEFAULT_WORLD_HEIGHT);
+        int col = (int) (x / GameWorld.DEFAULT_WORLD_WIDTH);
 
         return quadMap[row][col];
     }

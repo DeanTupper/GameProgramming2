@@ -29,12 +29,11 @@ public class QuadSubsystem implements Subsystem
 
     public Quad getQuad(Vector2 position)
     {
-
         return quadmap.getQuad(position);
     }
 
     @Override
-    public void update(float deltaInMillis)
+    public void update(long deltaInMillis)
     {
         Set<Collidable> collidablesInWorld = CollidableSubsystem.get().getCollidables();
         quadmap.update(collidablesInWorld);

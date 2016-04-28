@@ -26,7 +26,7 @@ public class MovableSubsystem implements Subsystem
     private final Set<Movable> movables = new HashSet<Movable>();
 
     @Override
-    public void update(float deltaInMillis)
+    public void update(long deltaInMillis)
     {
         for(Movable current: movables)
         {

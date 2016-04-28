@@ -9,11 +9,14 @@ public class BallRenderable extends Renderable
 {
 
     private final float radius;
+    private final ColorType colorType;
 
-    public BallRenderable(Vector2 position, ColorType color, float radius)
+    public BallRenderable(Vector2 position, ColorType colorType, float radius)
     {
-        super(position, color);
+        super(position);
+
         this.radius = radius;
+        this.colorType = colorType;
     }
 
     @Override
@@ -26,5 +29,10 @@ public class BallRenderable extends Renderable
     public float getRadius()
     {
         return radius;
+    }
+
+    public ColorType getColorType()
+    {
+        return colorType;
     }
 }
