@@ -5,11 +5,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.entities.CornerBumper;
 import com.mygdx.game.entities.Player;
+import com.mygdx.game.subsystems.*;
 import com.mygdx.game.subsystems.BoardManagerSubSystem.BoardManager;
-import com.mygdx.game.subsystems.CollidableSubsystem;
-import com.mygdx.game.subsystems.MovableSubsystem;
-import com.mygdx.game.subsystems.QuadSubsystem;
-import com.mygdx.game.subsystems.RenderSubsystem;
 import com.mygdx.game.utils.Rectangle;
 
 public class GameWorld
@@ -29,6 +26,7 @@ public class GameWorld
     private QuadSubsystem quadSubsystem;
     private CollidableSubsystem collidableSubsystem;
     private RenderSubsystem renderSubsystem;
+    private final PylonSubSystem pylonSubsystem;
 
     public GameWorld()
     {
@@ -42,6 +40,7 @@ public class GameWorld
         quadSubsystem = QuadSubsystem.get();
         collidableSubsystem = CollidableSubsystem.get();
         renderSubsystem = RenderSubsystem.get();
+        pylonSubsystem = PylonSubSystem.get();
     }
 
     private void buildWorld()
@@ -101,6 +100,7 @@ public class GameWorld
         collidableSubsystem.update(deltaInMillis);
 
         renderSubsystem.update(deltaInMillis);
+        pylonSubsystem.update(deltaInMillis);
     }
 
     private void render(long deltaInMillis)
