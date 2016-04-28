@@ -3,10 +3,8 @@ package com.mygdx.game;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.game.entities.ColorType;
 import com.mygdx.game.entities.CornerBumper;
-import com.mygdx.game.entities.HorizontalPlayer;
-import com.mygdx.game.entities.VerticalPlayer;
+import com.mygdx.game.entities.Player;
 import com.mygdx.game.subsystems.BoardManagerSubSystem.BoardManager;
 import com.mygdx.game.subsystems.CollidableSubsystem;
 import com.mygdx.game.subsystems.MovableSubsystem;
@@ -48,19 +46,31 @@ public class GameWorld
 
     private void buildWorld()
     {
+        createCornerBumpers();
+        createPlayers();
+    }
+
+    private void createCornerBumpers()
+    {
         CornerBumper bottomLeft = new CornerBumper(new Vector2(3, 3), new Vector2(3, 13), new Vector2(13, 3), Color.WHITE);
         CornerBumper bottomRight = new CornerBumper(new Vector2(97, 3), new Vector2(87, 3), new Vector2(97, 13), Color.WHITE);
         CornerBumper topLeft = new CornerBumper(new Vector2(3, 97), new Vector2(3, 87), new Vector2(13, 97), Color.WHITE);
         CornerBumper topRight = new CornerBumper(new Vector2(97, 97), new Vector2(97, 87), new Vector2(87, 97), Color.WHITE);
+    }
 
+    private void createPlayers()
+    {
         // Bottom - p1
-        new HorizontalPlayer(new Vector2(45, 0), new Vector2(0, 0), ColorType.BLUE, 10, 3, 13, 87, Input.Keys.Q, Input.Keys.E, Color.RED);
-        // Left - p4
-        new VerticalPlayer(new Vector2(0, 45), new Vector2(0, 0), ColorType.BLUE, 3, 10, 87, 13, Input.Keys.I, Input.Keys.P, Color.ORANGE);
-        // Top - p3
-        new HorizontalPlayer(new Vector2(45, 100 - 3), new Vector2(0, 0), ColorType.BLUE, 10, 3, 13, 87, Input.Keys.Z, Input.Keys.C, Color.YELLOW);
+        Player bottom = new Player(Player.POS_X_MID, Player.POS_Y_BOT, Player.VELOCITY_DELTA_HORIZONTAL, Input.Keys.Q, Input.Keys.E, Player.COLOR_P1);
+
         // Right - p2
-        new VerticalPlayer(new Vector2(100 - 3, 45), new Vector2(0, 0), ColorType.BLUE, 3, 10, 87, 13, Input.Keys.N, Input.Keys.M, Color.GREEN);
+        Player right = new Player(Player.POS_X_RIGHT, Player.POS_Y_MID, Player.VELOCITY_DELTA_VERTICAL, Input.Keys.N, Input.Keys.M, Player.COLOR_P2);
+
+        // Top - p3
+        Player top = new Player(Player.POS_X_MID, Player.POS_Y_TOP, Player.VELOCITY_DELTA_HORIZONTAL, Input.Keys.Z, Input.Keys.C, Player.COLOR_P3);
+
+        // Left - p4
+        Player left = new Player(Player.POS_X_LEFT, Player.POS_Y_MID, Player.VELOCITY_DELTA_VERTICAL, Input.Keys.I, Input.Keys.P, Player.COLOR_P4);
     }
 
     public Rectangle getWorldBounds()

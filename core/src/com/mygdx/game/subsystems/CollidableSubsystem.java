@@ -32,8 +32,6 @@ public class CollidableSubsystem implements Subsystem
     @Override
     public void update(long deltaInMillis)
     {
-        System.out.println("CollidableSubsystem.update - deltaInMillis: " + deltaInMillis);
-
         for (Collidable collidable : collidables)
         {
             checkForPotentialCollisions(collidable);

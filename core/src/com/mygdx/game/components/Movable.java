@@ -5,10 +5,8 @@ import com.mygdx.game.subsystems.MovableSubsystem;
 
 public class Movable implements Component
 {
-
-
-    private Vector2 position;
-    private Vector2 velocity;
+    protected Vector2 position;
+    protected Vector2 velocity;
 
     public Movable(Vector2 position, Vector2 velocity)
     {

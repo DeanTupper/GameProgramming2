@@ -1,7 +1,6 @@
 package com.mygdx.game.subsystems;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -11,8 +10,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.game.GameWorld;
-import com.mygdx.game.Viewports;
 import com.mygdx.game.components.Renderable;
+import com.mygdx.game.entities.Player;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -21,25 +20,21 @@ public class RenderSubsystem implements Subsystem
 {
     private static RenderSubsystem instance;
 
-    private final ShapeRenderer renderer = new ShapeRenderer();
+    private final ShapeRenderer shapeRenderer = new ShapeRenderer();
     private final SpriteBatch spriteBatch = new SpriteBatch();
     private final OrthographicCamera camera = new OrthographicCamera();
 
-    private int bufferWidth = (int) GameWorld.DEFAULT_WORLD_WIDTH;
-    private int bufferHeight = (int) GameWorld.DEFAULT_WORLD_HEIGHT;
+    private static final int WIDTH_BUFFER = (int) GameWorld.DEFAULT_WORLD_WIDTH;
+    private static final int HEIGHT_BUFFER = (int) GameWorld.DEFAULT_WORLD_HEIGHT;
 
-    private float bufferWidthScale;
-    private float bufferHeightScale;
+    private static final float WIDTH_HALF_WORLD = GameWorld.DEFAULT_WORLD_WIDTH / 2.0f;
+    private static final float HEIGHT_HALF_WORLD = GameWorld.DEFAULT_WORLD_HEIGHT / 2.0f;
+
+    private static final float SIZE_PLAYER_VIEW = 45.0f;
 
     private FrameBuffer buffer = new FrameBuffer(Pixmap.Format.RGB888, 500, 500, false);
-    private Texture tex = new Texture(bufferWidth, bufferHeight, Pixmap.Format.RGB888);
+    private Texture tex = new Texture(WIDTH_BUFFER, HEIGHT_BUFFER, Pixmap.Format.RGB888);
     private TextureRegion texRegion = new TextureRegion(tex);
-
-    private float screenWidth;
-    private float screenHeight;
-
-    private float halfScreenWidth;
-    private float halfScreenHeight;
 
     public static RenderSubsystem get()
     {
@@ -52,7 +47,7 @@ public class RenderSubsystem implements Subsystem
 
     private RenderSubsystem()
     {
-        renderer.setAutoShapeType(true);
+        shapeRenderer.setAutoShapeType(true);
         initCamera();
     }
 
@@ -74,23 +69,17 @@ public class RenderSubsystem implements Subsystem
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        renderer.setProjectionMatrix(camera.combined);
+        shapeRenderer.setProjectionMatrix(camera.combined);
 
-        renderer.begin();
-        renderer.set(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.begin();
+        shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 
         for (Renderable current : renderables)
         {
-            current.render(renderer);
+            current.render(shapeRenderer);
         }
 
-        renderer.setColor(Color.RED);
-        renderer.line(0f, 0f, 0f, 0f, 100f, 0f);
-        renderer.line(0f, 100f, 0f, 100f, 100f, 0f);
-        renderer.line(0f, 0f, 0f, 100f, 0f, 0f);
-        renderer.line(100f, 0f, 0f, 100f, 100f, 0f);
-
-        renderer.end();
+        shapeRenderer.end();
 
         buffer.end();
 
@@ -129,21 +118,22 @@ public class RenderSubsystem implements Subsystem
         spriteBatch.draw(texRegion, -50f, -5f, 50f, 50f, 50f, 50f, 0.9f, 0.9f, -270f);
 
         spriteBatch.end();
-    }
 
-    public void resized(int width, int height)
-    {
-        screenWidth = (float) width;
-        screenHeight = (float) height;
+        shapeRenderer.begin();
+        shapeRenderer.set(ShapeRenderer.ShapeType.Line);
 
-        halfScreenWidth = screenWidth / 2.0f;
-        halfScreenHeight = screenHeight / 2.0f;
+        shapeRenderer.setColor(Player.COLOR_P1);
+        shapeRenderer.rect(0.1f, WIDTH_HALF_WORLD + 5.0f, SIZE_PLAYER_VIEW, SIZE_PLAYER_VIEW - 0.1f);
 
-        bufferWidthScale = (halfScreenWidth / bufferWidth);
-        bufferHeightScale = (halfScreenHeight / bufferHeight);
+        shapeRenderer.setColor(Player.COLOR_P2);
+        shapeRenderer.rect(WIDTH_HALF_WORLD + 5.0f, HEIGHT_HALF_WORLD + 5.0f, SIZE_PLAYER_VIEW, SIZE_PLAYER_VIEW - 0.1f);
 
-        //tex = new Texture(width / 2, height / 2, Pixmap.Format.RGB888);
+        shapeRenderer.setColor(Player.COLOR_P3);
+        shapeRenderer.rect(WIDTH_HALF_WORLD + 5.0f, 0f, SIZE_PLAYER_VIEW, SIZE_PLAYER_VIEW);
 
-        System.err.println("screen: " + screenWidth + "," + screenHeight + "; halfScreen: " + halfScreenWidth + "," + halfScreenHeight + "; bufferScale: " + bufferWidthScale + "," + bufferHeightScale);
+        shapeRenderer.setColor(Player.COLOR_P4);
+        shapeRenderer.rect(0.1f, 0f, SIZE_PLAYER_VIEW, SIZE_PLAYER_VIEW);
+
+        shapeRenderer.end();
     }
 }

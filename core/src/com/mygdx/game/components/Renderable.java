@@ -7,33 +7,17 @@ import com.mygdx.game.subsystems.RenderSubsystem;
 
 public abstract class Renderable implements Component
 {
-    private final Vector2 position;
-    private final ColorType colorType;
+    protected final Vector2 position;
 
-    public Renderable(Vector2 position, ColorType colorType)
+    public Renderable(Vector2 position)
     {
         this.position = position;
-        this.colorType = colorType;
     }
 
     public Renderable()
     {
-        this.position = null;
-        this.colorType = null;
+        position = null;
     }
 
-    public void render(ShapeRenderer renderer)
-    {
-    }
-
-    public Vector2 getPosition()
-    {
-        return position;
-    }
-
-
-    public ColorType getColorType()
-    {
-        return colorType;
-    }
+    public abstract void render(ShapeRenderer renderer);
 }
