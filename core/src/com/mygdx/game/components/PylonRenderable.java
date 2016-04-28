@@ -13,21 +13,22 @@ public class PylonRenderable extends Renderable
     private final float effectRadius;
     private final Color pylonColor;
     private final Color effectColor;
+    private final ColorType colorType;
 
-    public PylonRenderable(Vector2 position, ColorType color, float pylonRadius, float effectRadius)
+    public PylonRenderable(Vector2 position, ColorType colorType, float pylonRadius, float effectRadius)
     {
-        super(position, color);
+        super(position);
         this.pylonRadius = pylonRadius;
         this.effectRadius = effectRadius;
-        this.pylonColor = this.getColorType().getColor();
+        this.colorType = colorType;
+        this.pylonColor = colorType.getColor();
         this.effectColor = new Color(pylonColor.r,pylonColor.g,pylonColor.b,.15f);
     }
 
     @Override
     public void render(ShapeRenderer renderer)
     {
-        this.getColorType().getColor().a = 1f;
-        renderer.setColor(this.getColorType().getColor());
+        renderer.setColor(pylonColor);
         renderer.circle(this.getPosition().x ,this.getPosition().y ,pylonRadius);
 
         renderer.setColor(effectColor);

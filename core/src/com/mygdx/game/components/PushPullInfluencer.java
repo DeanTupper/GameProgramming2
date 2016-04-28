@@ -21,12 +21,11 @@ public class PushPullInfluencer implements PylonInfluencer
     {
         if (this.type.equals(ball.getType()))
         {
-            System.out.println("influence");
-            pushInfluence(ball);
+            pullInfluence(ball);
         }
         else
         {
-//            pushInfluence(ball);
+            pushInfluence(ball);
         }
     }
 
@@ -36,6 +35,18 @@ public class PushPullInfluencer implements PylonInfluencer
         Vector2 steering = ball.getVelocity().cpy().sub(desired_velocity);
         steering.set(-steering.x, -steering.y);
 //        System.out.println("steering = " + steering);
+        if (ball.getVelocity().cpy().nor().dot(steering.nor()) < -.999f)
+        {
+            steering.x = steering.x + .5f;
+        }
+        steering.clamp(-.1f, .1f);
+        ball.getVelocity().add(steering);
+    }
+
+    private void pullInfluence(Ball ball)
+    {
+        Vector2 desired_velocity = ball.getPosition().cpy().sub(position);
+        Vector2 steering = ball.getVelocity().cpy().sub(desired_velocity);
         if (ball.getVelocity().cpy().nor().dot(steering.nor()) < -.999f)
         {
             steering.x = steering.x + .5f;

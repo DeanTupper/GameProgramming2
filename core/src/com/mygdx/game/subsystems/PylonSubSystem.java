@@ -29,7 +29,7 @@ public class PylonSubSystem implements Subsystem
     }
 
     @Override
-    public void update(float deltaInMillis)
+    public void update(long deltaInMillis)
     {
         for(Ball curBall: balls)
         {

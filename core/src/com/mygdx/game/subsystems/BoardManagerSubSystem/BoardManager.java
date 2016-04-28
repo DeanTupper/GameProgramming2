@@ -84,8 +84,10 @@ public class BoardManager implements Subsystem
                     public void update(BoardManager entity)
                     {
                         System.out.println("ballStateeee");
-                        //instance.spawnBall(BallSpawns.values()[0]);
-                        //instance.spawnBall(BallSpawns.values()[3]);
+//                        instance.spawnBall(BallSpawns.values()[0]);
+//                        instance.spawnBall(BallSpawns.values()[3]);
+                        instance.spawnPylon(60,50);
+                        instance.spawnPylon(55,50);
                         ballState.changeState(BallState.NORMAL_STATE);
                     }
 
