@@ -6,6 +6,8 @@ import com.mygdx.game.subsystems.RenderSubsystem;
 
 public class DeanTestGame extends ApplicationAdapter
 {
+    public static final int DEFAULT_APP_HEIGHT = 1300;
+    public static final int DEFAULT_APP_WIDTH = 1300;
     private GameWorld gameWorld;
 
     @Override

@@ -1,6 +1,9 @@
 package com.mygdx.game.subsystems;
 
+import com.mygdx.game.components.BallCollidable;
 import com.mygdx.game.components.Collidable;
+import com.mygdx.game.entities.Ball;
+import com.mygdx.game.utils.Collision;
 import com.mygdx.game.utils.Quad;
 
 import java.util.HashSet;
@@ -13,6 +16,7 @@ public class CollidableSubsystem implements Subsystem
     private static CollidableSubsystem instance;
 
     private final QuadSubsystem quadSubsystem;
+    private Set<BallCollidable> ballCollidables;
 
     public static CollidableSubsystem get()
     {
@@ -32,7 +36,11 @@ public class CollidableSubsystem implements Subsystem
     @Override
     public void update(long deltaInMillis)
     {
-        for (Collidable collidable : collidables)
+//        for (BallCollidable ballCollidable : ballCollidables)
+//        {
+//            checkForPotentialCollisions(ballCollidable);
+//        }
+        for(Collidable collidable: collidables)
         {
             checkForPotentialCollisions(collidable);
         }
@@ -57,6 +65,8 @@ public class CollidableSubsystem implements Subsystem
         }
     }
 
+    public void registerBall(BallCollidable ball){ballCollidables.add(ball);}
+    public void removeBall(Ball ball){ballCollidables.remove(ball);}
     public void register(Collidable collidable)
     {
         collidables.add(collidable);
