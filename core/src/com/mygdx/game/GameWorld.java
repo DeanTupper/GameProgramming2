@@ -15,7 +15,7 @@ public class GameWorld
     public static final float DEFAULT_WORLD_HEIGHT = 100f;
 
     private static final float THRESHOLD_UPDATE_DELTA = 1000L / 60L;
-    //private static final float THRESHOLD_UPDATE_DELTA = 500L;
+//    private static final float THRESHOLD_UPDATE_DELTA = 500L;
 
     private final Rectangle worldBounds;
 

@@ -1,5 +1,6 @@
 package com.mygdx.game.utils;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.GameWorld;
 import com.mygdx.game.components.Collidable;
@@ -103,6 +104,8 @@ public class QuadMap
         int row = (int) (y / GameWorld.DEFAULT_WORLD_HEIGHT);
         int col = (int) (x / GameWorld.DEFAULT_WORLD_WIDTH);
 
+        row = MathUtils.clamp(row, 0, quadMap.length-1);
+        col = MathUtils.clamp(col, 0 , quadMap.length-1);
         return quadMap[row][col];
     }
 }

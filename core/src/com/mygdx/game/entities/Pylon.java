@@ -8,8 +8,12 @@ import com.mygdx.game.subsystems.BoardManagerSubSystem.BoardManager;
 import com.mygdx.game.subsystems.PylonSubSystem;
 import com.mygdx.game.subsystems.RenderSubsystem;
 
+import java.util.Random;
+
 public class Pylon extends Entity
 {
+    private static final Vector2 NONMOVING = new Vector2(0, 0);
+    private static final int PYLON_SIZE = 1;
     private final Vector2 position;
     private final ColorType type;
     private final PylonRenderable renderable;
@@ -18,7 +22,7 @@ public class Pylon extends Entity
     private final PushPullInfluencer influencer;
     private final Movable movable;
 
-    public Pylon(Vector2 position, ColorType type)
+    public Pylon(Vector2 position, ColorType type, float effectRadius)
     {
         this.position = position;
         this.type = type;
@@ -27,9 +31,9 @@ public class Pylon extends Entity
 
         PylonSubSystem.get().registerPylon(this);
 
-        movable = new Movable(position, new Vector2(0, 0));
+        movable = new Movable(position,NONMOVING);
 
-        renderable = new PylonRenderable(position, type, 1, 10);
+        renderable = new PylonRenderable(position, type, PYLON_SIZE, effectRadius);
         RenderSubsystem.get().register(renderable);
 
         influencer = new PushPullInfluencer(position, type);
@@ -38,7 +42,8 @@ public class Pylon extends Entity
     @Override
     public void destroy()
     {
-        BoardManager.get().removePylon(this);
+        RenderSubsystem.get().remove(renderable);
+        PylonSubSystem.get().removePylon(this);
     }
 
     public PushPullInfluencer getInfluencer()
@@ -54,5 +59,13 @@ public class Pylon extends Entity
     public float getRadius()
     {
         return renderable.getRadius();
+    }
+
+    public static void generateRandomPylon(Random rand)
+    {
+        Vector2 position = BoardManager.getRandomPosition(rand);
+        ColorType type = ColorType.getRandomColorType(rand);
+        float effectRadius = rand.nextFloat()*10;
+        new Pylon(position,type,effectRadius);
     }
 }
