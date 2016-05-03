@@ -3,7 +3,7 @@ package com.mygdx.game.components;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.game.utils.Rectangle;
+import com.mygdx.game.utils.shapes.Rectangle;
 
 public class PaddleMovable extends Movable
 {
@@ -25,7 +25,7 @@ public class PaddleMovable extends Movable
     }
 
     @Override
-    public void move()
+    public void move(long deltaInMillis)
     {
         Vector2 dVel = new Vector2();
 

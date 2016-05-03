@@ -50,6 +50,11 @@ public final class Quad
         return neighborMap.get(dir);
     }
 
+    public Set<Quad> getNeighbors()
+    {
+        return neighbors;
+    }
+
     public Set<Collidable> getCollidableEntitiesInRegion()
     {
         Set<Collidable> collidableEntities = new HashSet<Collidable>();

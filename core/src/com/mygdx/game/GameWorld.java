@@ -1,25 +1,75 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.entities.CornerBumper;
 import com.mygdx.game.entities.Player;
 import com.mygdx.game.subsystems.*;
 import com.mygdx.game.subsystems.BoardManagerSubSystem.BoardManager;
-import com.mygdx.game.utils.Rectangle;
+import com.mygdx.game.utils.shapes.Rectangle;
 
-public class GameWorld
+public class GameWorld implements InputProcessor
 {
     public static final float DEFAULT_WORLD_WIDTH = 100f;
     public static final float DEFAULT_WORLD_HEIGHT = 100f;
 
     private static final float THRESHOLD_UPDATE_DELTA = 1000L / 60L;
 //    private static final float THRESHOLD_UPDATE_DELTA = 500L;
+    private enum UpdateDelta
+    {
+        FAST(1000L / 60L),
+        MEDIUM(250L),
+        SLOW(500L),
+        SLOWER_YET(750L),
+        SLOWEST(1000L);
+
+        private final long threshold;
+
+        UpdateDelta(long threshold)
+        {
+            this.threshold = threshold;
+        }
+
+        public UpdateDelta next()
+        {
+            int ordinalNext = ordinal() + 1;
+
+            if (ordinalNext == UpdateDelta.values().length)
+            {
+                return this;
+            }
+
+            return UpdateDelta.values()[ordinalNext];
+        }
+
+        public UpdateDelta prev()
+        {
+            int ordinalPrev = ordinal() - 1;
+
+            if (ordinalPrev < 0)
+            {
+                return this;
+            }
+
+            return UpdateDelta.values()[ordinalPrev];
+        }
+    }
+
+    public static boolean debugMode = false;
+    private UpdateDelta updateDelta = UpdateDelta.MEDIUM;
+    public static long updateThreshold = UpdateDelta.MEDIUM.threshold;
+
+    private static final boolean PAUSING_CHANGES_DEBUG_MODE = !debugMode;
+
+    private boolean paused = false;
 
     private final Rectangle worldBounds;
 
     private long timeOfLastUpdate;
+    private long elapsedTime;
 
     private BoardManager boardManager;
     private MovableSubsystem movableSubsystem;
@@ -41,6 +91,8 @@ public class GameWorld
         collidableSubsystem = CollidableSubsystem.get();
         renderSubsystem = RenderSubsystem.get();
         pylonSubsystem = PylonSubSystem.get();
+
+        Gdx.input.setInputProcessor(this);
     }
 
     private void buildWorld()
@@ -79,17 +131,20 @@ public class GameWorld
 
     void tick()
     {
-        long currentTime = System.currentTimeMillis();
-
-        long elapsedTime = currentTime - timeOfLastUpdate;
-
-        if (elapsedTime > THRESHOLD_UPDATE_DELTA)
+        if (!paused)
         {
-            updateWorld(elapsedTime);
-            timeOfLastUpdate = currentTime;
+            long currentTime = System.currentTimeMillis();
+
+            elapsedTime = currentTime - timeOfLastUpdate;
+
+            if (elapsedTime > updateDelta.threshold)
+            {
+                updateWorld(elapsedTime);
+                timeOfLastUpdate = currentTime;
+            }
         }
 
-        render(elapsedTime);
+        render();
     }
 
     private void updateWorld(long deltaInMillis)
@@ -103,8 +158,116 @@ public class GameWorld
         pylonSubsystem.update(deltaInMillis);
     }
 
-    private void render(long deltaInMillis)
+    private void render()
     {
         renderSubsystem.renderWorld();
+    }
+
+    @Override
+    public boolean keyDown(int keycode)
+    {
+        boolean handled = true;
+
+        switch (keycode)
+        {
+            case Input.Keys.ENTER:
+                pause();
+                break;
+            case Input.Keys.LEFT_BRACKET:
+                changeUpdateDelta(false);
+                break;
+            case Input.Keys.RIGHT_BRACKET:
+                changeUpdateDelta(true);
+                break;
+            default:
+                handled = false;
+        }
+
+        return handled;
+    }
+
+    private void changeUpdateDelta(boolean faster)
+    {
+        long prevUpdateThreshold = updateDelta.threshold;
+
+        if (faster)
+        {
+            updateDelta = updateDelta.prev();
+        }
+        else
+        {
+            updateDelta = updateDelta.next();
+        }
+
+        updateThreshold = updateDelta.threshold;
+
+        System.err.println("GameWorld::changeUpdateDelta - faster:[" + faster + "], updateDelta.threshold: " + updateDelta.threshold);
+
+        if (paused)
+        {
+            if (prevUpdateThreshold != updateDelta.threshold)
+            {
+                double ratio = (double) updateDelta.threshold / prevUpdateThreshold;
+                elapsedTime *= ratio;
+            }
+        }
+    }
+
+    private void pause()
+    {
+        paused = !paused;
+
+        if (PAUSING_CHANGES_DEBUG_MODE)
+        {
+            debugMode = !debugMode;
+        }
+
+        if (!paused)
+        {
+            timeOfLastUpdate = System.currentTimeMillis();
+            timeOfLastUpdate -= elapsedTime;
+        }
+    }
+
+    @Override
+    public boolean keyUp(int keycode)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int amount)
+    {
+        return false;
     }
 }

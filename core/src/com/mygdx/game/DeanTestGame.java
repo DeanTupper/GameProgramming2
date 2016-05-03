@@ -1,8 +1,6 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.mygdx.game.subsystems.RenderSubsystem;
 
 public class DeanTestGame extends ApplicationAdapter
 {
