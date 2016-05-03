@@ -80,6 +80,11 @@ public class Player extends Entity
         RenderSubsystem.get().register(renderable);
     }
 
+    public void decrementScore()
+    {
+
+    }
+
     @Override
     public void destroy()
     {

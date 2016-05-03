@@ -18,7 +18,6 @@ public class Pylon extends Entity
     private final ColorType type;
     private final PylonRenderable renderable;
 
-
     private final PushPullInfluencer influencer;
     private final Movable movable;
 
@@ -65,7 +64,7 @@ public class Pylon extends Entity
     {
         Vector2 position = BoardManager.getRandomPosition(rand);
         ColorType type = ColorType.getRandomColorType(rand);
-        float effectRadius = rand.nextFloat()*10;
+        float effectRadius = (rand.nextFloat()*10)+3;
         new Pylon(position,type,effectRadius);
     }
 }
