@@ -14,9 +14,9 @@ public class Movable implements Component
         this.velocity = velocity;
     }
 
-    public void move()
+    public void move(long deltaInMillis)
     {
-        MovableSubsystem.move(this);
+        MovableSubsystem.move(this, deltaInMillis);
     }
 
     public Vector2 getPosition()

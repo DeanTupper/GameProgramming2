@@ -15,14 +15,14 @@ public class Ball extends Entity
 {
     private final Movable movable;
     private final BallRenderable renderable;
-    private final Collidable collidable;
+    private final BallCollidable collidable;
 
     private final ColorType type;
 
     public Ball(Vector2 position, Vector2 velocity, ColorType colorType, float radius)
     {
         this.type = colorType;
-        BoardManager.get().registerBall(this);
+        BoardManager.get().register(this);
         PylonSubSystem.get().registerBall(this);
 
         movable = new Movable(position, velocity);
@@ -31,7 +31,7 @@ public class Ball extends Entity
         renderable = new BallRenderable(position, colorType, radius);
         RenderSubsystem.get().register(renderable);
 
-        collidable = new BallCollidable(movable, radius);
+        collidable = new BallCollidable(this, movable, radius);
         CollidableSubsystem.get().register(collidable);
     }
 
@@ -62,4 +62,8 @@ public class Ball extends Entity
         return renderable.getRadius();
     }
 
+    public BallCollidable getCollidable()
+    {
+        return collidable;
+    }
 }

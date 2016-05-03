@@ -1,5 +1,9 @@
 package com.mygdx.game.subsystems;
 
+import com.mygdx.game.components.BallCollidable;
+import com.mygdx.game.entities.Ball;
+import com.mygdx.game.subsystems.BoardManagerSubSystem.BoardManager;
+import com.mygdx.game.utils.collision.Collision;
 import com.mygdx.game.components.Collidable;
 import com.mygdx.game.utils.Quad;
 
@@ -13,6 +17,7 @@ public class CollidableSubsystem implements Subsystem
     private static CollidableSubsystem instance;
 
     private final QuadSubsystem quadSubsystem;
+    private final BoardManager boardManager;
 
     public static CollidableSubsystem get()
     {
@@ -27,18 +32,39 @@ public class CollidableSubsystem implements Subsystem
     private CollidableSubsystem()
     {
         quadSubsystem = QuadSubsystem.get();
+
+        boardManager = BoardManager.get();
     }
 
     @Override
     public void update(long deltaInMillis)
     {
-        for (Collidable collidable : collidables)
+        Set<Ball> balls = boardManager.getBalls();
+
+        for (Ball ball : balls)
         {
-            checkForPotentialCollisions(collidable);
+            checkBallForCollisions(ball, deltaInMillis);
         }
     }
 
-    private void checkForPotentialCollisions(Collidable collidable)
+    private void checkBallForCollisions(Ball ball, long deltaInMillis)
+    {
+        Quad ballQuad = quadSubsystem.getQuad(ball.getPosition());
+
+        Set<Collidable> potentialCollidables = ballQuad.getCollidableEntitiesInRegion();
+        potentialCollidables.remove(ball.getCollidable());
+
+        BallCollidable ballCollidable = ball.getCollidable();
+
+        for (Collidable potentialCollidable : potentialCollidables)
+        {
+
+            Collision potentialCollision = ballCollidable.checkForCollision(potentialCollidable, deltaInMillis);
+            ballCollidable.updateCollisionIfSooner(potentialCollision);
+        }
+    }
+
+    private void checkForPotentialCollisions(Collidable collidable, long deltaInMillis)
     {
         Quad collidableQuad = quadSubsystem.getQuad(collidable.getPosition());
 
@@ -48,17 +74,20 @@ public class CollidableSubsystem implements Subsystem
         {
             if (!potentialCollidable.equals(collidable))
             {
-                if (potentialCollidable.collidesWith(collidable))
-                {
-                    potentialCollidable.resolveCollision(collidable);
-                    collidable.resolveCollision(potentialCollidable);
-                }
+                Collision potentialCollision = potentialCollidable.checkForCollision(collidable, deltaInMillis);
+
+//                if (potentialCollidable.collidesWith(collidable, deltaInMillis))
+//                {
+//                    potentialCollidable.resolveCollision(collidable);
+//                    collidable.resolveCollision(potentialCollidable);
+//                }
             }
         }
     }
 
     public void register(Collidable collidable)
     {
+        System.err.println("CollidableSubsystem.register - registering " + collidable);
         collidables.add(collidable);
     }
 

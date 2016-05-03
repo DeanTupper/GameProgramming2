@@ -6,11 +6,15 @@ import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.entities.Ball;
 import com.mygdx.game.entities.ColorType;
+import com.mygdx.game.entities.CornerBumper;
+import com.mygdx.game.entities.Entity;
 import com.mygdx.game.entities.Pylon;
 import com.mygdx.game.subsystems.Subsystem;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class BoardManager implements Subsystem
@@ -19,10 +23,12 @@ public class BoardManager implements Subsystem
     private static BoardManager instance;
 
     private static final ThreadLocalRandom random = ThreadLocalRandom.current();
-    private final List<Ball> balls = new ArrayList<Ball>();
-    private final List<Pylon> pylons = new ArrayList<Pylon>();
-    private static final DefaultStateMachine<BoardManager, BallState> ballState = new DefaultStateMachine(BoardManager.get(), BallState.INITIAL_STATE);
-    private float lastUpdate = 0;
+
+    private final Set<Ball> balls = new HashSet<Ball>();
+    private final Set<Pylon> pylons = new HashSet<Pylon>();
+    private final Set<CornerBumper> cornerBumpers = new HashSet<CornerBumper>();
+
+    private static final DefaultStateMachine<BoardManager, BallState> ballState = new DefaultStateMachine<BoardManager, BallState>(BoardManager.get(), BallState.INITIAL_STATE);
 
     public static BoardManager get()
     {
@@ -44,9 +50,9 @@ public class BoardManager implements Subsystem
         ballState.update();
     }
 
-    private void spawnBall(BallSpawns ballSpawns)
+    private void spawnBall(BallSpawns ballSpawns, ColorType colorType)
     {
-        new Ball(ballSpawns.getPosition(), ballSpawns.getVelocity(), ColorType.BLUE, BALL_RADIUS);
+        new Ball(ballSpawns.getPosition(), ballSpawns.getVelocity(), colorType, BALL_RADIUS);
     }
 
     public void registerBall(Ball ball)
@@ -69,6 +75,55 @@ public class BoardManager implements Subsystem
         pylons.remove(pylon);
     }
 
+    public void register(Entity entity)
+    {
+        if (entity instanceof Ball)
+        {
+            balls.add(((Ball) entity));
+        }
+        else if (entity instanceof Pylon)
+        {
+            pylons.add(((Pylon) entity));
+        }
+        else if (entity instanceof CornerBumper)
+        {
+            cornerBumpers.add(((CornerBumper) entity));
+        }
+        else
+        {
+            throw new AssertionError("Unknown entity type: " + entity);
+        }
+    }
+
+    public void remove(Entity entity)
+    {
+        if (entity instanceof Ball)
+        {
+            balls.remove(((Ball) entity));
+        }
+        else if (entity instanceof Pylon)
+        {
+            pylons.remove(((Pylon) entity));
+        }
+        else if (entity instanceof CornerBumper)
+        {
+            cornerBumpers.remove(((CornerBumper) entity));
+        }
+        else
+        {
+            throw new AssertionError("Unknown entity type: " + entity);
+        }
+    }
+
+    public Set<CornerBumper> getCornerBumpers()
+    {
+        return cornerBumpers;
+    }
+
+    public Set<Ball> getBalls()
+    {
+        return balls;
+    }
 
     public enum BallState implements State<BoardManager>
     {
@@ -84,10 +139,12 @@ public class BoardManager implements Subsystem
                     public void update(BoardManager entity)
                     {
                         System.out.println("ballStateeee");
-//                        instance.spawnBall(BallSpawns.values()[0]);
-//                        instance.spawnBall(BallSpawns.values()[3]);
-                        instance.spawnPylon(60,50);
-                        instance.spawnPylon(55,50);
+                        //instance.spawnBall(BallSpawns.BOTTOM_LEFT, ColorType.BLUE);
+                        instance.spawnBall(BallSpawns.TOP_RIGHT, ColorType.RED);
+
+                        //instance.spawnPylon(60,50);
+                        //instance.spawnPylon(55,50);
+
                         ballState.changeState(BallState.NORMAL_STATE);
                     }
 
@@ -136,7 +193,7 @@ public class BoardManager implements Subsystem
 
     private void spawnPylon(int x, int y)
     {
-        new Pylon(new Vector2(x,y),ColorType.BLUE);
+        new Pylon(new Vector2(x, y), ColorType.BLUE);
     }
 
     public enum BallSpawns

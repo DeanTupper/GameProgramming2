@@ -3,7 +3,7 @@ package com.mygdx.game.subsystems;
 import com.mygdx.game.components.Renderable;
 import com.mygdx.game.entities.Ball;
 import com.mygdx.game.entities.Pylon;
-import com.mygdx.game.utils.Collision;
+import com.mygdx.game.utils.collision.CollisionUtils;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -35,7 +35,7 @@ public class PylonSubSystem implements Subsystem
         {
             for(Pylon curPylon:pylons)
             {
-                if(Collision.circleIntersectsCircle(curBall.getPosition(),curBall.getRadius(),curPylon.getPosition(),curPylon.getRadius()))
+                if(CollisionUtils.circleIntersectsCircle(curBall.getPosition(),curBall.getRadius(),curPylon.getPosition(),curPylon.getRadius()))
                 {
                     System.out.println("GOING TO INFLUENCE");
                     curPylon.getInfluencer().influence(curBall);

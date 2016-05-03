@@ -1,5 +1,7 @@
 package com.mygdx.game.subsystems;
 
+import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.GameWorld;
 import com.mygdx.game.components.Movable;
 
 import java.util.HashSet;
@@ -30,7 +32,7 @@ public class MovableSubsystem implements Subsystem
     {
         for(Movable current: movables)
         {
-            current.move();
+            current.move(deltaInMillis);
         }
     }
 
@@ -44,8 +46,14 @@ public class MovableSubsystem implements Subsystem
         movables.add(movable);
     }
 
-    public static void move(Movable movable)
+    public static void move(Movable movable, long deltaInMillis)
     {
-        movable.setPosition(movable.getPosition().add(movable.getVelocity()));
+        Vector2 position = movable.getPosition();
+        Vector2 velocity = movable.getVelocity();
+
+        float delta = deltaInMillis / GameWorld.updateThreshold;
+
+        position.x += velocity.x * delta;
+        position.y += velocity.y * delta;
     }
 }
