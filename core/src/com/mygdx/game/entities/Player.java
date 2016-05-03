@@ -8,7 +8,7 @@ import com.mygdx.game.components.PaddleMovable;
 import com.mygdx.game.components.PlayerRenderable;
 import com.mygdx.game.subsystems.MovableSubsystem;
 import com.mygdx.game.subsystems.RenderSubsystem;
-import com.mygdx.game.utils.Rectangle;
+import com.mygdx.game.utils.shapes.Rectangle;
 
 public class Player extends Entity
 {
@@ -41,7 +41,7 @@ public class Player extends Entity
     public static final float POS_Y_VERITCAL_MIN = CornerBumper.SIZE;
     public static final float POS_Y_VERITCAL_MAX = GameWorld.DEFAULT_WORLD_HEIGHT - (CornerBumper.SIZE * 2.0f) - DIMEN_MAJOR;
 
-    // The velocity deltas used to move players on input
+    // The circleVelocity deltas used to move players on input
     public static final Vector2 VELOCITY_DELTA_HORIZONTAL = new Vector2(1f, 0f);
     public static final Vector2 VELOCITY_DELTA_VERTICAL = new Vector2(0f, 1f);
 
@@ -78,6 +78,11 @@ public class Player extends Entity
 
         renderable = new PlayerRenderable(position, width, height, color);
         RenderSubsystem.get().register(renderable);
+    }
+
+    public void decrementScore()
+    {
+
     }
 
     @Override

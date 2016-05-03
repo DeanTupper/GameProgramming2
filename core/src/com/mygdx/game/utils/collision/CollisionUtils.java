@@ -1,9 +1,10 @@
-package com.mygdx.game.utils;
+package com.mygdx.game.utils.collision;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.utils.shapes.Rectangle;
 
-public final class Collision
+public final class CollisionUtils
 {
     public static boolean circleIntersectsRectangle(Vector2 circle, float radius, Rectangle rect)
     {
@@ -45,5 +46,10 @@ public final class Collision
         float deltaRadius = radiusA + radiusB;
 
         return (deltaX * deltaX) + (deltaY * deltaY) <= (deltaRadius * deltaRadius);
+    }
+
+    public static Vector2 getPointOnCircle(Vector2 center, Vector2 direction, float radius)
+    {
+        return new Vector2(center.x + direction.x * radius, center.y + direction.y * radius);
     }
 }

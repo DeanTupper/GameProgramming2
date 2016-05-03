@@ -2,20 +2,16 @@ package com.mygdx.game.components;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.utils.shapes.Triangle;
 
 public class CornerBumperRenderable extends Renderable
 {
-    private final Vector2 point1;
-    private final Vector2 point2;
-    private final Vector2 point3;
     private final Color color;
+    private final Triangle triangle;
 
-    public CornerBumperRenderable(Vector2 point1, Vector2 point2, Vector2 point3, Color color)
+    public CornerBumperRenderable(Triangle triangle, Color color)
     {
-        this.point1 = point1;
-        this.point2 = point2;
-        this.point3 = point3;
+        this.triangle = triangle;
         this.color = color;
     }
 
@@ -23,6 +19,11 @@ public class CornerBumperRenderable extends Renderable
     public void render(ShapeRenderer renderer)
     {
         renderer.setColor(color);
-        renderer.triangle(point1.x, point1.y, point2.x, point2.y, point3.x, point3.y);
+        renderer.triangle(triangle.origin.x, triangle.origin.y,
+                triangle.edge1.x, triangle.edge1.y,
+                triangle.edge2.x, triangle.edge2.y);
+
+        renderer.setColor(Color.RED);
+        renderer.point(triangle.origin.x, triangle.origin.y, 0f);
     }
 }

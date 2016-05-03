@@ -1,6 +1,7 @@
 package com.mygdx.game.subsystems;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -11,7 +12,11 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.game.GameWorld;
 import com.mygdx.game.components.Renderable;
+import com.mygdx.game.entities.Ball;
+import com.mygdx.game.entities.CornerBumper;
 import com.mygdx.game.entities.Player;
+import com.mygdx.game.subsystems.BoardManagerSubSystem.BoardManager;
+import com.mygdx.game.utils.Quad;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -137,6 +142,57 @@ public class RenderSubsystem implements Subsystem
         shapeRenderer.setColor(Player.COLOR_P4);
         shapeRenderer.rect(0.1f, 0f, SIZE_PLAYER_VIEW, SIZE_PLAYER_VIEW);
 
+        if (GameWorld.debugMode)
+        {
+            debugRendering();
+        }
+
         shapeRenderer.end();
+    }
+
+    private void debugRendering()
+    {
+        drawQuadGrid();
+        drawBallQuads();
+        drawCornerBumperQuads();
+    }
+
+    private void drawQuadGrid()
+    {
+        QuadSubsystem.get().render(shapeRenderer);
+    }
+
+    private void drawBallQuads()
+    {
+        shapeRenderer.setColor(Color.BLUE);
+
+        for (Ball ball : BoardManager.get().getBalls())
+        {
+            Quad ballQuad = QuadSubsystem.get().getQuad(ball.getPosition());
+            renderQuadAndNeighbors(ballQuad);
+        }
+    }
+
+    private void drawCornerBumperQuads()
+    {
+        shapeRenderer.setColor(Color.WHITE);
+
+        for (CornerBumper cornerBumper : BoardManager.get().getCornerBumpers())
+        {
+            Quad quad = QuadSubsystem.get().getQuad(cornerBumper.getPosition());
+            renderQuadAndNeighbors(quad);
+        }
+    }
+
+    private void renderQuadAndNeighbors(Quad quad)
+    {
+        shapeRenderer.rect(quad.getCol() * 4.5f, 55f + quad.getRow() * 4.5f, 4.5f, 4.5f);
+
+        Set<Quad> neighbors = quad.getNeighbors();
+
+        for (Quad neighbor : neighbors)
+        {
+            shapeRenderer.rect(neighbor.getCol() * 4.5f, 55f + neighbor.getRow() * 4.5f, 4.5f, 4.5f);
+        }
     }
 }

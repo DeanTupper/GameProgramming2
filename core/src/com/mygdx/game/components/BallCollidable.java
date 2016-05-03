@@ -1,12 +1,17 @@
 package com.mygdx.game.components;
 
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.entities.Ball;
 
 public class BallCollidable extends CircleCollidable
 {
-    public BallCollidable(Movable movable, float radius)
+    private final Ball ball;
+
+    public BallCollidable(Ball ball, Movable movable, float radius)
     {
         super(movable, radius);
+
+        this.ball = ball;
     }
 
     public void resolveCollision(Collidable other)
@@ -22,6 +27,8 @@ public class BallCollidable extends CircleCollidable
 
             Vector2 myVelocity = movable.getVelocity();
             Vector2 otherVelocity;
+
+            System.err.println("BallCollidable::resolveCollision - crossProduct: " + crossProduct);
 
             if (crossProduct > 0)
             {
