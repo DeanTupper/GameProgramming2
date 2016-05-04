@@ -11,6 +11,7 @@ import com.mygdx.game.entities.CornerBumper;
 import com.mygdx.game.entities.Entity;
 import com.mygdx.game.entities.Pylon;
 import com.mygdx.game.subsystems.Subsystem;
+import com.mygdx.game.utils.UpdateDelta;
 
 import java.util.HashSet;
 import java.util.Random;
@@ -50,7 +51,7 @@ public class BoardManager implements Subsystem
     }
 
     @Override
-    public void update(long deltaInMillis)
+    public void update(long deltaInMillis, UpdateDelta updateDelta)
     {
         if (balls.size() < 2)
         {

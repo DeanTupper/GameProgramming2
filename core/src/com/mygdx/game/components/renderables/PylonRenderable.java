@@ -1,4 +1,4 @@
-package com.mygdx.game.components;
+package com.mygdx.game.components.renderables;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;

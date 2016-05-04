@@ -1,10 +1,9 @@
 package com.mygdx.game.entities;
 
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.game.components.BallCollidable;
-import com.mygdx.game.components.BallRenderable;
-import com.mygdx.game.components.Collidable;
-import com.mygdx.game.components.Movable;
+import com.mygdx.game.components.collidables.BallCollidable;
+import com.mygdx.game.components.renderables.BallRenderable;
+import com.mygdx.game.components.movables.Movable;
 import com.mygdx.game.subsystems.BoardManagerSubSystem.BoardManager;
 import com.mygdx.game.subsystems.CollidableSubsystem;
 import com.mygdx.game.subsystems.MovableSubsystem;

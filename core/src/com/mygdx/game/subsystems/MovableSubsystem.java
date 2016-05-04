@@ -1,8 +1,8 @@
 package com.mygdx.game.subsystems;
 
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.game.GameWorld;
-import com.mygdx.game.components.Movable;
+import com.mygdx.game.components.movables.Movable;
+import com.mygdx.game.utils.UpdateDelta;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -28,11 +28,19 @@ public class MovableSubsystem implements Subsystem
     private final Set<Movable> movables = new HashSet<Movable>();
 
     @Override
-    public void update(long deltaInMillis)
+    public void update(long deltaInMillis, UpdateDelta updateDelta)
     {
-        for(Movable current: movables)
+        for (Movable current : movables)
         {
             current.move(deltaInMillis);
+        }
+    }
+
+    public void moveEntities(float worldTimeStep)
+    {
+        for (Movable current : movables)
+        {
+            current.move(worldTimeStep);
         }
     }
 
@@ -46,14 +54,12 @@ public class MovableSubsystem implements Subsystem
         movables.add(movable);
     }
 
-    public static void move(Movable movable, long deltaInMillis)
+    public static void move(Movable movable, float worldTimeStep)
     {
         Vector2 position = movable.getPosition();
         Vector2 velocity = movable.getVelocity();
 
-        float delta = deltaInMillis / GameWorld.updateThreshold;
-
-        position.x += velocity.x * delta;
-        position.y += velocity.y * delta;
+        position.x += velocity.x * worldTimeStep;
+        position.y += velocity.y * worldTimeStep;
     }
 }

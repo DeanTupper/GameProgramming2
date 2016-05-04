@@ -1,8 +1,9 @@
 package com.mygdx.game.subsystems;
 
-import com.mygdx.game.components.Renderable;
+import com.mygdx.game.components.renderables.Renderable;
 import com.mygdx.game.entities.Ball;
 import com.mygdx.game.entities.Pylon;
+import com.mygdx.game.utils.UpdateDelta;
 import com.mygdx.game.utils.collision.CollisionUtils;
 
 import java.util.HashSet;
@@ -29,7 +30,7 @@ public class PylonSubSystem implements Subsystem
     }
 
     @Override
-    public void update(long deltaInMillis)
+    public void update(long deltaInMillis, UpdateDelta updateDelta)
     {
         for(Ball curBall: balls)
         {

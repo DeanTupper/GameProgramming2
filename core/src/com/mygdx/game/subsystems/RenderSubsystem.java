@@ -11,12 +11,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.game.GameWorld;
-import com.mygdx.game.components.Renderable;
+import com.mygdx.game.components.renderables.Renderable;
 import com.mygdx.game.entities.Ball;
 import com.mygdx.game.entities.CornerBumper;
 import com.mygdx.game.entities.Player;
 import com.mygdx.game.subsystems.BoardManagerSubSystem.BoardManager;
 import com.mygdx.game.utils.Quad;
+import com.mygdx.game.utils.UpdateDelta;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -67,7 +68,7 @@ public class RenderSubsystem implements Subsystem
     private final Set<Renderable> renderables = new HashSet<Renderable>();
 
     @Override
-    public void update(long deltaInMillis)
+    public void update(long deltaInMillis, UpdateDelta updateDelta)
     {
         buffer.begin();
 

@@ -1,7 +1,6 @@
 package com.mygdx.game.utils;
 
-import com.mygdx.game.components.Collidable;
-import com.mygdx.game.components.Movable;
+import com.mygdx.game.components.collidables.Collidable;
 
 import java.util.ArrayList;
 import java.util.EnumMap;

@@ -9,52 +9,13 @@ import com.mygdx.game.entities.CornerBumper;
 import com.mygdx.game.entities.Player;
 import com.mygdx.game.subsystems.*;
 import com.mygdx.game.subsystems.BoardManagerSubSystem.BoardManager;
+import com.mygdx.game.utils.UpdateDelta;
 import com.mygdx.game.utils.shapes.Rectangle;
 
 public class GameWorld implements InputProcessor
 {
     public static final float DEFAULT_WORLD_WIDTH = 100f;
     public static final float DEFAULT_WORLD_HEIGHT = 100f;
-
-    private enum UpdateDelta
-    {
-        FAST(1000L / 60L),
-        MEDIUM(250L),
-        SLOW(500L),
-        SLOWER_YET(750L),
-        SLOWEST(1000L);
-
-        private final long threshold;
-
-        UpdateDelta(long threshold)
-        {
-            this.threshold = threshold;
-        }
-
-        public UpdateDelta next()
-        {
-            int ordinalNext = ordinal() + 1;
-
-            if (ordinalNext == UpdateDelta.values().length)
-            {
-                return this;
-            }
-
-            return UpdateDelta.values()[ordinalNext];
-        }
-
-        public UpdateDelta prev()
-        {
-            int ordinalPrev = ordinal() - 1;
-
-            if (ordinalPrev < 0)
-            {
-                return this;
-            }
-
-            return UpdateDelta.values()[ordinalPrev];
-        }
-    }
 
     public static boolean debugMode = true;
     private UpdateDelta updateDelta = UpdateDelta.MEDIUM;
@@ -147,14 +108,13 @@ public class GameWorld implements InputProcessor
 
     private void updateWorld(long deltaInMillis)
     {
-        quadSubsystem.update(deltaInMillis);
-        collidableSubsystem.update(deltaInMillis);
-        movableSubsystem.update(deltaInMillis);
+        quadSubsystem.update(deltaInMillis, updateDelta);
+        collidableSubsystem.update(deltaInMillis, updateDelta);
 
-        boardManager.update(deltaInMillis);
-        pylonSubsystem.update(deltaInMillis);
+        boardManager.update(deltaInMillis, updateDelta);
+        pylonSubsystem.update(deltaInMillis, updateDelta);
 
-        renderSubsystem.update(deltaInMillis);
+        renderSubsystem.update(deltaInMillis, updateDelta);
     }
 
     private void render()

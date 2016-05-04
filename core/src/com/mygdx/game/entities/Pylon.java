@@ -1,9 +1,9 @@
 package com.mygdx.game.entities;
 
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.game.components.Movable;
+import com.mygdx.game.components.movables.Movable;
 import com.mygdx.game.components.PushPullInfluencer;
-import com.mygdx.game.components.PylonRenderable;
+import com.mygdx.game.components.renderables.PylonRenderable;
 import com.mygdx.game.subsystems.BoardManagerSubSystem.BoardManager;
 import com.mygdx.game.subsystems.PylonSubSystem;
 import com.mygdx.game.subsystems.RenderSubsystem;

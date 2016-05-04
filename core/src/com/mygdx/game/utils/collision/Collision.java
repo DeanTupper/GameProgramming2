@@ -1,17 +1,19 @@
 package com.mygdx.game.utils.collision;
 
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.game.components.Collidable;
+import com.mygdx.game.components.collidables.Collidable;
 
 import java.util.Arrays;
 
-public abstract class Collision
+public abstract class Collision implements Comparable<Collision>
 {
     public final Collidable a;
     public final Collidable b;
-    public final long deltaInMillis;
 
     public boolean willCollide = false;
+
+    public Vector2 initVelocityA;
+    public Vector2 initVelocityB;
 
     public Vector2 closestPointOnA = new Vector2();
     public Vector2 closestPointOnB = new Vector2();
@@ -21,17 +23,44 @@ public abstract class Collision
 
     public float timeToCollision = Float.MAX_VALUE;
 
-    public Collision(Collidable a, Collidable b, long deltaInMillis)
+    public Collision(Collidable a, Collidable b)
     {
         this.a = a;
         this.b = b;
-        this.deltaInMillis = deltaInMillis;
+    }
+
+    public abstract void calculateTimeToCollision();
+
+    protected void resetInitialVelocities()
+    {
+        initVelocityA = a.getVelocity().cpy();
+        initVelocityB = b.getVelocity().cpy();
     }
 
     public boolean isOf(Collidable a, Collidable b)
     {
         return (a.equals(this.a) && b.equals(this.b))
                 || (a.equals(this.b) && b.equals((this.a)));
+    }
+
+    public Collision update(float worldTimeStep)
+    {
+        if (willCollide && timeToCollision != Float.MAX_VALUE && timeToCollision > 0f) {
+            timeToCollision -= worldTimeStep;
+        }
+
+        return this;
+    }
+
+    public boolean isEasyToUpdate()
+    {
+        return a.getVelocity().equals(initVelocityA)
+                && b.getVelocity().equals(initVelocityB);
+    }
+
+    public boolean shouldBeUpdated()
+    {
+        return timeToCollision > 0;
     }
 
     @Override
@@ -58,5 +87,17 @@ public abstract class Collision
     {
         Object[] toHash = {a, b};
         return Arrays.hashCode(toHash);
+    }
+
+    @Override
+    public int compareTo(Collision other)
+    {
+        return Float.compare(timeToCollision, other.timeToCollision);
+    }
+
+    public void resolve()
+    {
+        a.resolveCollision(b);
+        b.resolveCollision(a);
     }
 }
