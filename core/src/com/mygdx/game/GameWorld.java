@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.entities.Barrier;
 import com.mygdx.game.entities.CornerBumper;
 import com.mygdx.game.entities.Player;
 import com.mygdx.game.subsystems.*;
@@ -17,6 +18,12 @@ public class GameWorld implements InputProcessor
     public static final float DEFAULT_WORLD_HEIGHT = 100f;
 
     private static final float THRESHOLD_UPDATE_DELTA = 1000L / 60L;
+
+    public static Player player1;
+    public static Player player2;
+    public static Player player3;
+    public static Player player4;
+
 //    private static final float THRESHOLD_UPDATE_DELTA = 500L;
     private enum UpdateDelta
     {
@@ -104,24 +111,33 @@ public class GameWorld implements InputProcessor
     private void createCornerBumpers()
     {
         CornerBumper bottomLeft = new CornerBumper(new Vector2(3, 3), new Vector2(3, 13), new Vector2(13, 3), Color.WHITE);
+        new Barrier(new Vector2(0,0),13,3);
+        new Barrier(new Vector2(0,0),3,13);
         CornerBumper bottomRight = new CornerBumper(new Vector2(97, 3), new Vector2(87, 3), new Vector2(97, 13), Color.WHITE);
+        new Barrier(new Vector2(87,0),13,3);
+        new Barrier(new Vector2(97,0),3,13);
         CornerBumper topLeft = new CornerBumper(new Vector2(3, 97), new Vector2(3, 87), new Vector2(13, 97), Color.WHITE);
+        new Barrier(new Vector2(0,87),3,13);
+        new Barrier(new Vector2(0,97),13,3);
         CornerBumper topRight = new CornerBumper(new Vector2(97, 97), new Vector2(97, 87), new Vector2(87, 97), Color.WHITE);
+        new Barrier(new Vector2(87,97),13,3);
+        new Barrier(new Vector2(97,87),3,13);
+        new Barrier(new Vector2(13,0),74,3);
     }
 
     private void createPlayers()
     {
         // Bottom - p1
-        Player bottom = new Player(Player.POS_X_MID, Player.POS_Y_BOT, Player.VELOCITY_DELTA_HORIZONTAL, Input.Keys.Q, Input.Keys.E, Player.COLOR_P1);
+        player1 = new Player(Player.POS_X_MID, Player.POS_Y_BOT, Player.VELOCITY_DELTA_HORIZONTAL, Input.Keys.Q, Input.Keys.E, Player.COLOR_P1);
 
         // Right - p2
-        Player right = new Player(Player.POS_X_RIGHT, Player.POS_Y_MID, Player.VELOCITY_DELTA_VERTICAL, Input.Keys.N, Input.Keys.M, Player.COLOR_P2);
+        player2 = new Player(Player.POS_X_RIGHT, Player.POS_Y_MID, Player.VELOCITY_DELTA_VERTICAL, Input.Keys.N, Input.Keys.M, Player.COLOR_P2);
 
         // Top - p3
-        Player top = new Player(Player.POS_X_MID, Player.POS_Y_TOP, Player.VELOCITY_DELTA_HORIZONTAL, Input.Keys.Z, Input.Keys.C, Player.COLOR_P3);
+        player4 = new Player(Player.POS_X_MID, Player.POS_Y_TOP, Player.VELOCITY_DELTA_HORIZONTAL, Input.Keys.C, Input.Keys.Z, Player.COLOR_P3);
 
         // Left - p4
-        Player left = new Player(Player.POS_X_LEFT, Player.POS_Y_MID, Player.VELOCITY_DELTA_VERTICAL, Input.Keys.I, Input.Keys.P, Player.COLOR_P4);
+        player3 = new Player(Player.POS_X_LEFT, Player.POS_Y_MID, Player.VELOCITY_DELTA_VERTICAL, Input.Keys.I, Input.Keys.P, Player.COLOR_P4);
     }
 
     public Rectangle getWorldBounds()
@@ -179,6 +195,8 @@ public class GameWorld implements InputProcessor
             case Input.Keys.RIGHT_BRACKET:
                 changeUpdateDelta(true);
                 break;
+            case Input.Keys.SPACE:
+                GameWorld.player4.decrementScore();
             default:
                 handled = false;
         }

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
@@ -40,6 +41,7 @@ public class RenderSubsystem implements Subsystem
     private FrameBuffer buffer = new FrameBuffer(Pixmap.Format.RGB888, 500, 500, false);
     private Texture tex = new Texture(WIDTH_BUFFER, HEIGHT_BUFFER, Pixmap.Format.RGB888);
     private TextureRegion texRegion = new TextureRegion(tex);
+    BitmapFont font = new BitmapFont();
 
     public static RenderSubsystem get()
     {
@@ -125,6 +127,15 @@ public class RenderSubsystem implements Subsystem
         // Bottom Left - Player 4
         spriteBatch.draw(texRegion, -50f, -5f, 50f, 50f, 50f, 50f, 0.9f, 0.9f, -270f);
 
+        font.getData().setScale(.5f);
+
+        renderScore(Player.COLOR_P1, spriteBatch, GameWorld.player1.getScore() + "", HEIGHT_HALF_WORLD + 20);
+
+        renderScore(Player.COLOR_P2, spriteBatch, GameWorld.player2.getScore()+"", HEIGHT_HALF_WORLD + 40);
+
+        renderScore(Player.COLOR_P3, spriteBatch, GameWorld.player3.getScore()+"", HEIGHT_HALF_WORLD -20);
+
+        renderScore(Player.COLOR_P4, spriteBatch, GameWorld.player4.getScore()+"", HEIGHT_HALF_WORLD - 40);
         spriteBatch.end();
 
         shapeRenderer.begin();
@@ -142,12 +153,19 @@ public class RenderSubsystem implements Subsystem
         shapeRenderer.setColor(Player.COLOR_P4);
         shapeRenderer.rect(0.1f, 0f, SIZE_PLAYER_VIEW, SIZE_PLAYER_VIEW);
 
+
         if (GameWorld.debugMode)
         {
             debugRendering();
         }
 
         shapeRenderer.end();
+    }
+
+    private void renderScore(Color color, SpriteBatch spriteBatch, String str, float y)
+    {
+        font.setColor(color);
+        font.draw(spriteBatch, str, WIDTH_HALF_WORLD - 4f, y);
     }
 
     private void debugRendering()

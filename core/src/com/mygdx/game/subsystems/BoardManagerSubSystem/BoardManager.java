@@ -15,11 +15,8 @@ import com.mygdx.game.subsystems.Subsystem;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-<<<<<<< HEAD
 import java.util.Random;
-=======
 import java.util.Set;
->>>>>>> origin/NateBranch
 import java.util.concurrent.ThreadLocalRandom;
 
 public class BoardManager implements Subsystem
@@ -29,22 +26,16 @@ public class BoardManager implements Subsystem
     private final Random rand = ThreadLocalRandom.current();
 
     private static final ThreadLocalRandom random = ThreadLocalRandom.current();
-<<<<<<< HEAD
-    private final List<Ball> balls = new ArrayList<Ball>();
-    private final List<Pylon> pylons = new ArrayList<Pylon>();
-    private static final DefaultStateMachine<BoardManager, BallState> ballState = new DefaultStateMachine(BoardManager.get(), BallState.INITIAL_STATE);
     private float lastUpdate = 0;
     private long nextBallSpawn = Integer.MAX_VALUE;
     private int nextPosition = 0;
     private long nextShiftChange = 0;
-=======
 
     private final Set<Ball> balls = new HashSet<Ball>();
     private final Set<Pylon> pylons = new HashSet<Pylon>();
     private final Set<CornerBumper> cornerBumpers = new HashSet<CornerBumper>();
 
     private static final DefaultStateMachine<BoardManager, BallState> ballState = new DefaultStateMachine<BoardManager, BallState>(BoardManager.get(), BallState.INITIAL_STATE);
->>>>>>> origin/NateBranch
 
     public static BoardManager get()
     {
@@ -132,9 +123,9 @@ public class BoardManager implements Subsystem
         nextShiftChange = rand.nextInt(15000)+10000;
     }
 
-    private void spawnBall(BallSpawns ballSpawns, ColorType colorType)
+    private void spawnBall(BallSpawns ballSpawns)
     {
-        new Ball(ballSpawns.getPosition(), ballSpawns.getVelocity(), colorType, BALL_RADIUS);
+        new Ball(ballSpawns.getPosition(), ballSpawns.getVelocity(), ColorType.getRandomColorType(rand), BALL_RADIUS);
     }
 
     public void registerBall(Ball ball)
@@ -157,13 +148,12 @@ public class BoardManager implements Subsystem
         pylons.remove(pylon);
     }
 
-<<<<<<< HEAD
     public static Vector2 getRandomPosition(Random rand)
     {
         float x = rand.nextFloat() * (GameWorld.DEFAULT_WORLD_WIDTH - 10);
         float y = rand.nextFloat() * (GameWorld.DEFAULT_WORLD_HEIGHT - 10);
         return new Vector2(x, y);
-=======
+    }
     public void register(Entity entity)
     {
         if (entity instanceof Ball)
@@ -212,7 +202,6 @@ public class BoardManager implements Subsystem
     public Set<Ball> getBalls()
     {
         return balls;
->>>>>>> origin/NateBranch
     }
 
     public enum BallState implements State<BoardManager>
@@ -228,18 +217,7 @@ public class BoardManager implements Subsystem
                     @Override
                     public void update(BoardManager entity)
                     {
-                        System.out.println("ballStateeee");
-<<<<<<< HEAD
-                        instance.spawnPylon();
-                        instance.spawnPylon();
-=======
-                        //instance.spawnBall(BallSpawns.BOTTOM_LEFT, ColorType.BLUE);
-                        instance.spawnBall(BallSpawns.TOP_RIGHT, ColorType.RED);
 
-                        //instance.spawnPylon(60,50);
-                        //instance.spawnPylon(55,50);
-
->>>>>>> origin/NateBranch
                         ballState.changeState(BallState.NORMAL_STATE);
                     }
 
@@ -289,11 +267,7 @@ public class BoardManager implements Subsystem
 
     private void spawnPylon()
     {
-<<<<<<< HEAD
         Pylon.generateRandomPylon(rand);
-=======
-        new Pylon(new Vector2(x, y), ColorType.BLUE);
->>>>>>> origin/NateBranch
     }
 
     public enum BallSpawns

@@ -48,6 +48,8 @@ public class Player extends Entity
     private final Movable movable;
     private final PlayerRenderable renderable;
 
+    private Integer score = 50;
+
     public Player(float x, float y, Vector2 deltaVelocity, int negativeDirKeyCode, int positiveDirKeyCode, Color color)
     {
         this(new Vector2(x, y), deltaVelocity, positiveDirKeyCode, negativeDirKeyCode, color);
@@ -82,7 +84,12 @@ public class Player extends Entity
 
     public void decrementScore()
     {
+        score--;
+    }
 
+    public Integer getScore()
+    {
+       return score;
     }
 
     @Override
