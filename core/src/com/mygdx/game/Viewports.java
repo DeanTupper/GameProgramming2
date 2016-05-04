@@ -186,14 +186,14 @@ public class Viewports extends ApplicationAdapter
 //		);
 //
 //		float[] vertices = {
-//				-halfWidth, -halfHeight,	// quad bottom left
-//				0.0f, 1.0f, 				// texture bottom left
-//				halfWidth, -halfHeight, 	// quad bottom right
-//				1f, 1.0f, 	    			// texture bottom right
-//				-halfWidth, halfHeight,		// quad top left
-//				0.0f, 0.0f, 				// texture top left
-//				halfWidth, halfHeight,		// quad top right
-//				1.0f, 0.0f 					// texture top-right
+//				-halfWidth, -halfHeight,	// quad bottom player3
+//				0.0f, 1.0f, 				// texture bottom player3
+//				halfWidth, -halfHeight, 	// quad bottom player2
+//				1f, 1.0f, 	    			// texture bottom player2
+//				-halfWidth, halfHeight,		// quad player4 player3
+//				0.0f, 0.0f, 				// texture player4 player3
+//				halfWidth, halfHeight,		// quad player4 player2
+//				1.0f, 0.0f 					// texture player4-player2
 //
 //		};
 //
@@ -283,15 +283,15 @@ public class Viewports extends ApplicationAdapter
 
         spriteBatch.end();
 
-        // Bottom left
+        // Bottom player3
 //        Gdx.gl.glViewport(0, 0, viewportWidth, viewportHeight);
 //        renderCamera(cameras[0]);
 //
-//        // Top left
+//        // Top player3
 //        Gdx.gl.glViewport(0, viewportHeight, viewportWidth, viewportHeight);
 //        renderCamera(cameras[1]);
 //
-//        // Top right
+//        // Top player2
 //        Gdx.gl.glViewport(viewportWidth, viewportHeight, viewportWidth, viewportHeight);
 //        renderCamera(cameras[2]);
 //

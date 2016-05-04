@@ -285,7 +285,7 @@ public class MyGdxGame extends ApplicationAdapter {
             playerBody.applyLinearImpulse(-2.5f, 0, playerBody.getPosition().x, playerBody.getPosition().y, true);
         }
 
-        // apply right impulse, but only if max circleVelocity is not reached yet
+        // apply player2 impulse, but only if max circleVelocity is not reached yet
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             playerBody.applyLinearImpulse(2.5f, 0, playerBody.getPosition().x, playerBody.getPosition().y, true);
         }

@@ -58,11 +58,11 @@ public class MyGdxGame2 extends ApplicationAdapter {
 		Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		// Bottom left
+		// Bottom player3
 		Gdx.gl.glViewport(0, 0, 200, Gdx.graphics.getHeight());
 		renderCamera(cam);
 
-		// Top left
+		// Top player3
 		Gdx.gl.glViewport(0, 200, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		renderCamera(cam2);
 	}

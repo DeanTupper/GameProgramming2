@@ -30,7 +30,7 @@ public class MovableSubsystem implements Subsystem
     @Override
     public void update(long deltaInMillis)
     {
-        for(Movable current: movables)
+        for(Movable current: new HashSet<Movable>(movables))
         {
             current.move(deltaInMillis);
         }
