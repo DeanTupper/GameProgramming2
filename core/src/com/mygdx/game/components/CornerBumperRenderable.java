@@ -20,8 +20,8 @@ public class CornerBumperRenderable extends Renderable
     {
         renderer.setColor(color);
         renderer.triangle(triangle.origin.x, triangle.origin.y,
-                triangle.edge1.x, triangle.edge1.y,
-                triangle.edge2.x, triangle.edge2.y);
+                triangle.edgePointA.x, triangle.edgePointA.y,
+                triangle.edgePointB.x, triangle.edgePointB.y);
 
         renderer.setColor(Color.RED);
         renderer.point(triangle.origin.x, triangle.origin.y, 0f);

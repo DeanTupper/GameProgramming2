@@ -11,7 +11,8 @@ public class CircleTriangleCollision extends Collision
     private CircleCollidable circleCollidable;
     private TriangleCollidable triangleCollidable;
 
-    public Vector2 circleVelocity = new Vector2();
+    public Vector2 circleVelocity;
+    public Vector2 circleVelNor;
 
     public CircleTriangleCollision(CircleCollidable a, TriangleCollidable b, long deltaInMillis)
     {
@@ -35,7 +36,7 @@ public class CircleTriangleCollision extends Collision
 
         if (intersectionPoint != null && !triangle.isPointOutOfBounds(intersectionPoint))
         {
-            Vector2 circleVelNor = circleVelocity.cpy().nor();
+            circleVelNor = circleVelocity.cpy().nor();
 
             Vector2 closestPointOnCircle = CollisionUtils.getPointOnCircle(center, circleVelNor, circleCollidable.getRadius());
 
@@ -54,8 +55,15 @@ public class CircleTriangleCollision extends Collision
         }
     }
 
+    private Vector2 getIntersectionPointOnTriangle()
+    {
+        return null;
+    }
+
     public CircleTriangleCollision update()
     {
+        closestPointOnA = CollisionUtils.getPointOnCircle(circleCollidable.getPosition(), circleVelNor, circleCollidable.getRadius());
+
         timeToCollisionX = (closestPointOnB.x - closestPointOnA.x) / circleVelocity.x;
         timeToCollisionY = (closestPointOnB.y - closestPointOnA.y) / circleVelocity.y;
         System.err.println("CircleTriangleCollision::update - timeToCollision: " + timeToCollisionX + "," + timeToCollisionY);

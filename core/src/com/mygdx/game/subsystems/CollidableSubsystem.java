@@ -59,38 +59,15 @@ public class CollidableSubsystem implements Subsystem
 
         for (Collidable potentialCollidable : potentialCollidables)
         {
-
             Collision potentialCollision = ballCollidable.checkForCollision(potentialCollidable, deltaInMillis);
-            ballCollidable.updateCollisionIfSooner(potentialCollision);
-        }
-    }
-
-    private void checkForPotentialCollisions(Collidable collidable, long deltaInMillis)
-    {
-        Quad collidableQuad = quadSubsystem.getQuad(collidable.getPosition());
-
-        Set<Collidable> potentialCollidables = collidableQuad.getCollidableEntitiesInRegion();
-
-        for (Collidable potentialCollidable : potentialCollidables)
-        {
-            if (!potentialCollidable.equals(collidable))
-            {
-                Collision potentialCollision = potentialCollidable.checkForCollision(collidable, deltaInMillis);
-
-//                if (potentialCollidable.collidesWith(collidable, deltaInMillis))
-//                {
-//                    potentialCollidable.resolveCollision(collidable);
-//                    collidable.resolveCollision(potentialCollidable);
-//                }
-            }
+            ballCollidable.updateImminentCollisionIfSooner(potentialCollision);
         }
     }
 
     public void registerBall(BallCollidable ball){ballCollidables.add(ball);}
-    public void removeBall(Ball ball){ballCollidables.remove(ball);}
+    public void removeBall(Ball ball){ballCollidables.remove(ball.getCollidable());}
     public void register(Collidable collidable)
     {
-        System.err.println("CollidableSubsystem.register - registering " + collidable);
         collidables.add(collidable);
     }
 

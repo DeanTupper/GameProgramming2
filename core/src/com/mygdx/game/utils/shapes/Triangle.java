@@ -5,49 +5,73 @@ import com.badlogic.gdx.math.Vector2;
 public class Triangle
 {
     public final Vector2 origin;
-    public final Vector2 edge1;
-    public final Vector2 edge2;
+    public final Vector2 edgePointA;
+    public final Vector2 edgePointB;
     public final Line edge;
+
+    public final LineSegment edge1;
+    public final Vector2 edgeNormal;
 
     public final float minX, maxX;
     public final float minY, maxY;
 
-    public Triangle(Vector2 origin, Vector2 edge1, Vector2 edge2)
+    public Triangle(Vector2 origin, Vector2 edgePointA, Vector2 edgePointB)
     {
         this.origin = origin;
 
-        this.edge1 = edge1;
-        this.edge2 = edge2;
+        this.edgePointA = edgePointA;
+        this.edgePointB = edgePointB;
 
-        edge = new Line(edge1, edge2);
+        edge1 = new LineSegment(edgePointA, edgePointB);
+        Vector2 midPoint = edge1.midPoint();
 
-        if (edge1.x < edge2.x)
+        float dx = edgePointA.x - edgePointB.x;
+        float dy = edgePointA.y - edgePointB.y;
+
+        Vector2 normal1 = new Vector2(-dy, dx);
+        Vector2 normal2 = new Vector2(dy, -dx);
+
+        Vector2 point1 = midPoint.cpy().add(normal1);
+        Vector2 point2 = midPoint.cpy().add(normal2);
+
+        if (point1.dst2(origin) > point2.dst2(origin))
         {
-            minX = edge1.x;
-            maxX = edge2.x;
+            edgeNormal = normal1;
         }
         else
         {
-            minX = edge2.x;
-            maxX = edge1.x;
+            edgeNormal = normal2;
         }
 
-        if (edge1.y < edge2.y)
+        edge = new Line(edgePointA, edgePointB);
+
+        if (edgePointA.x < edgePointB.x)
         {
-            minY = edge1.y;
-            maxY = edge2.y;
+            minX = edgePointA.x;
+            maxX = edgePointB.x;
         }
         else
         {
-            minY = edge2.y;
-            maxY = edge1.y;
+            minX = edgePointB.x;
+            maxX = edgePointA.x;
+        }
+
+        if (edgePointA.y < edgePointB.y)
+        {
+            minY = edgePointA.y;
+            maxY = edgePointB.y;
+        }
+        else
+        {
+            minY = edgePointB.y;
+            maxY = edgePointA.y;
         }
     }
 
     @Override
     public String toString()
     {
-        return "triangle: [" + origin + "," + edge1 + "," + edge2 + "]";
+        return "triangle: [" + origin + "," + edgePointA + "," + edgePointB + "]";
     }
 
     public boolean isPointOutOfBounds(Vector2 intersectionPoint)

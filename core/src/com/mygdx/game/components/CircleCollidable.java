@@ -1,10 +1,8 @@
 package com.mygdx.game.components;
 
-import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.utils.collision.CircleCircleCollision;
 import com.mygdx.game.utils.collision.CircleTriangleCollision;
 import com.mygdx.game.utils.collision.Collision;
-import com.mygdx.game.utils.collision.CollisionUtils;
 
 public abstract class CircleCollidable extends Collidable
 {
@@ -24,24 +22,7 @@ public abstract class CircleCollidable extends Collidable
         {
             CircleCollidable otherCircle = ((CircleCollidable) other);
 
-            Movable otherMovable = otherCircle.movable;
-            Vector2 otherVelocity = otherMovable.velocity;
-
-            if (otherVelocity.x == 0f && otherVelocity.y == 0f)
-            {
-                float distSq = otherCircle.getPosition().dst2(getPosition());
-                float sumRadiiSq = (radius * radius) + (otherCircle.radius * otherCircle.radius);
-
-                distSq -= sumRadiiSq;
-
-                if (movable.getVelocity().len2() < distSq)
-                {
-                    soonestCollision.willCollide = true;
-                    return soonestCollision;
-                }
-
-                Vector2 velocityNorm = movable.getVelocity().cpy().nor();
-            }
+            return checkCircleCircleCollision(otherCircle, deltaInMillis);
         }
         else if (other instanceof TriangleCollidable)
         {
@@ -50,28 +31,53 @@ public abstract class CircleCollidable extends Collidable
             return checkCircleTriangleCollision(otherTriangle, deltaInMillis);
         }
 
-        return soonestCollision;
+        return imminentCollision;
     }
 
     private CircleCircleCollision checkCircleCircleCollision(CircleCollidable other, long deltaInMillis)
     {
-        CircleCircleCollision circleCircleCollision = null;
+        CircleCircleCollision collision;
 
-        if (soonestCollision.isOf(this, other))
+        if (imminentCollision != null && imminentCollision.isOf(this, other))
         {
-            circleCircleCollision = ((CircleCircleCollision) soonestCollision);
+            collision = ((CircleCircleCollision) imminentCollision);
+
+            if (collision.willCollide)
+            {
+                if (simpleToUpdate(collision))
+                {
+                    return collision.update(deltaInMillis);
+                }
+            }
+            else
+            {
+                System.err.println("CircleCollidable::checkCircleCircleCollision - not bothering to update collision");
+                return collision;
+            }
         }
 
-        return circleCircleCollision;
+        return calcNewCircleCircleCollision(other, deltaInMillis);
+    }
+
+    private boolean shouldCheckForUpdate(CircleCircleCollision collision)
+    {
+        return collision.timeToCollision >= 0f;
+    }
+
+    private CircleCircleCollision calcNewCircleCircleCollision(CircleCollidable other, long deltaInMillis)
+    {
+        CircleCircleCollision collision = new CircleCircleCollision(this, other, deltaInMillis);
+        collision.calculateTimeToIntersection();
+        return collision;
     }
 
     private CircleTriangleCollision checkCircleTriangleCollision(TriangleCollidable triangle, long deltaInMillis)
     {
         CircleTriangleCollision collision;
 
-        if (soonestCollision != null && soonestCollisionWithSameTriangle(triangle))
+        if (imminentCollision != null && soonestCollisionWithSameTriangle(triangle))
         {
-            collision = ((CircleTriangleCollision) soonestCollision);
+            collision = ((CircleTriangleCollision) imminentCollision);
 
             if (shouldCheckForUpdate())
             {
@@ -91,13 +97,19 @@ public abstract class CircleCollidable extends Collidable
 
     private boolean shouldCheckForUpdate()
     {
-        return soonestCollision.timeToCollisionX > 0 && soonestCollision.timeToCollisionY > 0;
+        return imminentCollision.timeToCollisionX > 0 && imminentCollision.timeToCollisionY > 0;
     }
 
     private boolean soonestCollisionWithSameTriangle(TriangleCollidable triangle)
     {
-        return soonestCollision.isOf(triangle, this);
+        return imminentCollision.isOf(triangle, this);
     }
+
+    private boolean simpleToUpdate(CircleCircleCollision collision)
+    {
+        return collision.a.getVelocity().equals(collision.velocityA) && collision.b.getVelocity().equals(collision.velocityB);
+    }
+
 
     private boolean simpleToUpdate(CircleTriangleCollision collision)
     {
@@ -111,22 +123,14 @@ public abstract class CircleCollidable extends Collidable
         return collision;
     }
 
-
-    @Override
-    public boolean collidesWith(Collidable other, long deltaInMillis)
-    {
-        if (other instanceof CircleCollidable)
-        {
-            CircleCollidable otherCircle = (CircleCollidable) other;
-
-            return CollisionUtils.circleIntersectsCircle(movable.getPosition(), radius, otherCircle.getPosition(), otherCircle.radius);
-        }
-
-        throw new AssertionError("CircleCollidable::collidesWith - Unfinished");
-    }
-
     public float getRadius()
     {
         return radius;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "CircleCollidable " + super.toString();
     }
 }

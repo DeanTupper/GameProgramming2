@@ -37,7 +37,6 @@ public class PylonSubSystem implements Subsystem
             {
                 if(CollisionUtils.circleIntersectsCircle(curBall.getPosition(),curBall.getRadius(),curPylon.getPosition(),curPylon.getRadius()))
                 {
-                    System.out.println("GOING TO INFLUENCE");
                     curPylon.getInfluencer().influence(curBall);
                 }
             }

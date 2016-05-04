@@ -1,6 +1,5 @@
 package com.mygdx.game.components;
 
-import com.mygdx.game.utils.collision.CircleTriangleCollision;
 import com.mygdx.game.utils.collision.Collision;
 import com.mygdx.game.utils.shapes.Triangle;
 
@@ -21,12 +20,6 @@ public class TriangleCollidable extends Collidable
     }
 
     @Override
-    public boolean collidesWith(Collidable other, long deltaInMillis)
-    {
-        return false;
-    }
-
-    @Override
     public void resolveCollision(Collidable other)
     {
 
@@ -35,14 +28,21 @@ public class TriangleCollidable extends Collidable
     @Override
     public Collision checkForCollision(Collidable collidable, long deltaInMillis)
     {
-        Collision collision = null;
+//        Collision collision = null;
+//
+//        if (collidable instanceof CircleCollidable)
+//        {
+//            CircleCollidable circleCollidable = ((CircleCollidable) collidable);
+//            collision = new CircleTriangleCollision(circleCollidable, this, deltaInMillis);
+//        }
+//
+//        return collision;
+        return null;
+    }
 
-        if (collidable instanceof CircleCollidable)
-        {
-            CircleCollidable circleCollidable = ((CircleCollidable) collidable);
-            collision = new CircleTriangleCollision(circleCollidable, this, deltaInMillis);
-        }
-
-        return collision;
+    @Override
+    public String toString()
+    {
+        return "TriangleCollidable " + super.toString();
     }
 }

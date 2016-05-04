@@ -16,8 +16,6 @@ public class GameWorld implements InputProcessor
     public static final float DEFAULT_WORLD_WIDTH = 100f;
     public static final float DEFAULT_WORLD_HEIGHT = 100f;
 
-    private static final float THRESHOLD_UPDATE_DELTA = 1000L / 60L;
-//    private static final float THRESHOLD_UPDATE_DELTA = 500L;
     private enum UpdateDelta
     {
         FAST(1000L / 60L),
@@ -58,7 +56,7 @@ public class GameWorld implements InputProcessor
         }
     }
 
-    public static boolean debugMode = false;
+    public static boolean debugMode = true;
     private UpdateDelta updateDelta = UpdateDelta.MEDIUM;
     public static long updateThreshold = UpdateDelta.MEDIUM.threshold;
 
@@ -149,13 +147,14 @@ public class GameWorld implements InputProcessor
 
     private void updateWorld(long deltaInMillis)
     {
-        boardManager.update(deltaInMillis);
-        movableSubsystem.update(deltaInMillis);
         quadSubsystem.update(deltaInMillis);
         collidableSubsystem.update(deltaInMillis);
+        movableSubsystem.update(deltaInMillis);
+
+        boardManager.update(deltaInMillis);
+        pylonSubsystem.update(deltaInMillis);
 
         renderSubsystem.update(deltaInMillis);
-        pylonSubsystem.update(deltaInMillis);
     }
 
     private void render()

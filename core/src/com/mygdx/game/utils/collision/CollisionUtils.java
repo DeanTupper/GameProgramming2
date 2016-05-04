@@ -2,6 +2,7 @@ package com.mygdx.game.utils.collision;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.utils.shapes.Line;
 import com.mygdx.game.utils.shapes.Rectangle;
 
 public final class CollisionUtils
@@ -51,5 +52,31 @@ public final class CollisionUtils
     public static Vector2 getPointOnCircle(Vector2 center, Vector2 direction, float radius)
     {
         return new Vector2(center.x + direction.x * radius, center.y + direction.y * radius);
+    }
+
+    public static Vector2 closestPointOnLineTo(Vector2 point, Vector2 lineSegA, Vector2 lineSegB)
+    {
+        float A1 = lineSegB.y - lineSegA.y;
+        float B1 = lineSegA.x - lineSegB.x;
+
+        float C1 = (A1 * lineSegA.x) + (B1 * lineSegA.y);
+        float C2 = -B1 * point.x + A1 * point.y;
+
+        float determinant = (A1 * A1) - (-B1 * B1);
+        float cx;
+        float cy;
+
+        if (determinant != 0f)
+        {
+            cx = (A1 * C1 - B1 * C2) / determinant;
+            cy = (A1 * C2 - (-B1 * C1)) / determinant;
+        }
+        else
+        {
+            cx = point.x;
+            cy = point.y;
+        }
+
+        return new Vector2(cx, cy);
     }
 }

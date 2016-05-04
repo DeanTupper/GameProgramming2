@@ -1,6 +1,7 @@
 package com.mygdx.game.components;
 
 import com.mygdx.game.entities.Player;
+import com.mygdx.game.utils.collision.Collision;
 
 public class GoalCollidable extends Collidable
 {
@@ -13,15 +14,15 @@ public class GoalCollidable extends Collidable
     }
 
     @Override
-    public boolean collidesWith(Collidable other)
-    {
-        return false;
-    }
-
-    @Override
     public void resolveCollision(Collidable other)
     {
         player.decrementScore();
 
+    }
+
+    @Override
+    public Collision checkForCollision(Collidable collidable, long deltaInMillis)
+    {
+        return null;
     }
 }

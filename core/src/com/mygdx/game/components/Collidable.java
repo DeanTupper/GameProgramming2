@@ -6,7 +6,7 @@ import com.mygdx.game.utils.collision.Collision;
 public abstract class Collidable implements Component
 {
     protected final Movable movable;
-    protected Collision soonestCollision = null;
+    protected Collision imminentCollision = null;
 
     public Collidable(Movable movable)
     {
@@ -23,17 +23,21 @@ public abstract class Collidable implements Component
         return movable.velocity;
     }
 
-    public abstract boolean collidesWith(Collidable other, long deltaInMillis);
-
     public abstract void resolveCollision(Collidable other);
 
     public abstract Collision checkForCollision(Collidable collidable, long deltaInMillis);
 
-    public void updateCollisionIfSooner(Collision other)
+    public void updateImminentCollisionIfSooner(Collision other)
     {
-        if (soonestCollision == null || !soonestCollision.willCollide)
+        if (imminentCollision == null || !imminentCollision.willCollide || other.timeToCollision < imminentCollision.timeToCollision)
         {
-            soonestCollision = other;
+            imminentCollision = other;
         }
+    }
+
+    @Override
+    public String toString()
+    {
+        return "at " + movable.getPosition() + " with velocity " + movable.getVelocity();
     }
 }

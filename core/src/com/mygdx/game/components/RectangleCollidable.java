@@ -10,12 +10,6 @@ public class RectangleCollidable extends Collidable
     }
 
     @Override
-    public boolean collidesWith(Collidable other, long deltaInMillis)
-    {
-        return false;
-    }
-
-    @Override
     public void resolveCollision(Collidable other)
     {
 
@@ -25,5 +19,11 @@ public class RectangleCollidable extends Collidable
     public Collision checkForCollision(Collidable collidable, long deltaInMillis)
     {
         return null;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "RectangleCollidable " + super.toString();
     }
 }
