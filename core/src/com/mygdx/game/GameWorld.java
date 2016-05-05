@@ -122,7 +122,7 @@ public class GameWorld implements InputProcessor
         CornerBumper topRight = new CornerBumper(new Vector2(97, 97), new Vector2(97, 87), new Vector2(87, 97), Color.WHITE);
         new Barrier(new Vector2(87,97),13,3);
         new Barrier(new Vector2(97,87),3,13);
-        new Barrier(new Vector2(13,0),74,3);
+//        new Barrier(new Vector2(13,0),74,3);
     }
 
     private void createPlayers()
@@ -134,10 +134,10 @@ public class GameWorld implements InputProcessor
         player2 = new Player(Player.POS_X_RIGHT, Player.POS_Y_MID, Player.VELOCITY_DELTA_VERTICAL, Input.Keys.N, Input.Keys.M, Player.COLOR_P2);
 
         // Top - p3
-        player4 = new Player(Player.POS_X_MID, Player.POS_Y_TOP, Player.VELOCITY_DELTA_HORIZONTAL, Input.Keys.C, Input.Keys.Z, Player.COLOR_P3);
+        player3 = new Player(Player.POS_X_MID, Player.POS_Y_TOP, Player.VELOCITY_DELTA_HORIZONTAL, Input.Keys.C, Input.Keys.Z, Player.COLOR_P3);
 
         // Left - p4
-        player3 = new Player(Player.POS_X_LEFT, Player.POS_Y_MID, Player.VELOCITY_DELTA_VERTICAL, Input.Keys.I, Input.Keys.P, Player.COLOR_P4);
+        player4 = new Player(Player.POS_X_LEFT, Player.POS_Y_MID, Player.VELOCITY_DELTA_VERTICAL, Input.Keys.I, Input.Keys.P, Player.COLOR_P4);
     }
 
     public Rectangle getWorldBounds()
@@ -172,6 +172,22 @@ public class GameWorld implements InputProcessor
 
         renderSubsystem.update(deltaInMillis);
         pylonSubsystem.update(deltaInMillis);
+        if(player1.getScore() == 0)
+        {
+            player1.createBarrier();
+        }
+        if(player2.getScore() == 0)
+        {
+            player2.createBarrier();
+        }
+        if(player3.getScore() == 0)
+        {
+            player3.createBarrier();
+        }
+        if(player4.getScore() == 0)
+        {
+            player4.createBarrier();
+        }
     }
 
     private void render()
@@ -196,7 +212,7 @@ public class GameWorld implements InputProcessor
                 changeUpdateDelta(true);
                 break;
             case Input.Keys.SPACE:
-                GameWorld.player4.decrementScore();
+                GameWorld.pla]yer3.createBarrier();
             default:
                 handled = false;
         }

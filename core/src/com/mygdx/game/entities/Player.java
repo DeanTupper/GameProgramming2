@@ -47,8 +47,9 @@ public class Player extends Entity
 
     private final Movable movable;
     private final PlayerRenderable renderable;
+    private final Rectangle movementBounds;
 
-    private Integer score = 50;
+    private Integer score = 10;
 
     public Player(float x, float y, Vector2 deltaVelocity, int negativeDirKeyCode, int positiveDirKeyCode, Color color)
     {
@@ -57,21 +58,20 @@ public class Player extends Entity
 
     public Player(Vector2 position, Vector2 deltaVelocity, int negativeDirKeyCode, int positiveDirKeyCode, Color color)
     {
-        Rectangle movementBounds;
-
         float width = DIMEN_MINOR;
         float height = DIMEN_MINOR;
 
         if (deltaVelocity.x != 0f)
         {
             width = DIMEN_MAJOR;
-
+            System.out.println("POS_X_HORIZONTAL_MAX = " + POS_X_HORIZONTAL_MAX);
             movementBounds = new Rectangle(POS_X_HORIZONTAL_MIN, position.y, POS_X_HORIZONTAL_MAX, 0f);
         }
         else
         {
             height = DIMEN_MAJOR;
 
+            System.out.println("POS_Y_VERITCAL_MAX = " + POS_Y_VERITCAL_MAX);
             movementBounds = new Rectangle(position.x, POS_Y_VERITCAL_MIN, 0f, POS_Y_VERITCAL_MAX);
         }
 
@@ -86,6 +86,27 @@ public class Player extends Entity
     {
         score--;
     }
+
+    public void createBarrier()
+    {
+        System.out.println("barrier");
+        System.out.println("movementBounds.x = " + movementBounds.x);
+        System.out.println("movementBounds.y = " + movementBounds.y);
+        System.out.println("movementBounds.width = " + movementBounds.width);
+        System.out.println("movementBounds = " + movementBounds);
+        float tempWidth = movementBounds.width;
+        float tempHeight = movementBounds.height;
+        if(tempWidth == 0){
+            tempWidth =3;
+            tempHeight = 74;
+        }
+        if(tempHeight == 0){
+            tempHeight = 3;
+            tempWidth = 74;
+        }
+        new Barrier(new Vector2(movementBounds.x,movementBounds.y),tempWidth,tempHeight);
+    }
+
 
     public Integer getScore()
     {
