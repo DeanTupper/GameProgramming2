@@ -19,22 +19,26 @@ public class BallMovable extends Movable
     public void move(long deltaInMillis)
     {
         super.move(deltaInMillis);
-        if(position.x < -5){
+        if (position.x < -5)
+        {
             GameWorld.player4.decrementScore();
             ball.destroy();
-
         }
-        else if(position.x > 105){
+        else if (position.x > 105)
+        {
             GameWorld.player2.decrementScore();
             ball.destroy();
         }
-        else if(position.y < -5){
-            GameWorld.player1.decrementScore();
-            ball.destroy();
-        }
-        else if(position.y > 105){
+        else if (position.y > 105)
+        {
             GameWorld.player3.decrementScore();
             ball.destroy();
         }
+        else if (position.y < -5)
+        {
+            GameWorld.player1.decrementScore();
+            ball.destroy();
+        }
+
     }
 }

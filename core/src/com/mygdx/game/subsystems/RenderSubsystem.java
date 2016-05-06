@@ -1,14 +1,11 @@
 package com.mygdx.game.subsystems;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.game.GameWorld;
@@ -56,6 +53,12 @@ public class RenderSubsystem implements Subsystem
     {
         shapeRenderer.setAutoShapeType(true);
         initCamera();
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("prstartk.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 7;
+        parameter.color = Color.WHITE;
+
+        font = generator.generateFont(parameter);
     }
 
     public void initCamera()
@@ -127,15 +130,7 @@ public class RenderSubsystem implements Subsystem
         // Bottom Left - Player 4
         spriteBatch.draw(texRegion, -50f, -5f, 50f, 50f, 50f, 50f, 0.9f, 0.9f, -270f);
 
-        font.getData().setScale(.5f);
-
-        renderScore(Player.COLOR_P1, spriteBatch, GameWorld.player1.getScore() + "", HEIGHT_HALF_WORLD + 20);
-
-        renderScore(Player.COLOR_P2, spriteBatch, GameWorld.player2.getScore()+"", HEIGHT_HALF_WORLD + 40);
-
-        renderScore(Player.COLOR_P3, spriteBatch, GameWorld.player3.getScore()+"", HEIGHT_HALF_WORLD -20);
-
-        renderScore(Player.COLOR_P4, spriteBatch, GameWorld.player4.getScore()+"", HEIGHT_HALF_WORLD - 40);
+        renderScores();
         spriteBatch.end();
 
         shapeRenderer.begin();
@@ -162,10 +157,21 @@ public class RenderSubsystem implements Subsystem
         shapeRenderer.end();
     }
 
-    private void renderScore(Color color, SpriteBatch spriteBatch, String str, float y)
+    private void renderScores()
+    {
+        renderScore(Player.COLOR_P1, spriteBatch, GameWorld.player1.getScore() + "", 0);
+
+        renderScore(Player.COLOR_P2, spriteBatch, GameWorld.player2.getScore() + "", WIDTH_HALF_WORLD + 5f);
+
+        renderScore(Player.COLOR_P3, spriteBatch, GameWorld.player3.getScore() + "", WIDTH_HALF_WORLD + 30f);
+
+        renderScore(Player.COLOR_P4, spriteBatch, GameWorld.player4.getScore() + "", 25);
+    }
+
+    private void renderScore(Color color, SpriteBatch spriteBatch, String str, float x)
     {
         font.setColor(color);
-        font.draw(spriteBatch, str, WIDTH_HALF_WORLD - 4f, y);
+        font.draw(spriteBatch, str, x, HEIGHT_HALF_WORLD + 3f);
     }
 
     private void debugRendering()

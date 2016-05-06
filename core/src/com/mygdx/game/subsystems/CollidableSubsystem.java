@@ -59,7 +59,6 @@ public class CollidableSubsystem implements Subsystem
 
         for (Collidable potentialCollidable : potentialCollidables)
         {
-
             Collision potentialCollision = ballCollidable.checkForCollision(potentialCollidable, deltaInMillis);
             ballCollidable.updateCollisionIfSooner(potentialCollision);
         }

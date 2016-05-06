@@ -60,7 +60,7 @@ public class BoardManager implements Subsystem
 
     private void ballUpdate(long deltaInMillis)
     {
-        if (balls.size() < 10)
+        if (balls.size() < 1)
         {
             if (nextBallSpawn == Integer.MAX_VALUE)
             {
@@ -71,7 +71,6 @@ public class BoardManager implements Subsystem
                 nextBallSpawn = nextBallSpawn - deltaInMillis;
                 if (balls.size() == 0 || nextBallSpawn <= 0)
                 {
-                    System.out.println("spawned a ball " + balls.size());
                     spawnBall(BallSpawns.values()[nextPosition++ % 4]);
                     nextBallSpawn = Integer.MAX_VALUE;
                 }
@@ -79,7 +78,6 @@ public class BoardManager implements Subsystem
         }
         else
         {
-            System.out.println("10 reached");
         }
     }
 
@@ -204,6 +202,11 @@ public class BoardManager implements Subsystem
         return balls;
     }
 
+    public void spawnBall()
+    {
+        spawnBall(BallSpawns.values()[nextPosition++ % 4]);
+    }
+
     public enum BallState implements State<BoardManager>
     {
         INITIAL_STATE()
@@ -247,7 +250,7 @@ public class BoardManager implements Subsystem
                         if (instance.balls.size() < 10)
                         {
 
-                            //instance.spawnBall(BallSpawns.values()[random.nextInt(BallSpawns.values().length)]);
+                            instance.spawnBall(BallSpawns.values()[random.nextInt(BallSpawns.values().length)]);
                         }
                     }
 
@@ -265,7 +268,7 @@ public class BoardManager implements Subsystem
                 }
     }
 
-    private void spawnPylon()
+    public void spawnPylon()
     {
         Pylon.generateRandomPylon(rand);
     }

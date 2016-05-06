@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.entities.AiPlayer;
 import com.mygdx.game.entities.Barrier;
 import com.mygdx.game.entities.CornerBumper;
 import com.mygdx.game.entities.Player;
@@ -19,12 +20,12 @@ public class GameWorld implements InputProcessor
 
     private static final float THRESHOLD_UPDATE_DELTA = 1000L / 60L;
 
-    public static Player player1;
-    public static Player player2;
-    public static Player player3;
-    public static Player player4;
+    public static AiPlayer player1;
+    public static AiPlayer player2;
+    public static AiPlayer player3;
+    public static AiPlayer player4;
 
-//    private static final float THRESHOLD_UPDATE_DELTA = 500L;
+    //    private static final float THRESHOLD_UPDATE_DELTA = 500L;
     private enum UpdateDelta
     {
         FAST(1000L / 60L),
@@ -111,33 +112,37 @@ public class GameWorld implements InputProcessor
     private void createCornerBumpers()
     {
         CornerBumper bottomLeft = new CornerBumper(new Vector2(3, 3), new Vector2(3, 13), new Vector2(13, 3), Color.WHITE);
-        new Barrier(new Vector2(0,0),13,3);
-        new Barrier(new Vector2(0,0),3,13);
+        new Barrier(new Vector2(0, 0), 13, 3);
+        new Barrier(new Vector2(0, 0), 3, 13);
         CornerBumper bottomRight = new CornerBumper(new Vector2(97, 3), new Vector2(87, 3), new Vector2(97, 13), Color.WHITE);
-        new Barrier(new Vector2(87,0),13,3);
-        new Barrier(new Vector2(97,0),3,13);
+        new Barrier(new Vector2(87, 0), 13, 3);
+        new Barrier(new Vector2(97, 0), 3, 13);
         CornerBumper topLeft = new CornerBumper(new Vector2(3, 97), new Vector2(3, 87), new Vector2(13, 97), Color.WHITE);
-        new Barrier(new Vector2(0,87),3,13);
-        new Barrier(new Vector2(0,97),13,3);
+        new Barrier(new Vector2(0, 87), 3, 13);
+        new Barrier(new Vector2(0, 97), 13, 3);
         CornerBumper topRight = new CornerBumper(new Vector2(97, 97), new Vector2(97, 87), new Vector2(87, 97), Color.WHITE);
-        new Barrier(new Vector2(87,97),13,3);
-        new Barrier(new Vector2(97,87),3,13);
+        new Barrier(new Vector2(87, 97), 13, 3);
+        new Barrier(new Vector2(97, 87), 3, 13);
 //        new Barrier(new Vector2(13,0),74,3);
     }
 
     private void createPlayers()
     {
         // Bottom - p1
-        player1 = new Player(Player.POS_X_MID, Player.POS_Y_BOT, Player.VELOCITY_DELTA_HORIZONTAL, Input.Keys.Q, Input.Keys.E, Player.COLOR_P1);
+//        player1 = new Player(Player.POS_X_MID, Player.POS_Y_BOT, Player.VELOCITY_DELTA_HORIZONTAL, Input.Keys.Q, Input.Keys.E, Player.COLOR_P1);
+        player1 = new AiPlayer(Player.POS_X_MID, Player.POS_Y_BOT, Player.VELOCITY_DELTA_HORIZONTAL,Player.COLOR_P1,1);
 
         // Right - p2
-        player2 = new Player(Player.POS_X_RIGHT, Player.POS_Y_MID, Player.VELOCITY_DELTA_VERTICAL, Input.Keys.N, Input.Keys.M, Player.COLOR_P2);
+//        player2 = new Player(Player.POS_X_RIGHT, Player.POS_Y_MID, Player.VELOCITY_DELTA_VERTICAL, Input.Keys.N, Input.Keys.M, Player.COLOR_P2);
+        player2 = new AiPlayer(Player.POS_X_RIGHT, Player.POS_Y_MID, Player.VELOCITY_DELTA_VERTICAL, Player.COLOR_P2,2);
 
         // Top - p3
-        player3 = new Player(Player.POS_X_MID, Player.POS_Y_TOP, Player.VELOCITY_DELTA_HORIZONTAL, Input.Keys.C, Input.Keys.Z, Player.COLOR_P3);
+//        player3 = new Player(Player.POS_X_MID, Player.POS_Y_TOP, Player.VELOCITY_DELTA_HORIZONTAL, Input.Keys.C, Input.Keys.Z, Player.COLOR_P3);
+        player3 = new AiPlayer(Player.POS_X_MID, Player.POS_Y_TOP, Player.VELOCITY_DELTA_HORIZONTAL, Player.COLOR_P3,3);
 
         // Left - p4
-        player4 = new Player(Player.POS_X_LEFT, Player.POS_Y_MID, Player.VELOCITY_DELTA_VERTICAL, Input.Keys.I, Input.Keys.P, Player.COLOR_P4);
+//        player4 = new Player(Player.POS_X_LEFT, Player.POS_Y_MID, Player.VELOCITY_DELTA_VERTICAL, Input.Keys.I, Input.Keys.P, Player.COLOR_P4);
+        player4 = new AiPlayer(Player.POS_X_LEFT, Player.POS_Y_MID, Player.VELOCITY_DELTA_VERTICAL, Player.COLOR_P4,4);
     }
 
     public Rectangle getWorldBounds()
@@ -172,22 +177,32 @@ public class GameWorld implements InputProcessor
 
         renderSubsystem.update(deltaInMillis);
         pylonSubsystem.update(deltaInMillis);
-        if(player1.getScore() == 0)
+        AiSubsystem.get().update(deltaInMillis);
+        if (player1.getScore() == 0)
         {
             player1.createBarrier();
         }
-        if(player2.getScore() == 0)
+        if (player2.getScore() == 0)
         {
             player2.createBarrier();
         }
-        if(player3.getScore() == 0)
+        if (player3.getScore() == 0)
         {
             player3.createBarrier();
         }
-        if(player4.getScore() == 0)
+        if (player4.getScore() == 0)
         {
             player4.createBarrier();
         }
+        if(Gdx.input.isKeyPressed(Input.Keys.SPACE))
+        {
+            boardManager.spawnBall();
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT))
+        {
+            boardManager.spawnPylon();
+        }
+
     }
 
     private void render()
@@ -211,8 +226,6 @@ public class GameWorld implements InputProcessor
             case Input.Keys.RIGHT_BRACKET:
                 changeUpdateDelta(true);
                 break;
-            case Input.Keys.SPACE:
-                GameWorld.pla]yer3.createBarrier();
             default:
                 handled = false;
         }

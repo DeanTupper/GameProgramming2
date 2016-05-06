@@ -2,11 +2,8 @@ package com.mygdx.game.entities;
 
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.components.*;
+import com.mygdx.game.subsystems.*;
 import com.mygdx.game.subsystems.BoardManagerSubSystem.BoardManager;
-import com.mygdx.game.subsystems.CollidableSubsystem;
-import com.mygdx.game.subsystems.MovableSubsystem;
-import com.mygdx.game.subsystems.PylonSubSystem;
-import com.mygdx.game.subsystems.RenderSubsystem;
 
 public class Ball extends Entity
 {
@@ -38,6 +35,7 @@ public class Ball extends Entity
         MovableSubsystem.get().remove(movable);
         BoardManager.get().removeBall(this);
         RenderSubsystem.get().remove(renderable);
+        CollidableSubsystem.get().remove(collidable);
     }
 
     public Vector2 getPosition()
