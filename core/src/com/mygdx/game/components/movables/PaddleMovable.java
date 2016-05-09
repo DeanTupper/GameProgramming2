@@ -1,4 +1,4 @@
-package com.mygdx.game.components;
+package com.mygdx.game.components.movables;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
@@ -25,7 +25,7 @@ public class PaddleMovable extends Movable
     }
 
     @Override
-    public void move(long deltaInMillis)
+    public void move(float worldTimeStep)
     {
         Vector2 dVel = new Vector2();
 
@@ -38,6 +38,9 @@ public class PaddleMovable extends Movable
         {
             dVel.sub(deltaVelocity);
         }
+
+        dVel.x *= worldTimeStep;
+        dVel.y *= worldTimeStep;
 
         Vector2 pos = getPosition().add(dVel);
 

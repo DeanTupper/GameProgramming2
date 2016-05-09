@@ -15,7 +15,7 @@ public class Barrier extends Entity
     public Barrier(Vector2 position, float width, float height)
     {
         this.position = position;
-            this.renderable = new BarrierRenderable(position,width,height, Color.WHITE);
+        this.renderable = new BarrierRenderable(position,width,height, Color.WHITE);
 
         RenderSubsystem.get().register(renderable);
     }

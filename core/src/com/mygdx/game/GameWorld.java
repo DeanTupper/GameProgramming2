@@ -5,69 +5,31 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.entities.AiPlayer;
 import com.mygdx.game.entities.Barrier;
 import com.mygdx.game.entities.CornerBumper;
 import com.mygdx.game.entities.Player;
 import com.mygdx.game.subsystems.*;
 import com.mygdx.game.subsystems.BoardManagerSubSystem.BoardManager;
+import com.mygdx.game.utils.UpdateDelta;
 import com.mygdx.game.utils.shapes.Rectangle;
 
 public class GameWorld implements InputProcessor
 {
     public static final float DEFAULT_WORLD_WIDTH = 100f;
     public static final float DEFAULT_WORLD_HEIGHT = 100f;
-
     private static final float THRESHOLD_UPDATE_DELTA = 1000L / 60L;
 
-    public static Player player1;
-    public static Player player2;
-    public static Player player3;
-    public static Player player4;
+    public static AiPlayer player1;
+    public static AiPlayer player2;
+    public static AiPlayer player3;
+    public static AiPlayer player4;
 
-//    private static final float THRESHOLD_UPDATE_DELTA = 500L;
-    private enum UpdateDelta
-    {
-        FAST(1000L / 60L),
-        MEDIUM(250L),
-        SLOW(500L),
-        SLOWER_YET(750L),
-        SLOWEST(1000L);
 
-        private final long threshold;
-
-        UpdateDelta(long threshold)
-        {
-            this.threshold = threshold;
-        }
-
-        public UpdateDelta next()
-        {
-            int ordinalNext = ordinal() + 1;
-
-            if (ordinalNext == UpdateDelta.values().length)
-            {
-                return this;
-            }
-
-            return UpdateDelta.values()[ordinalNext];
-        }
-
-        public UpdateDelta prev()
-        {
-            int ordinalPrev = ordinal() - 1;
-
-            if (ordinalPrev < 0)
-            {
-                return this;
-            }
-
-            return UpdateDelta.values()[ordinalPrev];
-        }
-    }
-
-    public static boolean debugMode = false;
-    private UpdateDelta updateDelta = UpdateDelta.MEDIUM;
-    public static long updateThreshold = UpdateDelta.MEDIUM.threshold;
+    public static final UpdateDelta INIT_UPDATE_DELTA = UpdateDelta.FAST;
+    public static boolean debugMode = true;
+    private UpdateDelta updateDelta = INIT_UPDATE_DELTA;
+    public static long updateThreshold = INIT_UPDATE_DELTA.threshold;
 
     private static final boolean PAUSING_CHANGES_DEBUG_MODE = !debugMode;
 
@@ -77,6 +39,7 @@ public class GameWorld implements InputProcessor
 
     private long timeOfLastUpdate;
     private long elapsedTime;
+    private long totalElapsedTime;
 
     private BoardManager boardManager;
     private MovableSubsystem movableSubsystem;
@@ -90,16 +53,17 @@ public class GameWorld implements InputProcessor
         worldBounds = new Rectangle(0f, 0f, DEFAULT_WORLD_WIDTH, DEFAULT_WORLD_HEIGHT);
         buildWorld();
 
-        timeOfLastUpdate = System.currentTimeMillis();
-
         boardManager = BoardManager.get();
         movableSubsystem = MovableSubsystem.get();
         quadSubsystem = QuadSubsystem.get();
         collidableSubsystem = CollidableSubsystem.get();
+        collidableSubsystem.setGameWorld(this);
         renderSubsystem = RenderSubsystem.get();
         pylonSubsystem = PylonSubSystem.get();
 
         Gdx.input.setInputProcessor(this);
+
+        timeOfLastUpdate = System.currentTimeMillis();
     }
 
     private void buildWorld()
@@ -111,33 +75,37 @@ public class GameWorld implements InputProcessor
     private void createCornerBumpers()
     {
         CornerBumper bottomLeft = new CornerBumper(new Vector2(3, 3), new Vector2(3, 13), new Vector2(13, 3), Color.WHITE);
-        new Barrier(new Vector2(0,0),13,3);
-        new Barrier(new Vector2(0,0),3,13);
+        new Barrier(new Vector2(0, 0), 13, 3);
+        new Barrier(new Vector2(0, 0), 3, 13);
         CornerBumper bottomRight = new CornerBumper(new Vector2(97, 3), new Vector2(87, 3), new Vector2(97, 13), Color.WHITE);
-        new Barrier(new Vector2(87,0),13,3);
-        new Barrier(new Vector2(97,0),3,13);
+        new Barrier(new Vector2(87, 0), 13, 3);
+        new Barrier(new Vector2(97, 0), 3, 13);
         CornerBumper topLeft = new CornerBumper(new Vector2(3, 97), new Vector2(3, 87), new Vector2(13, 97), Color.WHITE);
-        new Barrier(new Vector2(0,87),3,13);
-        new Barrier(new Vector2(0,97),13,3);
+        new Barrier(new Vector2(0, 87), 3, 13);
+        new Barrier(new Vector2(0, 97), 13, 3);
         CornerBumper topRight = new CornerBumper(new Vector2(97, 97), new Vector2(97, 87), new Vector2(87, 97), Color.WHITE);
-        new Barrier(new Vector2(87,97),13,3);
-        new Barrier(new Vector2(97,87),3,13);
-        new Barrier(new Vector2(13,0),74,3);
+        new Barrier(new Vector2(87, 97), 13, 3);
+        new Barrier(new Vector2(97, 87), 3, 13);
+//        new Barrier(new Vector2(13,0),74,3);
     }
 
     private void createPlayers()
     {
         // Bottom - p1
-        player1 = new Player(Player.POS_X_MID, Player.POS_Y_BOT, Player.VELOCITY_DELTA_HORIZONTAL, Input.Keys.Q, Input.Keys.E, Player.COLOR_P1);
+//        player1 = new Player(Player.POS_X_MID, Player.POS_Y_BOT, Player.VELOCITY_DELTA_HORIZONTAL, Input.Keys.Q, Input.Keys.E, Player.COLOR_P1);
+        player1 = new AiPlayer(Player.POS_X_MID, Player.POS_Y_BOT, Player.VELOCITY_DELTA_HORIZONTAL,Player.COLOR_P1,1);
 
         // Right - p2
-        player2 = new Player(Player.POS_X_RIGHT, Player.POS_Y_MID, Player.VELOCITY_DELTA_VERTICAL, Input.Keys.N, Input.Keys.M, Player.COLOR_P2);
+//        player2 = new Player(Player.POS_X_RIGHT, Player.POS_Y_MID, Player.VELOCITY_DELTA_VERTICAL, Input.Keys.N, Input.Keys.M, Player.COLOR_P2);
+        player2 = new AiPlayer(Player.POS_X_RIGHT, Player.POS_Y_MID, Player.VELOCITY_DELTA_VERTICAL, Player.COLOR_P2,2);
 
         // Top - p3
-        player4 = new Player(Player.POS_X_MID, Player.POS_Y_TOP, Player.VELOCITY_DELTA_HORIZONTAL, Input.Keys.C, Input.Keys.Z, Player.COLOR_P3);
+//        player3 = new Player(Player.POS_X_MID, Player.POS_Y_TOP, Player.VELOCITY_DELTA_HORIZONTAL, Input.Keys.C, Input.Keys.Z, Player.COLOR_P3);
+        player3 = new AiPlayer(Player.POS_X_MID, Player.POS_Y_TOP, Player.VELOCITY_DELTA_HORIZONTAL, Player.COLOR_P3,3);
 
         // Left - p4
-        player3 = new Player(Player.POS_X_LEFT, Player.POS_Y_MID, Player.VELOCITY_DELTA_VERTICAL, Input.Keys.I, Input.Keys.P, Player.COLOR_P4);
+//        player4 = new Player(Player.POS_X_LEFT, Player.POS_Y_MID, Player.VELOCITY_DELTA_VERTICAL, Input.Keys.I, Input.Keys.P, Player.COLOR_P4);
+        player4 = new AiPlayer(Player.POS_X_LEFT, Player.POS_Y_MID, Player.VELOCITY_DELTA_VERTICAL, Player.COLOR_P4,4);
     }
 
     public Rectangle getWorldBounds()
@@ -153,6 +121,8 @@ public class GameWorld implements InputProcessor
 
             elapsedTime = currentTime - timeOfLastUpdate;
 
+            totalElapsedTime += elapsedTime;
+
             if (elapsedTime > updateDelta.threshold)
             {
                 updateWorld(elapsedTime);
@@ -165,13 +135,39 @@ public class GameWorld implements InputProcessor
 
     private void updateWorld(long deltaInMillis)
     {
-        boardManager.update(deltaInMillis);
-        movableSubsystem.update(deltaInMillis);
-        quadSubsystem.update(deltaInMillis);
-        collidableSubsystem.update(deltaInMillis);
+        quadSubsystem.update(deltaInMillis, updateDelta);
+        collidableSubsystem.update(deltaInMillis, updateDelta);
 
-        renderSubsystem.update(deltaInMillis);
-        pylonSubsystem.update(deltaInMillis);
+        boardManager.update(deltaInMillis, updateDelta);
+        pylonSubsystem.update(deltaInMillis, updateDelta);
+
+        AiSubsystem.get().update(deltaInMillis, updateDelta);
+        if (player1.getScore() == 0)
+        {
+            player1.createBarrier();
+        }
+        if (player2.getScore() == 0)
+        {
+            player2.createBarrier();
+        }
+        if (player3.getScore() == 0)
+        {
+            player3.createBarrier();
+        }
+        if (player4.getScore() == 0)
+        {
+            player4.createBarrier();
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.SPACE))
+        {
+            boardManager.spawnBall();
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT))
+        {
+            boardManager.spawnPylon();
+        }
+
+        renderSubsystem.update(deltaInMillis, updateDelta);
     }
 
     private void render()
@@ -195,8 +191,6 @@ public class GameWorld implements InputProcessor
             case Input.Keys.RIGHT_BRACKET:
                 changeUpdateDelta(true);
                 break;
-            case Input.Keys.SPACE:
-                GameWorld.player4.decrementScore();
             default:
                 handled = false;
         }
@@ -219,7 +213,6 @@ public class GameWorld implements InputProcessor
 
         updateThreshold = updateDelta.threshold;
 
-        System.err.println("GameWorld::changeUpdateDelta - faster:[" + faster + "], updateDelta.threshold: " + updateDelta.threshold);
 
         if (paused)
         {
@@ -231,7 +224,7 @@ public class GameWorld implements InputProcessor
         }
     }
 
-    private void pause()
+    public void pause()
     {
         paused = !paused;
 

@@ -1,4 +1,4 @@
-package com.mygdx.game.components;
+package com.mygdx.game.components.renderables;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -32,7 +32,7 @@ public class PylonRenderable extends Renderable
         renderer.circle(this.getPosition().x ,this.getPosition().y ,pylonRadius);
 
         renderer.setColor(effectColor);
-        renderer.circle(this.getPosition().x ,this.getPosition().y ,effectRadius);
+        renderer.circle(this.getPosition().x ,this.getPosition().y ,effectRadius, 20);
     }
 
     public float getRadius()

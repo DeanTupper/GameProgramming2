@@ -3,21 +3,18 @@ package com.mygdx.game.entities;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.GameWorld;
-import com.mygdx.game.components.movables.Movable;
-import com.mygdx.game.components.movables.PaddleMovable;
+import com.mygdx.game.components.*;
 import com.mygdx.game.components.renderables.PlayerRenderable;
+import com.mygdx.game.subsystems.AiSubsystem;
 import com.mygdx.game.subsystems.MovableSubsystem;
 import com.mygdx.game.subsystems.RenderSubsystem;
 import com.mygdx.game.utils.shapes.Rectangle;
 
-public class Player extends Entity
+/**
+ * Created by dean on 5/5/16.
+ */
+public class AiPlayer extends Entity
 {
-    // Default colors
-    public static final Color COLOR_P1 = Color.RED;
-    public static final Color COLOR_P2 = Color.GREEN;
-    public static final Color COLOR_P3 = Color.YELLOW;
-    public static final Color COLOR_P4 = Color.ORANGE;
-
     // Size of major and minor dimensions (horizontal player -> major dimension is width)
     public static final float DIMEN_MAJOR = 10f;
     public static final float DIMEN_MINOR = 3f;
@@ -42,21 +39,24 @@ public class Player extends Entity
     public static final float POS_Y_VERITCAL_MAX = GameWorld.DEFAULT_WORLD_HEIGHT - (CornerBumper.SIZE * 2.0f) - DIMEN_MAJOR;
 
     // The circleVelocity deltas used to move players on input
-    public static final Vector2 VELOCITY_DELTA_HORIZONTAL = new Vector2(2f, 0f);
-    public static final Vector2 VELOCITY_DELTA_VERTICAL = new Vector2(0f, 2f);
+    public static final Vector2 VELOCITY_DELTA_HORIZONTAL = new Vector2(1f, 0f);
+    public static final Vector2 VELOCITY_DELTA_VERTICAL = new Vector2(0f, 1f);
 
-    private final Movable movable;
+    private final AiPaddleMovable movable;
     private final PlayerRenderable renderable;
     private final Rectangle movementBounds;
+    private final PaddleAi ai;
+    private Boolean positive;
+    private Boolean negative;
 
     private Integer score = 500;
 
-    public Player(float x, float y, Vector2 deltaVelocity, int negativeDirKeyCode, int positiveDirKeyCode, Color color)
+    public AiPlayer(float x, float y, Vector2 deltaVelocity ,Color color, int player)
     {
-        this(new Vector2(x, y), deltaVelocity, positiveDirKeyCode, negativeDirKeyCode, color);
+        this(new Vector2(x, y), deltaVelocity,  color, player);
     }
 
-    public Player(Vector2 position, Vector2 deltaVelocity, int negativeDirKeyCode, int positiveDirKeyCode, Color color)
+    public AiPlayer(Vector2 position, Vector2 deltaVelocity, Color color, int player)
     {
         float width = DIMEN_MINOR;
         float height = DIMEN_MINOR;
@@ -75,11 +75,17 @@ public class Player extends Entity
             movementBounds = new Rectangle(position.x, POS_Y_VERITCAL_MIN, 0f, POS_Y_VERITCAL_MAX);
         }
 
-        movable = new PaddleMovable(position, deltaVelocity, movementBounds, positiveDirKeyCode, negativeDirKeyCode);
+        positive = false;
+        negative = false;
+
+        movable = new AiPaddleMovable(position, deltaVelocity, movementBounds, positive, negative);
         MovableSubsystem.get().register(movable);
 
         renderable = new PlayerRenderable(position, width, height, color);
         RenderSubsystem.get().register(renderable);
+
+        ai = new PaddleAi(position,positive,negative,movable,width,height,player);
+        AiSubsystem.get().registerAI(ai);
     }
 
     public void decrementScore()
@@ -110,7 +116,7 @@ public class Player extends Entity
 
     public Integer getScore()
     {
-       return score;
+        return score;
     }
 
     @Override

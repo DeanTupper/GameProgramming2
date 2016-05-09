@@ -7,8 +7,8 @@ import java.util.Random;
 
 public enum ColorType
 {
-    RED(Color.RED),
-    BLUE(Color.BLUE),
+    RED(new Color(0.7333f, 0.0625f, 0.3125f, 1.0f)),
+    BLUE(new Color(0.2f, 0.332f, 0.73f, 1.0f)),
     GREEN(Color.GREEN);
 
     private final Color color;

@@ -1,6 +1,6 @@
 package com.mygdx.game.utils;
 
-import com.mygdx.game.components.Collidable;
+import com.mygdx.game.components.collidables.Collidable;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -13,7 +13,7 @@ public final class Quad
     private final int row;
     private final int col;
 
-    private final List<Collidable> collidables = new ArrayList<Collidable>();
+    public final List<Collidable> collidables = new ArrayList<Collidable>();
 
     private final EnumMap<Direction, Quad> neighborMap = new EnumMap<Direction, Quad>(Direction.class);
     private final HashSet<Quad> neighbors = new HashSet<Quad>();
@@ -83,4 +83,5 @@ public final class Quad
     {
         collidables.add(collidable);
     }
+
 }
