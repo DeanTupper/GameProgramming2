@@ -55,26 +55,10 @@ public class BoardManager implements Subsystem
     @Override
     public void update(long deltaInMillis, UpdateDelta updateDelta)
     {
-        if (balls.size() < 4)
+        if (balls.size() < 1)
         {
-            instance.spawnBall(BallSpawns.BOTTOM_LEFT, ColorType.BLUE);
-            instance.spawnBall(BallSpawns.TOP_RIGHT, ColorType.RED);
-
-            System.err.println("BoardManager::update - balls.size: " + balls.size());
-
-            Ball[] ballArr = new Ball[balls.size()];
-            balls.toArray(ballArr);
-            BallCollidable a = ballArr[0].getCollidable();
-            BallCollidable b = ballArr[1].getCollidable();
-
-            CircleCircleCollision test = new CircleCircleCollision(a, b);
-            test.calculateTimeToCollision();
-            System.err.println("BoardManager::update - a: " + ballArr[0] + "; b: " + ballArr[1]);
-
-            instance.spawnBall(BallSpawns.TEST_SPAWN_MIDLEFT, ColorType.GREEN);
-            instance.spawnBall(BallSpawns.TEST_SPAWN_MIDRIGHT, ColorType.BLUE);
-
-            System.err.println("*******************************************************************\n");
+            instance.spawnBall(BallSpawns.TEST_SPAWN_1, ColorType.BLUE);
+            //instance.spawnBall(BallSpawns.TEST_SPAWN_2, ColorType.RED);
         }
 
         if (spawnBalls)
@@ -309,8 +293,8 @@ public class BoardManager implements Subsystem
 
     enum BallSpawns
     {
-        TEST_SPAWN_1(new Vector2(40f, 40f), new Vector2(0.5f, 0.5f)),
-        TEST_SPAWN_2(new Vector2(60f, 60f), new Vector2(-0.5f, -0.5f)),
+        TEST_SPAWN_1(new Vector2(30f, 40f), new Vector2(-0.5f, -0.65f)),
+        TEST_SPAWN_2(new Vector2(10f, 50f), new Vector2(0, -0.5f)),
         TEST_SPAWN_MIDLEFT(new Vector2(20f, 50f), new Vector2(0.5f, 0f)),
         TEST_SPAWN_MIDRIGHT(new Vector2(80f, 50f), new Vector2(-0.5f, 0f)),
         BOTTOM_LEFT(new Vector2(10, 10), new Vector2(1f, 1f)),

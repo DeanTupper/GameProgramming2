@@ -30,10 +30,8 @@ public class GameWorld implements InputProcessor
 
     private long timeOfLastUpdate;
     private long elapsedTime;
-    private long totalElapsedTime;
 
     private BoardManager boardManager;
-    private MovableSubsystem movableSubsystem;
     private QuadSubsystem quadSubsystem;
     private CollidableSubsystem collidableSubsystem;
     private RenderSubsystem renderSubsystem;
@@ -45,7 +43,6 @@ public class GameWorld implements InputProcessor
         buildWorld();
 
         boardManager = BoardManager.get();
-        movableSubsystem = MovableSubsystem.get();
         quadSubsystem = QuadSubsystem.get();
         collidableSubsystem = CollidableSubsystem.get();
         collidableSubsystem.setGameWorld(this);
@@ -99,11 +96,8 @@ public class GameWorld implements InputProcessor
 
             elapsedTime = currentTime - timeOfLastUpdate;
 
-            totalElapsedTime += elapsedTime;
-
             if (elapsedTime > updateDelta.threshold)
             {
-                System.err.println("GameWorld::tick - update - elapsedTime: " + elapsedTime + "; totalElapsedTime " + totalElapsedTime);
                 updateWorld(elapsedTime);
                 timeOfLastUpdate = currentTime;
             }

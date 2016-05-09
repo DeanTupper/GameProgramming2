@@ -25,6 +25,8 @@ public class CircleTriangleCollision extends Collision
 
     public void calculateTimeToCollision()
     {
+        resetInitialVelocities();
+
         Triangle triangle = triangleCollidable.getBounds();
         Line collidableEdge = triangleCollidable.getBounds().edge;
 
@@ -34,6 +36,8 @@ public class CircleTriangleCollision extends Collision
         Line circleTrajectory = Line.getLineFromPointAndVelocity(center, circleVelocity);
 
         Vector2 intersectionPoint = circleTrajectory.findIntersectionPointWith(collidableEdge);
+
+        System.err.println("CircleTriangleCollision::calculateTimeToCollision - intersectionPoint: " + intersectionPoint);
 
         if (intersectionPoint != null && !triangle.isPointOutOfBounds(intersectionPoint))
         {
@@ -46,13 +50,17 @@ public class CircleTriangleCollision extends Collision
                 System.err.println("CircleTriangleCollision::calculateTimeToCollision - intersectionPoint.y == Float.POSITIVE_INFINITY for circle " + center + " w/ v: " + circleVelocity + " and triangle: " + triangleCollidable.getBounds());
             }
 
-            timeToCollisionX = (intersectionPoint.x - closestPointOnCircle.x) / circleVelocity.x;
-            timeToCollisionY = (intersectionPoint.y - closestPointOnCircle.y) / circleVelocity.y;
+            System.err.println("CircleTriangleCollision::calculateTimeToCollision - Vc: " + circleVelocity + "; Pc: " + closestPointOnCircle + "; Pt: " + intersectionPoint);
 
-            closestPointOnA = closestPointOnCircle;
-            closestPointOnB = intersectionPoint;
+            float a = circleVelocity.dot(circleVelocity);
+            float b = 2 * (closestPointOnCircle.dot(circleVelocity) - intersectionPoint.dot(circleVelocity));
+            float c = closestPointOnCircle.dot(closestPointOnCircle) + intersectionPoint.dot(intersectionPoint) - (2 * intersectionPoint.dot(closestPointOnCircle));
 
-            System.err.println("CircleTriangleCollision::calculateTimeToCollision - t: " + timeToCollisionX + "," + timeToCollisionY);
+            timeToCollision = CollisionUtils.solveQuadraticEquation(a, b, c);
+
+            willCollide = timeToCollision < Float.MAX_VALUE && timeToCollision > 0f;
+
+            System.err.println("CircleTriangleCollision::calculateTimeToCollision - timeToCollision: " + timeToCollision);
         }
     }
 }
