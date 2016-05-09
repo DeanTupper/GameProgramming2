@@ -39,6 +39,7 @@ public class Ball extends Entity
         BoardManager.get().removeBall(this);
         RenderSubsystem.get().remove(renderable);
         CollidableSubsystem.get().remove(collidable);
+        PylonSubSystem.get().removeBall(this);
     }
 
     public Vector2 getPosition()

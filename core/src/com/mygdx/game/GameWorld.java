@@ -27,7 +27,7 @@ public class GameWorld implements InputProcessor
 
 
     public static final UpdateDelta INIT_UPDATE_DELTA = UpdateDelta.FAST;
-    public static boolean debugMode = true;
+    public static boolean debugMode = false;
     private UpdateDelta updateDelta = INIT_UPDATE_DELTA;
     public static long updateThreshold = INIT_UPDATE_DELTA.threshold;
 
@@ -39,10 +39,8 @@ public class GameWorld implements InputProcessor
 
     private long timeOfLastUpdate;
     private long elapsedTime;
-    private long totalElapsedTime;
 
     private BoardManager boardManager;
-    private MovableSubsystem movableSubsystem;
     private QuadSubsystem quadSubsystem;
     private CollidableSubsystem collidableSubsystem;
     private RenderSubsystem renderSubsystem;
@@ -54,7 +52,6 @@ public class GameWorld implements InputProcessor
         buildWorld();
 
         boardManager = BoardManager.get();
-        movableSubsystem = MovableSubsystem.get();
         quadSubsystem = QuadSubsystem.get();
         collidableSubsystem = CollidableSubsystem.get();
         collidableSubsystem.setGameWorld(this);
@@ -120,8 +117,6 @@ public class GameWorld implements InputProcessor
             long currentTime = System.currentTimeMillis();
 
             elapsedTime = currentTime - timeOfLastUpdate;
-
-            totalElapsedTime += elapsedTime;
 
             if (elapsedTime > updateDelta.threshold)
             {

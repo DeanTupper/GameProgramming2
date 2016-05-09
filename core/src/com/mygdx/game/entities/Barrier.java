@@ -22,6 +22,6 @@ public class Barrier extends Entity
     @Override
     public void destroy()
     {
-
+        RenderSubsystem.get().remove(renderable);
     }
 }

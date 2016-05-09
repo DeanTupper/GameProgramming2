@@ -79,4 +79,52 @@ public final class CollisionUtils
 
         return new Vector2(cx, cy);
     }
+
+    public static float solveQuadraticEquation(float a, float b, float c)
+    {
+        float timeToCollision;
+
+        float discriminant = b * b - (4 * a * c);
+        System.err.println("CollisionUtils::solveQuadraticEquation - a:[" + a + "], b:[" + b + "], c:[" + c + "] - discriminant: " + discriminant);
+
+        if (Math.abs(discriminant) - 0.035 < 0f)
+        {
+            timeToCollision = -b / (2 * a);
+        }
+        else if (discriminant < 0f)
+        {
+            timeToCollision = Float.MAX_VALUE;
+        }
+        else
+        {
+            discriminant = (float) Math.sqrt(discriminant);
+
+            float a2 = a * 2;
+
+            float t1 = (-b - discriminant) / a2;
+            float t2 = (-b + discriminant) / a2;
+
+            boolean t1Neg = t1 < 0;
+            boolean t2Neg = t2 < 0;
+
+            if (t1Neg && t2Neg)
+            {
+                timeToCollision = Float.MAX_VALUE;
+            }
+            else if (t1Neg)
+            {
+                timeToCollision = t2;
+            }
+            else if (t2Neg)
+            {
+                timeToCollision = t1;
+            }
+            else
+            {
+                timeToCollision = t1 < t2 ? t1 : t2;
+            }
+        }
+
+        return timeToCollision;
+    }
 }
