@@ -20,7 +20,7 @@ public class CircleCircleCollision extends Collision
     {
         resetInitialVelocities();
 
-        Vector2 vA = circleA.getVelocity();
+        Vector2 vA = circleA.getVelocity().cpy();
         Vector2 vB = circleB.getVelocity().cpy();
         Vector2 vAB = vA.cpy().sub(vB);
 
@@ -39,11 +39,12 @@ public class CircleCircleCollision extends Collision
 
         float discriminant = b * b - (4 * a * c);
 
-        if (discriminant < 0)
+        if (discriminant < 0f)
         {
             timeToCollision = Float.MAX_VALUE;
         }
-        else if (discriminant == 0)
+        // if discriminant is 0
+        else if (Math.abs(discriminant) - 0.001f < 0f)
         {
             timeToCollision = -b / (2 * a);
         }
@@ -76,7 +77,7 @@ public class CircleCircleCollision extends Collision
                 timeToCollision = t1 < t2 ? t1 : t2;
             }
 
-            willCollide = timeToCollision < Float.MAX_VALUE;
+            willCollide = timeToCollision < Float.MAX_VALUE && timeToCollision >= 0f;
 
             System.err.println("CircleCircleCollision::calculateTimeToCollision - timeToCollision: " + timeToCollision);
         }

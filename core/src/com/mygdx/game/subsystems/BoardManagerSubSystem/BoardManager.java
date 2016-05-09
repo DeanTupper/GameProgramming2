@@ -5,6 +5,7 @@ import com.badlogic.gdx.ai.fsm.State;
 import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.GameWorld;
+import com.mygdx.game.components.collidables.BallCollidable;
 import com.mygdx.game.entities.Ball;
 import com.mygdx.game.entities.ColorType;
 import com.mygdx.game.entities.CornerBumper;
@@ -12,6 +13,7 @@ import com.mygdx.game.entities.Entity;
 import com.mygdx.game.entities.Pylon;
 import com.mygdx.game.subsystems.Subsystem;
 import com.mygdx.game.utils.UpdateDelta;
+import com.mygdx.game.utils.collision.CircleCircleCollision;
 
 import java.util.HashSet;
 import java.util.Random;
@@ -53,10 +55,26 @@ public class BoardManager implements Subsystem
     @Override
     public void update(long deltaInMillis, UpdateDelta updateDelta)
     {
-        if (balls.size() < 2)
+        if (balls.size() < 4)
         {
             instance.spawnBall(BallSpawns.BOTTOM_LEFT, ColorType.BLUE);
             instance.spawnBall(BallSpawns.TOP_RIGHT, ColorType.RED);
+
+            System.err.println("BoardManager::update - balls.size: " + balls.size());
+
+            Ball[] ballArr = new Ball[balls.size()];
+            balls.toArray(ballArr);
+            BallCollidable a = ballArr[0].getCollidable();
+            BallCollidable b = ballArr[1].getCollidable();
+
+            CircleCircleCollision test = new CircleCircleCollision(a, b);
+            test.calculateTimeToCollision();
+            System.err.println("BoardManager::update - a: " + ballArr[0] + "; b: " + ballArr[1]);
+
+            instance.spawnBall(BallSpawns.TEST_SPAWN_MIDLEFT, ColorType.GREEN);
+            instance.spawnBall(BallSpawns.TEST_SPAWN_MIDRIGHT, ColorType.BLUE);
+
+            System.err.println("*******************************************************************\n");
         }
 
         if (spawnBalls)
@@ -161,8 +179,8 @@ public class BoardManager implements Subsystem
 
     public static Vector2 getRandomPosition(Random rand)
     {
-        float x = rand.nextFloat() * (GameWorld.DEFAULT_WORLD_WIDTH - 10);
-        float y = rand.nextFloat() * (GameWorld.DEFAULT_WORLD_HEIGHT - 10);
+        float x = rand.nextFloat() * (GameWorld.DEFAULT_WORLD_WIDTH - 20f) + 10f;
+        float y = rand.nextFloat() * (GameWorld.DEFAULT_WORLD_HEIGHT - 20f) + 10f;
         return new Vector2(x, y);
     }
 
@@ -232,8 +250,8 @@ public class BoardManager implements Subsystem
                         System.out.println("ballStateeee");
                         //instance.spawnPylon();
                         //instance.spawnPylon();
-                        instance.spawnBall(BallSpawns.BOTTOM_LEFT, ColorType.BLUE);
-                        instance.spawnBall(BallSpawns.TOP_RIGHT, ColorType.RED);
+                        instance.spawnBall(BallSpawns.TEST_SPAWN_1, ColorType.BLUE);
+                        instance.spawnBall(BallSpawns.TEST_SPAWN_2, ColorType.RED);
 
                         //instance.spawnPylon(60,50);
                         //instance.spawnPylon(55,50);
@@ -291,9 +309,13 @@ public class BoardManager implements Subsystem
 
     enum BallSpawns
     {
-        BOTTOM_LEFT(new Vector2(10, 10), new Vector2(1, 1)),
-        BOTTOM_RIGHT(new Vector2(90, 10), new Vector2(-1, 1)),
-        TOP_RIGHT(new Vector2(90, 90), new Vector2(-1, -1)),
+        TEST_SPAWN_1(new Vector2(40f, 40f), new Vector2(0.5f, 0.5f)),
+        TEST_SPAWN_2(new Vector2(60f, 60f), new Vector2(-0.5f, -0.5f)),
+        TEST_SPAWN_MIDLEFT(new Vector2(20f, 50f), new Vector2(0.5f, 0f)),
+        TEST_SPAWN_MIDRIGHT(new Vector2(80f, 50f), new Vector2(-0.5f, 0f)),
+        BOTTOM_LEFT(new Vector2(10, 10), new Vector2(1f, 1f)),
+        BOTTOM_RIGHT(new Vector2(90, 10), new Vector2(-1, 1f)),
+        TOP_RIGHT(new Vector2(90, 90), new Vector2(-1f, -1f)),
         TOP_LEFT(new Vector2(10, 90), new Vector2(1, -1));
 
         private final Vector2 position;

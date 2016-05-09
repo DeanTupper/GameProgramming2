@@ -17,9 +17,10 @@ public class GameWorld implements InputProcessor
     public static final float DEFAULT_WORLD_WIDTH = 100f;
     public static final float DEFAULT_WORLD_HEIGHT = 100f;
 
+    public static final UpdateDelta INIT_UPDATE_DELTA = UpdateDelta.FAST;
     public static boolean debugMode = true;
-    private UpdateDelta updateDelta = UpdateDelta.MEDIUM;
-    public static long updateThreshold = UpdateDelta.MEDIUM.threshold;
+    private UpdateDelta updateDelta = INIT_UPDATE_DELTA;
+    public static long updateThreshold = INIT_UPDATE_DELTA.threshold;
 
     private static final boolean PAUSING_CHANGES_DEBUG_MODE = !debugMode;
 
@@ -29,6 +30,7 @@ public class GameWorld implements InputProcessor
 
     private long timeOfLastUpdate;
     private long elapsedTime;
+    private long totalElapsedTime;
 
     private BoardManager boardManager;
     private MovableSubsystem movableSubsystem;
@@ -42,16 +44,17 @@ public class GameWorld implements InputProcessor
         worldBounds = new Rectangle(0f, 0f, DEFAULT_WORLD_WIDTH, DEFAULT_WORLD_HEIGHT);
         buildWorld();
 
-        timeOfLastUpdate = System.currentTimeMillis();
-
         boardManager = BoardManager.get();
         movableSubsystem = MovableSubsystem.get();
         quadSubsystem = QuadSubsystem.get();
         collidableSubsystem = CollidableSubsystem.get();
+        collidableSubsystem.setGameWorld(this);
         renderSubsystem = RenderSubsystem.get();
         pylonSubsystem = PylonSubSystem.get();
 
         Gdx.input.setInputProcessor(this);
+
+        timeOfLastUpdate = System.currentTimeMillis();
     }
 
     private void buildWorld()
@@ -96,8 +99,11 @@ public class GameWorld implements InputProcessor
 
             elapsedTime = currentTime - timeOfLastUpdate;
 
+            totalElapsedTime += elapsedTime;
+
             if (elapsedTime > updateDelta.threshold)
             {
+                System.err.println("GameWorld::tick - update - elapsedTime: " + elapsedTime + "; totalElapsedTime " + totalElapsedTime);
                 updateWorld(elapsedTime);
                 timeOfLastUpdate = currentTime;
             }
@@ -172,7 +178,7 @@ public class GameWorld implements InputProcessor
         }
     }
 
-    private void pause()
+    public void pause()
     {
         paused = !paused;
 

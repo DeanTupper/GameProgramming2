@@ -2,6 +2,7 @@ package com.mygdx.game.components.collidables;
 
 import com.mygdx.game.components.movables.Movable;
 import com.mygdx.game.entities.Player;
+import com.mygdx.game.utils.collision.Collision;
 
 public class GoalCollidable extends Collidable
 {
@@ -14,7 +15,7 @@ public class GoalCollidable extends Collidable
     }
 
     @Override
-    public void resolveCollision(Collidable other)
+    public void resolveCollision(Collidable other, Collision collision)
     {
         player.decrementScore();
     }

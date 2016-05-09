@@ -3,6 +3,7 @@ package com.mygdx.game.components.collidables;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.components.Component;
 import com.mygdx.game.components.movables.Movable;
+import com.mygdx.game.utils.collision.Collision;
 
 public abstract class Collidable implements Component
 {
@@ -23,7 +24,7 @@ public abstract class Collidable implements Component
         return movable.getVelocity();
     }
 
-    public abstract void resolveCollision(Collidable other);
+    public abstract void resolveCollision(Collidable other, Collision collision);
 
 
     @Override

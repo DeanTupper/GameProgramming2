@@ -1,6 +1,7 @@
 package com.mygdx.game.components.collidables;
 
 import com.mygdx.game.components.movables.Movable;
+import com.mygdx.game.utils.collision.Collision;
 
 public class RectangleCollidable extends Collidable
 {
@@ -10,7 +11,7 @@ public class RectangleCollidable extends Collidable
     }
 
     @Override
-    public void resolveCollision(Collidable other)
+    public void resolveCollision(Collidable other, Collision collision)
     {
     }
 

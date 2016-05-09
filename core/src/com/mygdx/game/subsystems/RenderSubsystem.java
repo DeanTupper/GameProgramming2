@@ -6,10 +6,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import static com.badlogic.gdx.graphics.g2d.ParticleEmitter.SpawnShape.point;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.DeanTestGame;
 import com.mygdx.game.GameWorld;
 import com.mygdx.game.components.renderables.Renderable;
 import com.mygdx.game.entities.Ball;
@@ -19,7 +22,11 @@ import com.mygdx.game.subsystems.BoardManagerSubSystem.BoardManager;
 import com.mygdx.game.utils.Quad;
 import com.mygdx.game.utils.UpdateDelta;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 
 public class RenderSubsystem implements Subsystem
@@ -38,7 +45,7 @@ public class RenderSubsystem implements Subsystem
 
     private static final float SIZE_PLAYER_VIEW = 45.0f;
 
-    private FrameBuffer buffer = new FrameBuffer(Pixmap.Format.RGB888, 500, 500, false);
+    private FrameBuffer buffer = new FrameBuffer(Pixmap.Format.RGB888, DeanTestGame.DEFAULT_APP_WIDTH, DeanTestGame.DEFAULT_APP_HEIGHT, false);
     private Texture tex = new Texture(WIDTH_BUFFER, HEIGHT_BUFFER, Pixmap.Format.RGB888);
     private TextureRegion texRegion = new TextureRegion(tex);
 
@@ -70,30 +77,30 @@ public class RenderSubsystem implements Subsystem
     @Override
     public void update(long deltaInMillis, UpdateDelta updateDelta)
     {
-        buffer.begin();
-
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        Gdx.gl.glEnable(GL20.GL_BLEND);
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-
-        shapeRenderer.setProjectionMatrix(camera.combined);
-
-        shapeRenderer.begin();
-        shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
-
-        for (Renderable current : renderables)
-        {
-            current.render(shapeRenderer);
-        }
-
-        shapeRenderer.end();
-
-        buffer.end();
-
-        texRegion = new TextureRegion(buffer.getColorBufferTexture());
-        texRegion.flip(false, true);
-        Gdx.gl.glDisable(GL20.GL_BLEND);
+//        buffer.begin();
+//
+//        Gdx.gl.glClearColor(0, 0, 0, 1);
+//        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+//        Gdx.gl.glEnable(GL20.GL_BLEND);
+//        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+//
+//        shapeRenderer.setProjectionMatrix(camera.combined);
+//
+//        shapeRenderer.begin();
+//        shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+//
+//        for (Renderable current : renderables)
+//        {
+//            current.render(shapeRenderer);
+//        }
+//
+//        shapeRenderer.end();
+//
+//        buffer.end();
+//
+//        texRegion = new TextureRegion(buffer.getColorBufferTexture());
+//        texRegion.flip(false, true);
+//        Gdx.gl.glDisable(GL20.GL_BLEND);
     }
 
     public void remove(Renderable renderable)
@@ -110,46 +117,66 @@ public class RenderSubsystem implements Subsystem
     {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
-        spriteBatch.begin();
-        spriteBatch.setProjectionMatrix(camera.combined);
-
-        // Top Left - Player 1
-        spriteBatch.draw(texRegion, 0f, 55f, 0f, 0f, 50f, 50f, 0.9f, 0.9f, 0f);
-
-        // Top Right - Player 2
-        spriteBatch.draw(texRegion, 50f, 5f, 50f, 50f, 50f, 50f, 0.9f, 0.9f, -90f);
-
-        // Bottom Right - Player 3
-        spriteBatch.draw(texRegion, 5f, -50f, 50f, 50f, 50f, 50f, 0.9f, 0.9f, -180f);
-
-        // Bottom Left - Player 4
-        spriteBatch.draw(texRegion, -50f, -5f, 50f, 50f, 50f, 50f, 0.9f, 0.9f, -270f);
-
-        spriteBatch.end();
+        shapeRenderer.setProjectionMatrix(camera.combined);
 
         shapeRenderer.begin();
-        shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 
-        shapeRenderer.setColor(Player.COLOR_P1);
-        shapeRenderer.rect(0.1f, WIDTH_HALF_WORLD + 5.0f, SIZE_PLAYER_VIEW, SIZE_PLAYER_VIEW - 0.1f);
-
-        shapeRenderer.setColor(Player.COLOR_P2);
-        shapeRenderer.rect(WIDTH_HALF_WORLD + 5.0f, HEIGHT_HALF_WORLD + 5.0f, SIZE_PLAYER_VIEW, SIZE_PLAYER_VIEW - 0.1f);
-
-        shapeRenderer.setColor(Player.COLOR_P3);
-        shapeRenderer.rect(WIDTH_HALF_WORLD + 5.0f, 0f, SIZE_PLAYER_VIEW, SIZE_PLAYER_VIEW);
-
-        shapeRenderer.setColor(Player.COLOR_P4);
-        shapeRenderer.rect(0.1f, 0f, SIZE_PLAYER_VIEW, SIZE_PLAYER_VIEW);
-
-        if (GameWorld.debugMode)
+        for (Renderable current : renderables)
         {
-            debugRendering();
+            current.render(shapeRenderer);
         }
 
         shapeRenderer.end();
     }
+
+//    public void renderWorld()
+//    {
+//        Gdx.gl.glClearColor(0, 0, 0, 1);
+//        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+//
+//        spriteBatch.begin();
+//        spriteBatch.setProjectionMatrix(camera.combined);
+//
+//        // Top Left - Player 1
+//        spriteBatch.draw(texRegion, 0f, 55f, 0f, 0f, 50f, 50f, 0.9f, 0.9f, 0f);
+//
+//        // Top Right - Player 2
+//        spriteBatch.draw(texRegion, 50f, 5f, 50f, 50f, 50f, 50f, 0.9f, 0.9f, -90f);
+//
+//        // Bottom Right - Player 3
+//        spriteBatch.draw(texRegion, 5f, -50f, 50f, 50f, 50f, 50f, 0.9f, 0.9f, -180f);
+//
+//        // Bottom Left - Player 4
+//        spriteBatch.draw(texRegion, -50f, -5f, 50f, 50f, 50f, 50f, 0.9f, 0.9f, -270f);
+//
+//        spriteBatch.end();
+//
+//        shapeRenderer.begin();
+//        shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+//
+//        shapeRenderer.setColor(Player.COLOR_P1);
+//        shapeRenderer.rect(0.1f, WIDTH_HALF_WORLD + 5.0f, SIZE_PLAYER_VIEW, SIZE_PLAYER_VIEW - 0.1f);
+//
+//        shapeRenderer.setColor(Player.COLOR_P2);
+//        shapeRenderer.rect(WIDTH_HALF_WORLD + 5.0f, HEIGHT_HALF_WORLD + 5.0f, SIZE_PLAYER_VIEW, SIZE_PLAYER_VIEW - 0.1f);
+//
+//        shapeRenderer.setColor(Player.COLOR_P3);
+//        shapeRenderer.rect(WIDTH_HALF_WORLD + 5.0f, 0f, SIZE_PLAYER_VIEW, SIZE_PLAYER_VIEW);
+//
+//        shapeRenderer.setColor(Player.COLOR_P4);
+//        shapeRenderer.rect(0.1f, 0f, SIZE_PLAYER_VIEW, SIZE_PLAYER_VIEW);
+//
+//        if (GameWorld.debugMode)
+//        {
+//            debugRendering();
+//        }
+//
+//        shapeRenderer.end();
+//    }
 
     private void debugRendering()
     {

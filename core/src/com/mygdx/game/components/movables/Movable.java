@@ -34,4 +34,10 @@ public class Movable implements Component
     {
         return velocity;
     }
+
+    @Override
+    public String toString()
+    {
+        return "Movable at " + position + " with velocity " + velocity;
+    }
 }

@@ -1,5 +1,6 @@
 package com.mygdx.game.subsystems;
 
+import com.mygdx.game.GameWorld;
 import com.mygdx.game.components.collidables.BallCollidable;
 import com.mygdx.game.components.collidables.CircleCollidable;
 import com.mygdx.game.components.collidables.Collidable;
@@ -22,20 +23,23 @@ import java.util.Set;
 
 public class CollidableSubsystem implements Subsystem
 {
-    public static final float EPSILON_BEFORE_COLLISION = 0.01f;
+    public static final float EPSILON_BEFORE_COLLISION = 0.005f;
     public static final float THRESHOLD_IMMINENT_COLLISION = 1.0f;
     private static CollidableSubsystem instance;
 
-    private final QuadSubsystem quadSubsystem;
+    private GameWorld gameWorld;
 
+    private final QuadSubsystem quadSubsystem;
     private final BoardManager boardManager;
     private final MovableSubsystem movableSubsystem;
+    private final RenderSubsystem renderSubsystem;
 
     private final Set<Collidable> collidables = new HashSet<Collidable>();
     private final Map<Ball, Map<Collidable, Collision>> ballCollisionsMap = new HashMap<Ball, Map<Collidable, Collision>>();
     private final PriorityQueue<Collision> imminentCollisions = new PriorityQueue<Collision>();
+    private final Set<Collision> ballOnBallCollisionsChecked = new HashSet<Collision>();
 
-    private Set<BallCollidable> ballCollidables;
+    private float totalWorldTime = 0f;
 
     public static CollidableSubsystem get()
     {
@@ -52,40 +56,75 @@ public class CollidableSubsystem implements Subsystem
         quadSubsystem = QuadSubsystem.get();
         boardManager = BoardManager.get();
         movableSubsystem = MovableSubsystem.get();
+        renderSubsystem = RenderSubsystem.get();
     }
 
     @Override
     public void update(long deltaInMillis, UpdateDelta updateDelta)
     {
         float worldTimeStep = (float) deltaInMillis / updateDelta.threshold;
-        float discreteTimeStep = 0f;
+        totalWorldTime += worldTimeStep;
+        System.err.println("CollidableSubsystem::update - deltaInMillis:[" + deltaInMillis + "], updateDelta:[" + updateDelta.threshold + "]; worldTimeStep: " + worldTimeStep + "; totalWorldTime: " + totalWorldTime);
 
-        while (worldTimeStep > 0)
+        while (worldTimeStep > 0f)
         {
+            System.err.println("CollidableSubsystem::update - loop iter - worldTimeStep: " + worldTimeStep);
             imminentCollisions.clear();
-
             boolean collisionToResolve = false;
 
-            doCollisionCheckPass(discreteTimeStep);
+            doCollisionCheckPass(worldTimeStep);
 
-            Collision nextCollision = imminentCollisions.poll();
-
-            discreteTimeStep = worldTimeStep;
+            Collision nextCollision = imminentCollisions.peek();
+            float discreteTimeStep = worldTimeStep;
 
             if (nextCollision != null && nextCollision.timeToCollision < worldTimeStep)
             {
-                discreteTimeStep -= (nextCollision.timeToCollision + EPSILON_BEFORE_COLLISION);
+                discreteTimeStep = nextCollision.timeToCollision - EPSILON_BEFORE_COLLISION;
                 collisionToResolve = true;
             }
 
+            updateCollisions(discreteTimeStep);
             movableSubsystem.moveEntities(discreteTimeStep);
 
             if (collisionToResolve)
             {
+                System.err.println("CollidableSubsystem::update - resolving collision " + nextCollision);
                 nextCollision.resolve();
             }
 
             worldTimeStep -= discreteTimeStep;
+
+            RenderSubsystem.get().renderWorld();
+        }
+    }
+
+    private void updateCollisions(float discreteTimeStep)
+    {
+        ballOnBallCollisionsChecked.clear();
+
+        Set<Ball> balls = boardManager.getBalls();
+
+        for (Ball ball : balls)
+        {
+            Map<Collidable, Collision> ballCollisionMap = ballCollisionsMap.get(ball);
+
+            for (Map.Entry<Collidable, Collision> entry : ballCollisionMap.entrySet())
+            {
+                Collision collision = entry.getValue();
+
+                if (entry.getKey() instanceof BallCollidable)
+                {
+                    if (!ballOnBallCollisionsChecked.contains(collision))
+                    {
+                        collision.update(discreteTimeStep);
+                        ballOnBallCollisionsChecked.add(collision);
+                    }
+                }
+                else
+                {
+                    collision.update(discreteTimeStep);
+                }
+            }
         }
     }
 
@@ -123,24 +162,32 @@ public class CollidableSubsystem implements Subsystem
 
     private void checkBallAndCollidable(Ball ball, Collidable potentialCollidable, Map<Collidable, Collision> collisionsMap, float worldTimeStep)
     {
+        boolean ballBallCollision = potentialCollidable instanceof BallCollidable;
+
         Collision collision = collisionsMap.get(potentialCollidable);
 
-        if (collision == null || !collision.shouldBeUpdated() || !collision.isEasyToUpdate())
+        float threshold = worldTimeStep > THRESHOLD_IMMINENT_COLLISION ? worldTimeStep : THRESHOLD_IMMINENT_COLLISION;
+
+        if (collision == null || !collision.isEasyToUpdate())
         {
-            if (potentialCollidable instanceof BallCollidable)
+            if (ballBallCollision)
             {
                 BallCollidable other = ((BallCollidable) potentialCollidable);
                 collision = new CircleCircleCollision(ball.getCollidable(), other);
 
                 Ball otherBall = other.getBall();
-                Map<Collidable, Collision> otherBallCollisionsMap = ballCollisionsMap.get(ball);
+                Map<Collidable, Collision> otherBallCollisionsMap = ballCollisionsMap.get(otherBall);
 
-                if (otherBallCollisionsMap.containsKey(ball.getCollidable()))
+                if (otherBallCollisionsMap == null)
                 {
-                    System.err.println("CollidableSubsystem::checkBallAndCollidable - ball " + ball + " did not have collision for other ball " + otherBall + " or was not flagged for update. How?");
+                    System.err.println("CollidableSubsystem::checkBallAndCollidable - otherBallCollisionsMap is null");
                 }
 
-                otherBallCollisionsMap.put(ball.getCollidable(), collision);
+                // Don't want balls to maintain separate collisions for each other
+                if (!otherBallCollisionsMap.containsKey(ball.getCollidable()))
+                {
+                    otherBallCollisionsMap.put(ball.getCollidable(), collision);
+                }
             }
             else if (potentialCollidable instanceof CircleCollidable)
             {
@@ -163,50 +210,19 @@ public class CollidableSubsystem implements Subsystem
             }
 
             collision.calculateTimeToCollision();
+            collisionsMap.put(potentialCollidable, collision);
         }
-        else if (worldTimeStep > 0f)
+
+        if (collision.willCollide && collision.timeToCollision < threshold || (collision.timeToCollisionX < threshold && collision.timeToCollisionY < threshold))
         {
-            collision.update(worldTimeStep);
-        }
-
-        float threshold = worldTimeStep > THRESHOLD_IMMINENT_COLLISION ? worldTimeStep : THRESHOLD_IMMINENT_COLLISION;
-
-        if (collision.willCollide && collision.timeToCollision < threshold) {
             imminentCollisions.add(collision);
         }
     }
 
-//    private Collision getEmptyCollision(Ball ball, Collidable potentialCollidable)
-//    {
-//        Collision collision;
-//
-//        if (potentialCollidable instanceof BallCollidable)
-//        {
-//            BallCollidable other = ((BallCollidable) potentialCollidable);
-//            collision = new CircleCircleCollision(ball.getCollidable(), other);
-//        }
-//        else if (potentialCollidable instanceof CircleCollidable)
-//        {
-//            CircleCollidable other = ((CircleCollidable) potentialCollidable);
-//            collision = new CircleCircleCollision(ball.getCollidable(), other);
-//        }
-//        else if (potentialCollidable instanceof TriangleCollidable)
-//        {
-//            TriangleCollidable other = ((TriangleCollidable) potentialCollidable);
-//            collision = new CircleTriangleCollision(ball.getCollidable(), other);
-//        }
-//        else if (potentialCollidable instanceof RectangleCollidable)
-//        {
-//            RectangleCollidable other = ((RectangleCollidable) potentialCollidable);
-//            collision = new CircleRectangleCollision(ball.getCollidable(), other);
-//        }
-//        else
-//        {
-//            throw new AssertionError("Unknown collidable type " + potentialCollidable);
-//        }
-//
-//        return collision;
-//    }
+    public void setGameWorld(GameWorld gameWorld)
+    {
+        this.gameWorld = gameWorld;
+    }
 
     public void register(Collidable collidable)
     {

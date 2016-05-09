@@ -3,6 +3,7 @@ package com.mygdx.game.utils.collision;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.components.collidables.CircleCollidable;
 import com.mygdx.game.components.collidables.TriangleCollidable;
+import com.mygdx.game.subsystems.RenderSubsystem;
 import com.mygdx.game.utils.shapes.Line;
 import com.mygdx.game.utils.shapes.Triangle;
 

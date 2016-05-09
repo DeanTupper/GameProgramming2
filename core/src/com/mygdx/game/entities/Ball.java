@@ -65,4 +65,10 @@ public class Ball extends Entity
     {
         return collidable;
     }
+
+    @Override
+    public String toString()
+    {
+        return "Ball at " + movable.getPosition() + " with velocity " + movable.getVelocity() + " with color " + type.name();
+    }
 }
