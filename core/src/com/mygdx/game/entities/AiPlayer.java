@@ -122,6 +122,8 @@ public class AiPlayer extends Entity
     @Override
     public void destroy()
     {
-
+        MovableSubsystem.get().remove(movable);
+        RenderSubsystem.get().remove(renderable);
+        AiSubsystem.get().removeAI(ai);
     }
 }

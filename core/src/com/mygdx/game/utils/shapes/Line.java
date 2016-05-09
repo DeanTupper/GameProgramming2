@@ -44,16 +44,17 @@ public class Line
     public static Line getLineFromPointAndVelocity(Vector2 origin, Vector2 velocity)
     {
         Vector2 velNor = velocity.cpy().nor();
+        System.err.println("Line::getLineFromPointAndVelocity - origin:[" + origin + "], velocity:[" + velocity + "]; velNor: " + velNor);
         float slope;
 
         // Vertical Line - has to be handled separately
-        if (velNor.y == 0)
+        if (velNor.x == 0f)
         {
             return new VerticalLine(origin.x);
         }
 
         // Horizontal Line
-        if (velNor.x == 0)
+        if (velNor.y == 0f)
         {
             slope = 0;
         }
@@ -67,6 +68,7 @@ public class Line
 
     public Vector2 findIntersectionPointWith(Line other)
     {
+        System.err.println("Line::findIntersectionPointWith - other:[" + other + "]; this: " + this);
         if (this.slope == other.slope)
         {
             if (this.yIntercept != other.yIntercept)
@@ -88,5 +90,10 @@ public class Line
     public Vector2 findIntersectionPointWith(VerticalLine other)
     {
         return other.findIntersectionPointWith(this);
+    }
+
+    public String toString()
+    {
+        return "y=" + slope + "x + " + yIntercept;
     }
 }

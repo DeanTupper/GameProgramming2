@@ -93,6 +93,8 @@ public class RenderSubsystem implements Subsystem
             current.render(shapeRenderer);
         }
 
+        shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+
         shapeRenderer.end();
 
         buffer.end();
@@ -248,13 +250,13 @@ public class RenderSubsystem implements Subsystem
 
     private void renderQuadAndNeighbors(Quad quad)
     {
-        shapeRenderer.rect(quad.getCol() * 4.5f, 55f + quad.getRow() * 4.5f, 4.5f, 4.5f);
+        shapeRenderer.rect(quad.getCol() * 10f, 0f + quad.getRow() * 10f, 10f, 10f);
 
         Set<Quad> neighbors = quad.getNeighbors();
 
         for (Quad neighbor : neighbors)
         {
-            shapeRenderer.rect(neighbor.getCol() * 4.5f, 55f + neighbor.getRow() * 4.5f, 4.5f, 4.5f);
+            shapeRenderer.rect(neighbor.getCol() * 10f, 0f + neighbor.getRow() * 10f, 10f, 10f);
         }
     }
 }

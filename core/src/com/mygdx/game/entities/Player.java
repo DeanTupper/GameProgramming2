@@ -116,6 +116,7 @@ public class Player extends Entity
     @Override
     public void destroy()
     {
-
+        MovableSubsystem.get().remove(movable);
+        RenderSubsystem.get().remove(renderable);
     }
 }

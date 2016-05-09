@@ -41,8 +41,8 @@ public class AiSubsystem implements Subsystem
         this.cpus.add(ai);
     }
 
-    public void registerBall(Ball ball)
+    public void removeAI(PaddleAi ai)
     {
-        balls.add(ball);
+        this.cpus.remove(ai);
     }
 }

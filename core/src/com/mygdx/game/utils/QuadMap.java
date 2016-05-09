@@ -138,20 +138,40 @@ public class QuadMap
         return quadMap[row][col];
     }
 
+//    public void render(ShapeRenderer renderer)
+//    {
+//        Color rowColor = Color.RED;
+//
+//        for (int row = 0; row < quadMap.length; row++)
+//        {
+//            float y = 55f + row * 4.5f;
+//
+//            for (int col = 0; col < quadMap[0].length; col++)
+//            {
+//                float x = col * 4.5f;
+//
+//                renderer.setColor(rowColor.r - col * 0.05f, rowColor.g + col * 0.05f, 0.0f, 1.0f);
+//                renderer.rect(x, y, 4.5f, 4.5f);
+//            }
+//
+//            rowColor = new Color(rowColor.r - 0.05f, rowColor.g + 0.05f, 0.0f, 1.0f);
+//        }
+//    }
+
     public void render(ShapeRenderer renderer)
     {
         Color rowColor = Color.RED;
 
         for (int row = 0; row < quadMap.length; row++)
         {
-            float y = 55f + row * 4.5f;
+            float y = 0f + row * 10f;
 
             for (int col = 0; col < quadMap[0].length; col++)
             {
-                float x = col * 4.5f;
+                float x = col * 10f;
 
                 renderer.setColor(rowColor.r - col * 0.05f, rowColor.g + col * 0.05f, 0.0f, 1.0f);
-                renderer.rect(x, y, 4.5f, 4.5f);
+                renderer.rect(x, y, 10f, 10f);
             }
 
             rowColor = new Color(rowColor.r - 0.05f, rowColor.g + 0.05f, 0.0f, 1.0f);

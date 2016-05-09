@@ -153,6 +153,7 @@ public class CollidableSubsystem implements Subsystem
 
         for (Collidable potentialCollidable : potentialCollidables)
         {
+            System.err.println("CollidableSubsystem::checkBallForCollisions - ball:[" + ball + "], worldTimeStep:[" + worldTimeStep + "] - checking potentialCollidable " + potentialCollidable);
             checkBallAndCollidable(ball, potentialCollidable, collisionsMap, worldTimeStep);
         }
     }
@@ -167,6 +168,7 @@ public class CollidableSubsystem implements Subsystem
 
         if (collision == null || !collision.isEasyToUpdate())
         {
+            System.err.println("CollidableSubsystem::checkBallAndCollidable - collision == null || !collision.isEasyToUpdate");
             if (ballBallCollision)
             {
                 BallCollidable other = ((BallCollidable) potentialCollidable);
@@ -198,6 +200,7 @@ public class CollidableSubsystem implements Subsystem
             {
                 TriangleCollidable other = ((TriangleCollidable) potentialCollidable);
                 collision = new CircleTriangleCollision(ball.getCollidable(), other);
+                System.err.println("CollidableSubsystem::checkBallAndCollidable - potentialCollidable instanceof TriangleCollidable");
             }
             else if (potentialCollidable instanceof RectangleCollidable)
             {
@@ -213,7 +216,7 @@ public class CollidableSubsystem implements Subsystem
             collisionsMap.put(potentialCollidable, collision);
         }
 
-        if (collision.willCollide && collision.timeToCollision < threshold || (collision.timeToCollisionX < threshold && collision.timeToCollisionY < threshold))
+        if (collision.willCollide && collision.timeToCollision < threshold)
         {
             imminentCollisions.add(collision);
         }

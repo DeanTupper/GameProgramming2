@@ -14,7 +14,6 @@ public abstract class Collision implements Comparable<Collision>
     public final Collidable b;
 
     public boolean willCollide = false;
-    public boolean hasCollided = false;
 
     public Vector2 initVelocityA;
     public Vector2 initVelocityB;
@@ -51,11 +50,6 @@ public abstract class Collision implements Comparable<Collision>
     {
         if (willCollide)
         {
-            if (worldTimeStep > timeToCollision)
-            {
-                hasCollided = true;
-            }
-
             timeToCollision -= worldTimeStep;
 
             System.err.println("Collision::update - worldTimeStep:[" + worldTimeStep + "] - timeToCollision: " + timeToCollision);

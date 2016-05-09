@@ -56,27 +56,7 @@ public class BoardManager implements Subsystem
     @Override
     public void update(long deltaInMillis, UpdateDelta updateDelta)
     {
-//        if (balls.size() < 4)
-//        {
-//            instance.spawnBall(BallSpawns.BOTTOM_LEFT);
-//            instance.spawnBall(BallSpawns.TOP_RIGHT);
-//
-//            System.err.println("BoardManager::update - balls.size: " + balls.size());
-//
-//            Ball[] ballArr = new Ball[balls.size()];
-//            balls.toArray(ballArr);
-//            BallCollidable a = ballArr[0].getCollidable();
-//            BallCollidable b = ballArr[1].getCollidable();
-//
-//            CircleCircleCollision test = new CircleCircleCollision(a, b);
-//            test.calculateTimeToCollision();
-//            System.err.println("BoardManager::update - a: " + ballArr[0] + "; b: " + ballArr[1]);
-//
-//            instance.spawnBall(BallSpawns.TEST_SPAWN_MIDLEFT);
-//            instance.spawnBall(BallSpawns.TEST_SPAWN_MIDRIGHT);
-//
-//            System.err.println("*******************************************************************\n");
-//        }
+
 
         if (spawnBalls)
         {
@@ -153,7 +133,28 @@ public class BoardManager implements Subsystem
 
     private void spawnBall(BallSpawns ballSpawns)
     {
-        new Ball(ballSpawns.getPosition(), ballSpawns.getVelocity(), ColorType.getRandomColorType(rand), BALL_RADIUS);
+        new Ball(ballSpawns.getPosition(), randomizeVelocity(ballSpawns.getVelocity()), ColorType.getRandomColorType(rand), BALL_RADIUS);
+    }
+
+    private Vector2 randomizeVelocity(Vector2 velocity)
+    {
+        if(rand.nextBoolean())
+        {
+            velocity.x = velocity.x + rand.nextFloat();
+        }
+        else
+        {
+            velocity.x = velocity.x - rand.nextFloat();
+        }
+        if(rand.nextBoolean())
+        {
+            velocity.y = velocity.y + rand.nextFloat();
+        }
+        else
+        {
+            velocity.y = velocity.y - rand.nextFloat();
+        }
+        return velocity;
     }
 
     public void registerBall(Ball ball)
@@ -304,10 +305,7 @@ public class BoardManager implements Subsystem
 
     enum BallSpawns
     {
-//        TEST_SPAWN_1(new Vector2(40f, 40f), new Vector2(0.5f, 0.5f)),
-//        TEST_SPAWN_2(new Vector2(60f, 60f), new Vector2(-0.5f, -0.5f)),
-//        TEST_SPAWN_MIDLEFT(new Vector2(20f, 50f), new Vector2(0.5f, 0f)),
-//        TEST_SPAWN_MIDRIGHT(new Vector2(80f, 50f), new Vector2(-0.5f, 0f)),
+
         BOTTOM_LEFT(new Vector2(10, 10), new Vector2(1f, 1f)),
         BOTTOM_RIGHT(new Vector2(90, 10), new Vector2(-1, 1f)),
         TOP_RIGHT(new Vector2(90, 90), new Vector2(-1f, -1f)),

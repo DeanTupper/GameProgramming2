@@ -43,6 +43,26 @@ public class BallCollidable extends CircleCollidable
                     CircleCollidable otherCircle = ((CircleCollidable) other);
                 }
             }
+            else if (other instanceof TriangleCollidable)
+            {
+                TriangleCollidable triangle = ((TriangleCollidable) other);
+
+                Vector2 edgeNormal = triangle.getBounds().edgeNormal;
+
+                Vector2 vel = getVelocity();
+
+                Vector2 newVel = new Vector2(-vel.y, -vel.x);
+
+                float dot = newVel.dot(edgeNormal);
+
+                if (dot < 0f)
+                {
+                    newVel.x = - newVel.x;
+                    newVel.y = - newVel.y;
+                }
+
+                getVelocity().set(newVel);
+            }
         }
     }
 }
