@@ -1,7 +1,8 @@
-package com.mygdx.game.components;
+package com.mygdx.game.components.renderables;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.components.Component;
 import com.mygdx.game.entities.ColorType;
 import com.mygdx.game.subsystems.RenderSubsystem;
 

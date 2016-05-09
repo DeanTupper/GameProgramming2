@@ -1,6 +1,8 @@
 package com.mygdx.game.components;
 
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.components.collidables.BallCollidable;
+import com.mygdx.game.components.collidables.Collidable;
 import com.mygdx.game.entities.Ball;
 import com.mygdx.game.subsystems.QuadSubsystem;
 
@@ -60,8 +62,6 @@ public class PaddleAi implements Component
             else{
                 seekCenter(position.y, height);
             }
-
-            System.out.println("target is null");
         }
     }
 
@@ -69,19 +69,16 @@ public class PaddleAi implements Component
     {
         if (paddlePosition + offset / 2 < ballPosition)
         {
-            System.out.println("up");
             movable.setPositive(true);
             movable.setNegative(false);
         }
         else if (paddlePosition + offset / 2 > ballPosition)
         {
-            System.out.println("down");
             movable.setPositive(false);
             movable.setNegative(true);
         }
         else
         {
-            System.out.println("stay");
             movable.setPositive(false);
             movable.setNegative(false);
         }
@@ -92,19 +89,16 @@ public class PaddleAi implements Component
 
         if (paddlePosition > 50 - offset / 2)
         {
-            System.out.println("up");
             movable.setPositive(false);
             movable.setNegative(true);
         }
         else if (paddlePosition < 50 - offset / 2)
         {
-            System.out.println("down");
             movable.setPositive(true);
             movable.setNegative(false);
         }
         else
         {
-            System.out.println("stay");
             movable.setPositive(false);
             movable.setNegative(false);
         }
@@ -112,15 +106,12 @@ public class PaddleAi implements Component
 
     private void findTarget()
     {
-        System.out.println("find target");
         Set<Collidable> targets = QuadSubsystem.get().getGoalCollidable(player);
         currentTarget = null;
-        System.out.println("targets = " + targets);
         for (Collidable target : targets)
         {
             if (target instanceof BallCollidable)
             {
-                System.out.println("found target");
                 currentTarget = target;
             }
         }

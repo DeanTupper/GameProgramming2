@@ -1,8 +1,11 @@
 package com.mygdx.game.entities;
 
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.game.components.*;
+import com.mygdx.game.components.movables.BallMovable;
 import com.mygdx.game.subsystems.*;
+import com.mygdx.game.components.collidables.BallCollidable;
+import com.mygdx.game.components.renderables.BallRenderable;
+import com.mygdx.game.components.movables.Movable;
 import com.mygdx.game.subsystems.BoardManagerSubSystem.BoardManager;
 
 public class Ball extends Entity
@@ -61,5 +64,11 @@ public class Ball extends Entity
     public BallCollidable getCollidable()
     {
         return collidable;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Ball at " + movable.getPosition() + " with velocity " + movable.getVelocity() + " with color " + type.name();
     }
 }

@@ -1,4 +1,4 @@
-package com.mygdx.game.components;
+package com.mygdx.game.components.movables;
 
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.GameWorld;
@@ -16,9 +16,9 @@ public class BallMovable extends Movable
     }
 
     @Override
-    public void move(long deltaInMillis)
+    public void move(float worldTimeStep)
     {
-        super.move(deltaInMillis);
+        super.move(worldTimeStep);
         if (position.x < -5)
         {
             GameWorld.player4.decrementScore();
@@ -39,6 +39,5 @@ public class BallMovable extends Movable
             GameWorld.player1.decrementScore();
             ball.destroy();
         }
-
     }
 }

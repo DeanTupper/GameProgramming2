@@ -1,6 +1,7 @@
-package com.mygdx.game.components;
+package com.mygdx.game.components.movables;
 
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.components.Component;
 import com.mygdx.game.subsystems.MovableSubsystem;
 
 public class Movable implements Component
@@ -14,9 +15,9 @@ public class Movable implements Component
         this.velocity = velocity;
     }
 
-    public void move(long deltaInMillis)
+    public void move(float worldTimeStep)
     {
-        MovableSubsystem.move(this, deltaInMillis);
+        MovableSubsystem.move(this, worldTimeStep);
     }
 
     public Vector2 getPosition()
@@ -32,5 +33,11 @@ public class Movable implements Component
     public Vector2 getVelocity()
     {
         return velocity;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Movable at " + position + " with velocity " + velocity;
     }
 }

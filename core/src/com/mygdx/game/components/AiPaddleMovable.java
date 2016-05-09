@@ -2,6 +2,7 @@ package com.mygdx.game.components;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.components.movables.Movable;
 import com.mygdx.game.utils.shapes.Rectangle;
 
 
@@ -26,7 +27,7 @@ public class AiPaddleMovable extends Movable
     }
 
     @Override
-    public void move(long deltaInMillis)
+    public void move(float worldTimeStep)
     {
         Vector2 dVel = new Vector2();
         if (positive)
@@ -45,6 +46,7 @@ public class AiPaddleMovable extends Movable
         pos.y = MathUtils.clamp(pos.y, bounds.y, bounds.top);
     }
 
+
     public void setPositive(Boolean positive)
     {
         this.positive = positive;
@@ -55,8 +57,4 @@ public class AiPaddleMovable extends Movable
         this.negative = negative;
     }
 
-//    public void setPositive(Boolean positive)
-//    {
-//        this.positive = positive;
-//    }
 }

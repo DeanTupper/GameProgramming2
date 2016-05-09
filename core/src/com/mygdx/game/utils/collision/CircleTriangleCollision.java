@@ -1,8 +1,9 @@
 package com.mygdx.game.utils.collision;
 
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.game.components.CircleCollidable;
-import com.mygdx.game.components.TriangleCollidable;
+import com.mygdx.game.components.collidables.CircleCollidable;
+import com.mygdx.game.components.collidables.TriangleCollidable;
+import com.mygdx.game.subsystems.RenderSubsystem;
 import com.mygdx.game.utils.shapes.Line;
 import com.mygdx.game.utils.shapes.Triangle;
 
@@ -11,17 +12,18 @@ public class CircleTriangleCollision extends Collision
     private CircleCollidable circleCollidable;
     private TriangleCollidable triangleCollidable;
 
-    public Vector2 circleVelocity = new Vector2();
+    public Vector2 circleVelocity;
+    public Vector2 circleVelNor;
 
-    public CircleTriangleCollision(CircleCollidable a, TriangleCollidable b, long deltaInMillis)
+    public CircleTriangleCollision(CircleCollidable a, TriangleCollidable b)
     {
-        super(a, b, deltaInMillis);
+        super(a, b);
 
         circleCollidable = a;
         triangleCollidable = b;
     }
 
-    public void calculateTimeToIntersection()
+    public void calculateTimeToCollision()
     {
         Triangle triangle = triangleCollidable.getBounds();
         Line collidableEdge = triangleCollidable.getBounds().edge;
@@ -35,13 +37,12 @@ public class CircleTriangleCollision extends Collision
 
         if (intersectionPoint != null && !triangle.isPointOutOfBounds(intersectionPoint))
         {
-            Vector2 circleVelNor = circleVelocity.cpy().nor();
+            circleVelNor = circleVelocity.cpy().nor();
 
             Vector2 closestPointOnCircle = CollisionUtils.getPointOnCircle(center, circleVelNor, circleCollidable.getRadius());
 
             if (intersectionPoint.y == Float.POSITIVE_INFINITY)
             {
-                System.err.println("CircleTriangleCollision::calculateTimeToIntersection - intersectionPoint.y == Float.POSITIVE_INFINITY for circle " + center + " w/ v: " + circleVelocity + " and triangle: " + triangleCollidable.getBounds());
             }
 
             timeToCollisionX = (intersectionPoint.x - closestPointOnCircle.x) / circleVelocity.x;
@@ -50,16 +51,6 @@ public class CircleTriangleCollision extends Collision
             closestPointOnA = closestPointOnCircle;
             closestPointOnB = intersectionPoint;
 
-            System.err.println("CircleTriangleCollision::calculateTimeToIntersection - t: " + timeToCollisionX + "," + timeToCollisionY);
         }
-    }
-
-    public CircleTriangleCollision update()
-    {
-        timeToCollisionX = (closestPointOnB.x - closestPointOnA.x) / circleVelocity.x;
-        timeToCollisionY = (closestPointOnB.y - closestPointOnA.y) / circleVelocity.y;
-        System.err.println("CircleTriangleCollision::update - timeToCollision: " + timeToCollisionX + "," + timeToCollisionY);
-
-        return this;
     }
 }

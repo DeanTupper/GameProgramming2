@@ -2,9 +2,9 @@ package com.mygdx.game.entities;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.game.components.CornerBumperRenderable;
-import com.mygdx.game.components.Movable;
-import com.mygdx.game.components.TriangleCollidable;
+import com.mygdx.game.components.renderables.CornerBumperRenderable;
+import com.mygdx.game.components.movables.Movable;
+import com.mygdx.game.components.collidables.TriangleCollidable;
 import com.mygdx.game.subsystems.BoardManagerSubSystem.BoardManager;
 import com.mygdx.game.subsystems.CollidableSubsystem;
 import com.mygdx.game.subsystems.RenderSubsystem;
