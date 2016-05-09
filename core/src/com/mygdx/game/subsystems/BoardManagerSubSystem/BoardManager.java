@@ -57,8 +57,8 @@ public class BoardManager implements Subsystem
     {
         if (balls.size() < 1)
         {
-            instance.spawnBall(BallSpawns.TEST_SPAWN_1, ColorType.BLUE);
-            //instance.spawnBall(BallSpawns.TEST_SPAWN_2, ColorType.RED);
+            //instance.spawnBall(BallSpawns.TEST_SPAWN_1, ColorType.BLUE);
+            instance.spawnBall(BallSpawns.TEST_SPAWN_2, ColorType.RED);
         }
 
         if (spawnBalls)

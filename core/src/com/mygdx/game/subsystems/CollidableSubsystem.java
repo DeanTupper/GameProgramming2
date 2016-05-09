@@ -135,6 +135,8 @@ public class CollidableSubsystem implements Subsystem
         {
             checkBallForCollisions(ball, worldTimeStep);
         }
+
+        Set<Goal> goals = boardManager.getGoals();
     }
 
     private void checkBallForCollisions(Ball ball, float worldTimeStep)
