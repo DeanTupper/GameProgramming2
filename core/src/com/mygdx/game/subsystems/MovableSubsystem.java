@@ -38,7 +38,7 @@ public class MovableSubsystem implements Subsystem
 
     public void moveEntities(float worldTimeStep)
     {
-        for (Movable current : movables)
+        for (Movable current : new HashSet<Movable>(movables))
         {
             current.move(worldTimeStep);
         }

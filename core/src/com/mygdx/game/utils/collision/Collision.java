@@ -1,13 +1,10 @@
 package com.mygdx.game.utils.collision;
 
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.game.components.collidables.BallCollidable;
 import com.mygdx.game.components.collidables.CircleCollidable;
 import com.mygdx.game.components.collidables.Collidable;
-import com.mygdx.game.components.collidables.GoalCollidable;
 import com.mygdx.game.components.collidables.RectangleCollidable;
 import com.mygdx.game.components.collidables.TriangleCollidable;
-import com.mygdx.game.entities.Ball;
 
 import java.util.Arrays;
 

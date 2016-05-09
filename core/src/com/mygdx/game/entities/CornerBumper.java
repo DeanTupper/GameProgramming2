@@ -25,6 +25,7 @@ public class CornerBumper extends Entity
         RenderSubsystem.get().register(renderable);
 
         Movable triangleMovable = new Movable(triangle.origin, new Vector2());
+
         triangleCollidable = new TriangleCollidable(triangleMovable, triangle);
         CollidableSubsystem.get().register(triangleCollidable);
 
@@ -39,6 +40,8 @@ public class CornerBumper extends Entity
     @Override
     public void destroy()
     {
-
+        RenderSubsystem.get().remove(renderable);
+        CollidableSubsystem.get().remove(triangleCollidable);
+        BoardManager.get().remove(this);
     }
 }

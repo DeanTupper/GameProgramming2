@@ -47,7 +47,6 @@ public class CircleTriangleCollision extends Collision
 
             if (intersectionPoint.y == Float.POSITIVE_INFINITY)
             {
-                System.err.println("CircleTriangleCollision::calculateTimeToCollision - intersectionPoint.y == Float.POSITIVE_INFINITY for circle " + center + " w/ v: " + circleVelocity + " and triangle: " + triangleCollidable.getBounds());
             }
 
             System.err.println("CircleTriangleCollision::calculateTimeToCollision - Vc: " + circleVelocity + "; Pc: " + closestPointOnCircle + "; Pt: " + intersectionPoint);
@@ -60,7 +59,6 @@ public class CircleTriangleCollision extends Collision
 
             willCollide = timeToCollision < Float.MAX_VALUE && timeToCollision > 0f;
 
-            System.err.println("CircleTriangleCollision::calculateTimeToCollision - timeToCollision: " + timeToCollision);
         }
     }
 }

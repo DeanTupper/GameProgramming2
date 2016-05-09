@@ -67,7 +67,6 @@ public class CollidableSubsystem implements Subsystem
 
         while (worldTimeStep > 0f)
         {
-            System.err.println("CollidableSubsystem::update - loop iter - worldTimeStep: " + worldTimeStep);
             imminentCollisions.clear();
             boolean collisionToResolve = false;
 
@@ -87,7 +86,6 @@ public class CollidableSubsystem implements Subsystem
 
             if (collisionToResolve)
             {
-                System.err.println("CollidableSubsystem::update - resolving collision " + nextCollision);
                 nextCollision.resolve();
             }
 
@@ -135,8 +133,6 @@ public class CollidableSubsystem implements Subsystem
         {
             checkBallForCollisions(ball, worldTimeStep);
         }
-
-        Set<Goal> goals = boardManager.getGoals();
     }
 
     private void checkBallForCollisions(Ball ball, float worldTimeStep)
@@ -183,14 +179,17 @@ public class CollidableSubsystem implements Subsystem
 
                 if (otherBallCollisionsMap == null)
                 {
-                    System.err.println("CollidableSubsystem::checkBallAndCollidable - otherBallCollisionsMap is null");
+                    otherBallCollisionsMap = new HashMap<Collidable, Collision>();
+                    ballCollisionsMap.put(otherBall, otherBallCollisionsMap);
                 }
+
 
                 // Don't want balls to maintain separate collisions for each other
                 if (!otherBallCollisionsMap.containsKey(ball.getCollidable()))
                 {
                     otherBallCollisionsMap.put(ball.getCollidable(), collision);
                 }
+
             }
             else if (potentialCollidable instanceof CircleCollidable)
             {

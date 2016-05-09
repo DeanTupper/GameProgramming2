@@ -6,11 +6,7 @@ import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.GameWorld;
 import com.mygdx.game.components.collidables.BallCollidable;
-import com.mygdx.game.entities.Ball;
-import com.mygdx.game.entities.ColorType;
-import com.mygdx.game.entities.CornerBumper;
-import com.mygdx.game.entities.Entity;
-import com.mygdx.game.entities.Pylon;
+import com.mygdx.game.entities.*;
 import com.mygdx.game.subsystems.Subsystem;
 import com.mygdx.game.utils.UpdateDelta;
 import com.mygdx.game.utils.collision.CircleCircleCollision;
@@ -18,11 +14,16 @@ import com.mygdx.game.utils.collision.CircleCircleCollision;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
+
 
 public class BoardManager implements Subsystem
 {
     private static final float BALL_RADIUS = 1f;
     private static BoardManager instance;
+
+    private static final ThreadLocalRandom random = ThreadLocalRandom.current();
+    private float lastUpdate = 0;
     private final Random rand = new Random();
 
     private long nextBallSpawn = Integer.MAX_VALUE;
@@ -33,7 +34,7 @@ public class BoardManager implements Subsystem
     private final Set<Pylon> pylons = new HashSet<Pylon>();
     private final Set<CornerBumper> cornerBumpers = new HashSet<CornerBumper>();
 
-    private final boolean spawnBalls = false;
+    private final boolean spawnBalls = true;
     private final boolean spawnPylons = false;
 
     private static final DefaultStateMachine<BoardManager, BallState> ballState = new DefaultStateMachine<BoardManager, BallState>(BoardManager.get(), BallState.INITIAL_STATE);
@@ -55,11 +56,7 @@ public class BoardManager implements Subsystem
     @Override
     public void update(long deltaInMillis, UpdateDelta updateDelta)
     {
-        if (balls.size() < 1)
-        {
-            //instance.spawnBall(BallSpawns.TEST_SPAWN_1, ColorType.BLUE);
-            instance.spawnBall(BallSpawns.TEST_SPAWN_2, ColorType.RED);
-        }
+
 
         if (spawnBalls)
         {
@@ -73,7 +70,7 @@ public class BoardManager implements Subsystem
 
     private void ballUpdate(long deltaInMillis)
     {
-        if (balls.size() < 10)
+        if (balls.size() < 1)
         {
             if (nextBallSpawn == Integer.MAX_VALUE)
             {
@@ -84,15 +81,13 @@ public class BoardManager implements Subsystem
                 nextBallSpawn = nextBallSpawn - deltaInMillis;
                 if (balls.size() == 0 || nextBallSpawn <= 0)
                 {
-                    System.out.println("spawned a ball " + balls.size());
-                    spawnBall(BallSpawns.values()[nextPosition++ % 4], ColorType.BLUE);
+                    spawnBall(BallSpawns.values()[nextPosition++ % 4]);
                     nextBallSpawn = Integer.MAX_VALUE;
                 }
             }
         }
         else
         {
-            System.out.println("10 reached");
         }
     }
 
@@ -136,9 +131,30 @@ public class BoardManager implements Subsystem
         nextShiftChange = rand.nextInt(15000) + 10000;
     }
 
-    private void spawnBall(BallSpawns ballSpawns, ColorType colorType)
+    private void spawnBall(BallSpawns ballSpawns)
     {
-        new Ball(ballSpawns.getPosition(), ballSpawns.getVelocity(), colorType, BALL_RADIUS);
+        new Ball(ballSpawns.getPosition(), randomizeVelocity(ballSpawns.getVelocity()), ColorType.getRandomColorType(rand), BALL_RADIUS);
+    }
+
+    private Vector2 randomizeVelocity(Vector2 velocity)
+    {
+        if(rand.nextBoolean())
+        {
+            velocity.x = velocity.x + rand.nextFloat();
+        }
+        else
+        {
+            velocity.x = velocity.x - rand.nextFloat();
+        }
+        if(rand.nextBoolean())
+        {
+            velocity.y = velocity.y + rand.nextFloat();
+        }
+        else
+        {
+            velocity.y = velocity.y - rand.nextFloat();
+        }
+        return velocity;
     }
 
     public void registerBall(Ball ball)
@@ -218,6 +234,11 @@ public class BoardManager implements Subsystem
         return balls;
     }
 
+    public void spawnBall()
+    {
+        spawnBall(BallSpawns.values()[nextPosition++ % 4]);
+    }
+
     enum BallState implements State<BoardManager>
     {
         INITIAL_STATE()
@@ -231,15 +252,6 @@ public class BoardManager implements Subsystem
                     @Override
                     public void update(BoardManager entity)
                     {
-                        System.out.println("ballStateeee");
-                        //instance.spawnPylon();
-                        //instance.spawnPylon();
-                        instance.spawnBall(BallSpawns.TEST_SPAWN_1, ColorType.BLUE);
-                        instance.spawnBall(BallSpawns.TEST_SPAWN_2, ColorType.RED);
-
-                        //instance.spawnPylon(60,50);
-                        //instance.spawnPylon(55,50);
-
                         ballState.changeState(BallState.NORMAL_STATE);
                     }
 
@@ -268,7 +280,7 @@ public class BoardManager implements Subsystem
                     {
                         if (instance.balls.size() < 10)
                         {
-                            //instance.spawnBall(BallSpawns.values()[random.nextInt(BallSpawns.values().length)]);
+                            instance.spawnBall(BallSpawns.values()[random.nextInt(BallSpawns.values().length)]);
                         }
                     }
 
@@ -286,17 +298,14 @@ public class BoardManager implements Subsystem
                 }
     }
 
-    private void spawnPylon()
+    public void spawnPylon()
     {
         Pylon.generateRandomPylon(rand);
     }
 
     enum BallSpawns
     {
-        TEST_SPAWN_1(new Vector2(30f, 40f), new Vector2(-0.5f, -0.65f)),
-        TEST_SPAWN_2(new Vector2(10f, 50f), new Vector2(0, -0.5f)),
-        TEST_SPAWN_MIDLEFT(new Vector2(20f, 50f), new Vector2(0.5f, 0f)),
-        TEST_SPAWN_MIDRIGHT(new Vector2(80f, 50f), new Vector2(-0.5f, 0f)),
+
         BOTTOM_LEFT(new Vector2(10, 10), new Vector2(1f, 1f)),
         BOTTOM_RIGHT(new Vector2(90, 10), new Vector2(-1, 1f)),
         TOP_RIGHT(new Vector2(90, 90), new Vector2(-1f, -1f)),
