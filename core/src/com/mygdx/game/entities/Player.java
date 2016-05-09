@@ -3,9 +3,11 @@ package com.mygdx.game.entities;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.GameWorld;
+import com.mygdx.game.components.collidables.RectangleCollidable;
 import com.mygdx.game.components.movables.Movable;
 import com.mygdx.game.components.movables.PaddleMovable;
 import com.mygdx.game.components.renderables.PlayerRenderable;
+import com.mygdx.game.subsystems.CollidableSubsystem;
 import com.mygdx.game.subsystems.MovableSubsystem;
 import com.mygdx.game.subsystems.RenderSubsystem;
 import com.mygdx.game.utils.shapes.Rectangle;
@@ -50,6 +52,7 @@ public class Player extends Entity
     private final Rectangle movementBounds;
 
     private Integer score = 500;
+    private final RectangleCollidable collidable;
 
     public Player(float x, float y, Vector2 deltaVelocity, int negativeDirKeyCode, int positiveDirKeyCode, Color color)
     {
@@ -80,6 +83,9 @@ public class Player extends Entity
 
         renderable = new PlayerRenderable(position, width, height, color);
         RenderSubsystem.get().register(renderable);
+
+        collidable = new RectangleCollidable(movable, movementBounds, width, height);
+        CollidableSubsystem.get().register(collidable);
     }
 
     public void decrementScore()

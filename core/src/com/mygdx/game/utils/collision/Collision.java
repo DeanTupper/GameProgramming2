@@ -18,12 +18,6 @@ public abstract class Collision implements Comparable<Collision>
     public Vector2 initVelocityA;
     public Vector2 initVelocityB;
 
-    public Vector2 closestPointOnA = new Vector2();
-    public Vector2 closestPointOnB = new Vector2();
-
-    public float timeToCollisionX = Float.MAX_VALUE;
-    public float timeToCollisionY = Float.MAX_VALUE;
-
     public float timeToCollision = Float.MAX_VALUE;
 
     public Collision(Collidable a, Collidable b)
