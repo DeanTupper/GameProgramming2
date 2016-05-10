@@ -67,12 +67,12 @@ public class PaddleAi implements Component
 
     private void calcMovement(float paddlePosition, float offset, float ballPosition)
     {
-        if (paddlePosition + offset / 2 < ballPosition)
+        if (paddlePosition + offset / 2f < ballPosition)
         {
             movable.setPositive(true);
             movable.setNegative(false);
         }
-        else if (paddlePosition + offset / 2 > ballPosition)
+        else if (paddlePosition + offset / 2f > ballPosition)
         {
             movable.setPositive(false);
             movable.setNegative(true);

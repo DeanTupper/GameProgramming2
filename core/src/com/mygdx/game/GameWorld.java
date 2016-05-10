@@ -30,8 +30,8 @@ public class GameWorld implements InputProcessor
     private boolean player3Alive = true;
     private boolean player4Alive = true;
 
-    public static final UpdateDelta INIT_UPDATE_DELTA = UpdateDelta.SLOWEST;
-    public static boolean debugMode = false;
+    public static final UpdateDelta INIT_UPDATE_DELTA = UpdateDelta.FAST;
+    public static boolean debugMode = true;
     private UpdateDelta updateDelta = INIT_UPDATE_DELTA;
     public static long updateThreshold = INIT_UPDATE_DELTA.threshold;
 
@@ -43,6 +43,11 @@ public class GameWorld implements InputProcessor
 
     private long timeOfLastUpdate;
     private long elapsedTime;
+
+    private Goal player1Goal;
+    private Goal player2Goal;
+    private Goal player3Goal;
+    private Goal player4Goal;
 
     private BoardManager boardManager;
     private QuadSubsystem quadSubsystem;
@@ -58,6 +63,7 @@ public class GameWorld implements InputProcessor
 
 
         boardManager = BoardManager.get();
+        boardManager.setGameWorld(this);
         collidableSubsystem = CollidableSubsystem.get();
         collidableSubsystem.setGameWorld(this);
         renderSubsystem = RenderSubsystem.get();
@@ -80,13 +86,13 @@ public class GameWorld implements InputProcessor
         System.err.println("BoardManager::createGoals - player1: " + player1 + "; player2: " + player2);
         QuadSubsystem quadSubsystem = QuadSubsystem.get();
         // Bottom
-        new Goal(quadSubsystem.getGoalQuads(0, 0, 10, 2), new Rectangle(0f, 0f, 100f, 3f), Direction.NORTH, player1);
+        player1Goal = new Goal(quadSubsystem.getGoalQuads(0, 0, 10, 2), new Rectangle(0f, 0f, 100f, 3f), Direction.NORTH, player1);
         // Right
-        new Goal(quadSubsystem.getGoalQuads(8, 0, 10, 10), new Rectangle(97f, 0f, 3f, 100f), Direction.WEST, GameWorld.player2);
+        player2Goal = new Goal(quadSubsystem.getGoalQuads(8, 0, 10, 10), new Rectangle(97f, 0f, 3f, 100f), Direction.WEST, GameWorld.player2);
         //Top
-        new Goal(quadSubsystem.getGoalQuads(0, 8, 10, 10), new Rectangle(0f, 97f, 100f, 3f), Direction.SOUTH, GameWorld.player3);
+        player3Goal = new Goal(quadSubsystem.getGoalQuads(0, 8, 10, 10), new Rectangle(0f, 97f, 100f, 3f), Direction.SOUTH, GameWorld.player3);
         // Left
-        new Goal(quadSubsystem.getGoalQuads(0, 0, 2, 10), new Rectangle(0f, 0f, 3f, 100f), Direction.EAST, GameWorld.player4);
+        player4Goal = new Goal(quadSubsystem.getGoalQuads(0, 0, 2, 10), new Rectangle(0f, 0f, 3f, 100f), Direction.EAST, GameWorld.player4);
     }
 
     private void createCornerBumpers()
@@ -109,20 +115,20 @@ public class GameWorld implements InputProcessor
     private void createPlayers()
     {
         // Bottom - p1
-        player1 = new Player(Player.POS_X_MID, Player.POS_Y_BOT, Player.VELOCITY_DELTA_HORIZONTAL, Input.Keys.Q, Input.Keys.E, Player.COLOR_P1);
+        player1 = new Player(Player.POS_X_MID, Player.POS_Y_BOT, Player.VELOCITY_DELTA_HORIZONTAL, Input.Keys.Q, Input.Keys.E, Player.COLOR_P1,quadSubsystem.getGoalQuads(0, 0, 10, 2));
 //        player1 = new AiPlayer(Player.POS_X_MID, Player.POS_Y_BOT, Player.VELOCITY_DELTA_HORIZONTAL,Player.COLOR_P1,1);
 
         // Right - p2
-//        player2 = new Player(Player.POS_X_RIGHT, Player.POS_Y_MID, Player.VELOCITY_DELTA_VERTICAL, Input.Keys.N, Input.Keys.M, Player.COLOR_P2);
-        player2 = new AiPlayer(Player.POS_X_RIGHT, Player.POS_Y_MID, Player.VELOCITY_DELTA_VERTICAL, Player.COLOR_P2,2);
+        player2 = new Player(Player.POS_X_RIGHT, Player.POS_Y_MID, Player.VELOCITY_DELTA_VERTICAL, Input.Keys.N, Input.Keys.M, Player.COLOR_P2,quadSubsystem.getGoalQuads(8, 0, 10, 10));
+//        player2 = new AiPlayer(Player.POS_X_RIGHT, Player.POS_Y_MID, Player.VELOCITY_DELTA_VERTICAL, Player.COLOR_P2,2);
 
         // Top - p3
-//        player3 = new Player(Player.POS_X_MID, Player.POS_Y_TOP, Player.VELOCITY_DELTA_HORIZONTAL, Input.Keys.C, Input.Keys.Z, Player.COLOR_P3);
-        player3 = new AiPlayer(Player.POS_X_MID, Player.POS_Y_TOP, Player.VELOCITY_DELTA_HORIZONTAL, Player.COLOR_P3,3);
+        player3 = new Player(Player.POS_X_MID, Player.POS_Y_TOP, Player.VELOCITY_DELTA_HORIZONTAL, Input.Keys.C, Input.Keys.Z, Player.COLOR_P3,quadSubsystem.getGoalQuads(0, 8, 10, 10));
+//        player3 = new AiPlayer(Player.POS_X_MID, Player.POS_Y_TOP, Player.VELOCITY_DELTA_HORIZONTAL, Player.COLOR_P3,3);
 
         // Left - p4
-//        player4 = new Player(Player.POS_X_LEFT, Player.POS_Y_MID, Player.VELOCITY_DELTA_VERTICAL, Input.Keys.I, Input.Keys.P, Player.COLOR_P4);
-        player4 = new AiPlayer(Player.POS_X_LEFT, Player.POS_Y_MID, Player.VELOCITY_DELTA_VERTICAL, Player.COLOR_P4,4);
+        player4 = new Player(Player.POS_X_LEFT, Player.POS_Y_MID, Player.VELOCITY_DELTA_VERTICAL, Input.Keys.I, Input.Keys.P, Player.COLOR_P4,quadSubsystem.getGoalQuads(0, 0, 2, 10));
+        //player4 = new AiPlayer(Player.POS_X_LEFT, Player.POS_Y_MID, Player.VELOCITY_DELTA_VERTICAL, Player.COLOR_P4,4);
     }
 
     public Rectangle getWorldBounds()
@@ -162,24 +168,28 @@ public class GameWorld implements InputProcessor
             player1.createBarrier();
             player1Alive = false;
             renderSubsystem.remove(player1.getRenderable());
+            player1Goal.shouldCheckForCollisions(false);
         }
         if (player2.getScore() == 0 && player2Alive)
         {
             player2Alive = false;
             player2.createBarrier();
             renderSubsystem.remove(player2.getRenderable());
+            player2Goal.shouldCheckForCollisions(false);
         }
         if (player3.getScore() == 0 && player3Alive)
         {
             player3Alive = false;
             player3.createBarrier();
             renderSubsystem.remove(player3.getRenderable());
+            player3Goal.shouldCheckForCollisions(false);
         }
         if (player4.getScore() == 0 && player4Alive)
         {
             player4Alive = false;
             player4.createBarrier();
             renderSubsystem.remove(player4.getRenderable());
+            player4Goal.shouldCheckForCollisions(false);
         }
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE))
         {

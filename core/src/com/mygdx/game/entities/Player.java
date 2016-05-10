@@ -6,19 +6,23 @@ import com.mygdx.game.components.movables.PaddleMovable;
 import com.mygdx.game.components.renderables.PlayerRenderable;
 import com.mygdx.game.subsystems.MovableSubsystem;
 import com.mygdx.game.subsystems.RenderSubsystem;
+import com.mygdx.game.utils.Quad;
 import com.mygdx.game.utils.shapes.Rectangle;
+
+import java.util.Set;
 
 public class Player extends OverallPlayer
 {
-    public Player(float x, float y, Vector2 deltaVelocity, int negativeDirKeyCode, int positiveDirKeyCode, Color color)
+    public Player(float x, float y, Vector2 deltaVelocity, int negativeDirKeyCode, int positiveDirKeyCode, Color color, Set<Quad> quads)
     {
-        this(new Vector2(x, y), deltaVelocity, positiveDirKeyCode, negativeDirKeyCode, color);
+        this(new Vector2(x, y), deltaVelocity, positiveDirKeyCode, negativeDirKeyCode, color,quads);
     }
 
-    public Player(Vector2 position, Vector2 deltaVelocity, int negativeDirKeyCode, int positiveDirKeyCode, Color color)
+    public Player(Vector2 position, Vector2 deltaVelocity, int negativeDirKeyCode, int positiveDirKeyCode, Color color, Set<Quad> quads)
     {
         width = DIMEN_MINOR;
         height = DIMEN_MINOR;
+        this.quads = quads;
 
         if (deltaVelocity.x != 0f)
         {

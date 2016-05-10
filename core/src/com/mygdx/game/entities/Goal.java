@@ -38,4 +38,9 @@ public class Goal
     {
         return collidable;
     }
+
+    public void shouldCheckForCollisions(boolean b)
+    {
+        collidable.shouldCheckForCollisions(b);
+    }
 }

@@ -20,15 +20,17 @@ public class Barrier extends Entity
     private final BarrierRenderable renderable;
     private final RectangleCollidable collidable;
     private final Rectangle rect;
+    private Set<Quad> quads;
 
-    public Barrier(Vector2 position, float width, float height, Direction collidableEdgeDir)
+    public Barrier(Vector2 position, float width, float height, Direction collidableEdgeDir,Set<Quad> quads)
     {
         this.position = position;
+        this.quads = quads;
         this.renderable = new BarrierRenderable(position,width,height, Color.WHITE);
 
         RenderSubsystem.get().register(renderable);
-        rect =new Rectangle(position.x, position.y, width, height);
-        collidable = new RectangleCollidable(rect, collidableEdgeDir,getQuadSet());
+        rect = new Rectangle(position.x, position.y, width, height);
+        collidable = new RectangleCollidable(rect, collidableEdgeDir, getQuadSet());
 
         CollidableSubsystem.get().register(collidable);
     }
@@ -42,6 +44,6 @@ public class Barrier extends Entity
 
     public Set<Quad> getQuadSet()
     {
-        return QuadSubsystem.get().getGoalQuads((int) (position.x / 10f), (int) (position.y / 10f), (int) ((rect.right + 10f) / 10f), (int) (rect.top / 10f));
+        return quads;
     }
 }

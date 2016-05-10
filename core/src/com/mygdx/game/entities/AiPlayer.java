@@ -14,7 +14,10 @@ import static com.mygdx.game.entities.Player.POS_Y_VERITCAL_MIN;
 import com.mygdx.game.subsystems.AiSubsystem;
 import com.mygdx.game.subsystems.MovableSubsystem;
 import com.mygdx.game.subsystems.RenderSubsystem;
+import com.mygdx.game.utils.Quad;
 import com.mygdx.game.utils.shapes.Rectangle;
+
+import java.util.Set;
 
 /**
  * Created by dean on 5/5/16.
@@ -25,15 +28,17 @@ public class AiPlayer extends OverallPlayer
     private Boolean positive;
     private Boolean negative;
 
-    public AiPlayer(float x, float y, Vector2 deltaVelocity ,Color color, int player)
+    public AiPlayer(float x, float y, Vector2 deltaVelocity , Color color, int player, Set<Quad> quads)
     {
-        this(new Vector2(x, y), deltaVelocity,  color, player);
+        this(new Vector2(x, y), deltaVelocity,  color, player,quads);
     }
 
-    public AiPlayer(Vector2 position, Vector2 deltaVelocity, Color color, int player)
+    public AiPlayer(Vector2 position, Vector2 deltaVelocity, Color color, int player, Set<Quad> quads)
     {
         width = DIMEN_MINOR;
         height = DIMEN_MINOR;
+
+        this.quads = quads;
 
         if (deltaVelocity.x != 0f)
         {

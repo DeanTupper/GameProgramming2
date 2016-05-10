@@ -40,6 +40,8 @@ public class CollidableSubsystem implements Subsystem
     private final PriorityQueue<Collision> imminentCollisions = new PriorityQueue<Collision>();
     private final Set<Collision> ballOnBallCollisionsChecked = new HashSet<Collision>();
 
+    private Collision lastCollsionResolved;
+
     private float totalWorldTime = 0f;
 
     public static CollidableSubsystem get()
@@ -88,8 +90,16 @@ public class CollidableSubsystem implements Subsystem
 
             if (collisionToResolve)
             {
-                System.err.println("CollidableSubsystem::update - resolving collision");
-                nextCollision.resolve();
+                if (lastCollsionResolved != null && lastCollsionResolved.equals(nextCollision))
+                {
+                    System.err.println("CollidableSubsystem::update - resolving same collision twice - collision: " + collisionToResolve);
+                    gameWorld.pause();
+                }
+                else
+                {
+                    System.err.println("CollidableSubsystem::update - resolving collision " + nextCollision);
+                    nextCollision.resolve();
+                }
             }
 
             worldTimeStep -= discreteTimeStep;
@@ -158,34 +168,47 @@ public class CollidableSubsystem implements Subsystem
 
         for (Collidable potentialCollidable : potentialCollidables)
         {
-            System.err.println("CollidableSubsystem::checkBallForCollisions - potentialCollidable: " + potentialCollidable);
             checkBallAndCollidable(ball, potentialCollidable, collisionsMap, worldTimeStep, threshold);
         }
 
         for (RectangleCollidable rect : rectangleCollidables)
         {
-            if (rect.isCollidableInRectangle(ball.getCollidable()))
-            {
-                Collision collision = collisionsMap.get(rect);
-
-                if (collision == null || !collision.isEasyToUpdate())
+            if (rect.shouldCheckForCollisions()) {
+                System.err.println("************************************CollidableSubsystem::checkBallForCollisions - checking rectangle collidable " + rect);
+                System.err.println("CollidableSubsystem::checkBallForCollisions - ball " + ball + " in quad " + quadSubsystem.getQuad(ball.getPosition()));
+                if (rect.isCollidableInRectangle(ball.getCollidable()))
                 {
-                    collision = new CircleRectangleCollision(ball.getCollidable(), rect);
+                    Collision collision = collisionsMap.get(rect);
+                    System.err.println("CollidableSubsystem::checkBallForCollisions - collision: " + collision);
 
-                    collision.calculateTimeToCollision();
-                    collisionsMap.put(rect, collision);
+                    if (collision == null || !collision.isEasyToUpdate())
+                    {
+                        System.err.println("CollidableSubsystem::checkBallForCollisions - collision == null: " + String.valueOf(collision == null) + "; !collision.isEasyToUpdate: " + (collision != null ? String.valueOf(!collision.isEasyToUpdate()): ""));
+                        System.err.println("CollidableSubsystem::checkBallForCollisions - stuff");
+                        collision = new CircleRectangleCollision(ball.getCollidable(), rect);
+
+                        collision.calculateTimeToCollision();
+                        collisionsMap.put(rect, collision);
+                    }
+
+                    System.err.println("CollidableSubsystem::checkBallForCollisions - collision.willCollide: " + collision.willCollide + "; collision.timeToCollision < threshold: " + String.valueOf(collision.timeToCollision < threshold));
+                    if (collision.willCollide && collision.timeToCollision < threshold)
+                    {
+                        imminentCollisions.add(collision);
+                    }
                 }
-
-                if (collision.willCollide && collision.timeToCollision < threshold)
+                else
                 {
-                    imminentCollisions.add(collision);
+                    System.err.println("CollidableSubsystem::checkBallForCollisions - ball " + ball + " was not in rectangles quads");
                 }
+                System.err.println("************************************CollidableSubsystem::checkBallForCollisions - done checking rectangle collidable " + rect);
             }
         }
     }
 
     private void checkBallAndCollidable(Ball ball, Collidable potentialCollidable, Map<Collidable, Collision> collisionsMap, float worldTimeStep, float threshold)
     {
+        System.err.println("*************************CollidableSubsystem::checkBallAndCollidable - CHECKING BALL AND COLLIDABLE " + potentialCollidable);
         boolean ballBallCollision = potentialCollidable instanceof BallCollidable;
 
         Collision collision = collisionsMap.get(potentialCollidable);
@@ -205,7 +228,6 @@ public class CollidableSubsystem implements Subsystem
                     otherBallCollisionsMap = new HashMap<Collidable, Collision>();
                     ballCollisionsMap.put(otherBall, otherBallCollisionsMap);
                 }
-
 
                 // Don't want balls to maintain separate collisions for each other
                 if (!otherBallCollisionsMap.containsKey(ball.getCollidable()))
@@ -242,6 +264,7 @@ public class CollidableSubsystem implements Subsystem
         {
             imminentCollisions.add(collision);
         }
+        System.err.println("********************CollidableSubsystem::checkBallAndCollidable - END OF CHECKING POTENTIAL COLLIDABLE" + potentialCollidable);
     }
 
     public void setGameWorld(GameWorld gameWorld)

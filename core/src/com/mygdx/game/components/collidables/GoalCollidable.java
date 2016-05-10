@@ -11,7 +11,7 @@ public class GoalCollidable extends RectangleCollidable
 {
     private final OverallPlayer player;
 
-    public GoalCollidable(Rectangle bounds, Direction collidableEdgeDir, OverallPlayer player, Set<Quad>  rectQuads)
+    public GoalCollidable(Rectangle bounds, Direction collidableEdgeDir, OverallPlayer player, Set<Quad> rectQuads)
     {
         super(bounds, collidableEdgeDir, rectQuads);
 
@@ -21,5 +21,16 @@ public class GoalCollidable extends RectangleCollidable
     public Rectangle getPlayerPaddleBounds()
     {
         return player.getPaddleBounds();
+    }
+
+    @Override
+    public String toString()
+    {
+        return "GOAL COLLIDABLE: " + super.toString();
+    }
+
+    public void shouldCheckForCollisions(boolean check)
+    {
+        shouldCheckForCollisions = check;
     }
 }

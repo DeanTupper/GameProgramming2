@@ -13,10 +13,11 @@ import java.util.Set;
 
 public class RectangleCollidable extends Collidable
 {
-    private final Rectangle bounds;
-    private final LineSegment collidableEdge;
-    private final Direction collidableEdgeDir;
-    private final Set<Quad> rectangleQuads;
+    protected final Rectangle bounds;
+    protected final LineSegment collidableEdge;
+    protected final Direction collidableEdgeDir;
+    protected final Set<Quad> rectangleQuads;
+    protected boolean shouldCheckForCollisions = true;
 
     public RectangleCollidable(Rectangle bounds, Direction collidableEdgeDir, Set<Quad> rectangleQuads)
     {
@@ -59,7 +60,7 @@ public class RectangleCollidable extends Collidable
     @Override
     public String toString()
     {
-        return "RectangleCollidable " + super.toString();
+        return "RectangleCollidable " + super.toString() + " with quads " + rectangleQuads;
     }
 
     public Rectangle getBounds()
@@ -75,5 +76,10 @@ public class RectangleCollidable extends Collidable
     public Direction getCollidableEdgeDir()
     {
         return collidableEdgeDir;
+    }
+
+    public boolean shouldCheckForCollisions()
+    {
+        return shouldCheckForCollisions;
     }
 }

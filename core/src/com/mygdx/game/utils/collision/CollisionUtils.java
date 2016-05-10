@@ -1,6 +1,5 @@
 package com.mygdx.game.utils.collision;
 
-import static com.badlogic.gdx.math.Interpolation.circle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.utils.shapes.Line;
@@ -91,14 +90,17 @@ public final class CollisionUtils
 
         if (Math.abs(discriminant) - 0.8f < 0f)
         {
+            System.err.println("CollisionUtils::solveQuadraticEquation - discriminant ~= 0");
             timeToCollision = -b / (2 * a);
         }
         else if (discriminant < 0f)
         {
+            System.err.println("CollisionUtils::solveQuadraticEquation - discriminant  < 0");
             timeToCollision = Float.MAX_VALUE;
         }
         else
         {
+            System.err.println("CollisionUtils::solveQuadraticEquation - discriminant > 0");
             discriminant = (float) Math.sqrt(discriminant);
 
             float a2 = a * 2;
@@ -140,14 +142,13 @@ public final class CollisionUtils
         Line circleTrajectory = Line.getLineFromPointAndVelocity(circleCenter, circleVelocity);
 
         Line otherLine = Line.getLineFromTwoPoints(edge.pointA(), edge.pointB());
-        System.err.println("CollisionUtils::getTimeToCollisionOfCircleWithEdge - otherLine: " + otherLine);
+        System.err.println("CollisionUtils::getTimeToCollisionOfCircleWithEdge - otherLine: " + otherLine + "; circleTrajectory: " + circleTrajectory);
         Vector2 intersectionPoint = circleTrajectory.findIntersectionPointWith(otherLine);
         System.err.println("CollisionUtils::getTimeToCollisionOfCircleWithEdge - intersectionPoint: " + intersectionPoint + "; edge.pointIsOnLine: " + edge.pointIsOnLine(intersectionPoint));
 
         if (intersectionPoint != null && edge.pointIsOnLine(intersectionPoint))
         {
             Vector2 circleVelNor = circleVelocity.cpy().nor();
-
             Vector2 closestPointOnCircle = CollisionUtils.getPointOnCircle(circleCenter, circleVelNor, radius);
 
             float a = circleVelocity.dot(circleVelocity);
@@ -162,8 +163,8 @@ public final class CollisionUtils
 
     public static boolean isPointInRectangle(Vector2 intersectionPoint, Rectangle rect)
     {
-        boolean pointWithinXBounds = intersectionPoint.x >= rect.x && intersectionPoint.x <= rect.right;
-        boolean pointWithinYBounds = intersectionPoint.y >= rect.y && intersectionPoint.y <= rect.top;
+        boolean pointWithinXBounds = (intersectionPoint.x + 0.0015) >= rect.x && (intersectionPoint.x - 0.0015) <= rect.right;
+        boolean pointWithinYBounds = (intersectionPoint.y + 0.0015) >= rect.y && (intersectionPoint.y - 0.0015) <= rect.top;
         return pointWithinXBounds && pointWithinYBounds;
     }
 }

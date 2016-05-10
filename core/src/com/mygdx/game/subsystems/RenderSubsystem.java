@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.DeanTestGame;
 import com.mygdx.game.GameWorld;
 import com.mygdx.game.components.renderables.Renderable;
@@ -30,16 +29,13 @@ public class RenderSubsystem implements Subsystem
     private final SpriteBatch spriteBatch = new SpriteBatch();
     private final OrthographicCamera camera = new OrthographicCamera();
 
-    private static final int WIDTH_BUFFER = (int) GameWorld.DEFAULT_WORLD_WIDTH;
-    private static final int HEIGHT_BUFFER = (int) GameWorld.DEFAULT_WORLD_HEIGHT;
-
     private static final float WIDTH_HALF_WORLD = GameWorld.DEFAULT_WORLD_WIDTH / 2.0f;
     private static final float HEIGHT_HALF_WORLD = GameWorld.DEFAULT_WORLD_HEIGHT / 2.0f;
 
     private static final float SIZE_PLAYER_VIEW = 45.0f;
 
     private FrameBuffer buffer = new FrameBuffer(Pixmap.Format.RGB888, DeanTestGame.DEFAULT_APP_WIDTH, DeanTestGame.DEFAULT_APP_HEIGHT, false);
-    private Texture tex = new Texture(WIDTH_BUFFER, HEIGHT_BUFFER, Pixmap.Format.RGB888);
+    private Texture tex = new Texture(DeanTestGame.DEFAULT_APP_WIDTH, DeanTestGame.DEFAULT_APP_HEIGHT, Pixmap.Format.RGB888);
     private TextureRegion texRegion = new TextureRegion(tex);
     BitmapFont font = new BitmapFont();
 
@@ -218,10 +214,10 @@ public class RenderSubsystem implements Subsystem
 //            shapeRenderer.rect(quad.getCol() * 4.5f, 55f + quad.getRow() * 4.5f, 4.5f, 4.5f);
 //        }
 
-//        if (GameWorld.debugMode)
-//        {
-//            debugRendering();
-//        }
+        if (GameWorld.debugMode)
+        {
+            debugRendering();
+        }
 
         shapeRenderer.end();
     }
@@ -262,13 +258,13 @@ public class RenderSubsystem implements Subsystem
 
     private void renderQuadAndNeighbors(Quad quad)
     {
-        shapeRenderer.rect(quad.getCol() * 10f, 0f + quad.getRow() * 10f, 10f, 10f);
+        shapeRenderer.rect(quad.getCol() * 4.5f, 55f + quad.getRow() * 4.5f, 4.5f, 4.5f);
 
         Set<Quad> neighbors = quad.getNeighbors();
 
         for (Quad neighbor : neighbors)
         {
-            shapeRenderer.rect(neighbor.getCol() * 10f, 0f + neighbor.getRow() * 10f, 10f, 10f);
+            shapeRenderer.rect(neighbor.getCol() * 4.5f, 55f + neighbor.getRow() * 4.5f, 4.5f, 4.5f);
         }
     }
 }

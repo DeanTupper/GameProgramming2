@@ -1,18 +1,10 @@
 package com.mygdx.game.subsystems.BoardManagerSubSystem;
 
-import com.badlogic.gdx.ai.fsm.DefaultStateMachine;
-import com.badlogic.gdx.ai.fsm.State;
-import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.GameWorld;
-import static com.mygdx.game.GameWorld.player1;
-import static com.mygdx.game.GameWorld.player2;
 import com.mygdx.game.entities.*;
-import com.mygdx.game.subsystems.QuadSubsystem;
 import com.mygdx.game.subsystems.Subsystem;
-import com.mygdx.game.utils.Direction;
 import com.mygdx.game.utils.UpdateDelta;
-import com.mygdx.game.utils.shapes.Rectangle;
 
 import java.util.HashSet;
 import java.util.Random;
@@ -28,9 +20,11 @@ public class BoardManager implements Subsystem
     private static final ThreadLocalRandom random = ThreadLocalRandom.current();
     private final Random rand = new Random();
 
-    private long nextBallSpawn = Integer.MAX_VALUE;
+    private long nextBallSpawn = Long.MAX_VALUE;
     private int nextPosition = 0;
     private long nextShiftChange = 0;
+
+    private GameWorld gameWorld;
 
     private final Set<Ball> balls = new HashSet<Ball>();
     private final Set<Pylon> pylons = new HashSet<Pylon>();
@@ -38,8 +32,6 @@ public class BoardManager implements Subsystem
 
     private final boolean spawnBalls = true;
     private final boolean spawnPylons = true;
-
-    private static final DefaultStateMachine<BoardManager, BallState> ballState = new DefaultStateMachine<BoardManager, BallState>(BoardManager.get(), BallState.INITIAL_STATE);
 
     public static BoardManager get()
     {
@@ -58,8 +50,6 @@ public class BoardManager implements Subsystem
     @Override
     public void update(long deltaInMillis, UpdateDelta updateDelta)
     {
-
-
         if (spawnBalls)
         {
             ballUpdate(deltaInMillis);
@@ -84,18 +74,15 @@ public class BoardManager implements Subsystem
                 if (balls.size() == 0 || nextBallSpawn <= 0)
                 {
                     spawnBall(BallSpawns.values()[nextPosition++ % 4]);
-                    nextBallSpawn = Integer.MAX_VALUE;
+                    nextBallSpawn = Long.MAX_VALUE;
                 }
             }
-        }
-        else
-        {
         }
     }
 
     private void decideNextBallSpawn()
     {
-        nextBallSpawn = rand.nextInt(3000) + 1000;
+        nextBallSpawn = rand.nextInt(3) + 1;
     }
 
     private void pylonUpdate(long deltaInMillis)
@@ -242,73 +229,23 @@ public class BoardManager implements Subsystem
         spawnBall(BallSpawns.values()[nextPosition++ % 4]);
     }
 
-    enum BallState implements State<BoardManager>
-    {
-        INITIAL_STATE()
-                {
-                    @Override
-                    public void enter(BoardManager entity)
-                    {
-
-                    }
-
-                    @Override
-                    public void update(BoardManager entity)
-                    {
-                        ballState.changeState(BallState.NORMAL_STATE);
-                    }
-
-                    @Override
-                    public void exit(BoardManager entity)
-                    {
-
-                    }
-
-                    @Override
-                    public boolean onMessage(BoardManager entity, Telegram telegram)
-                    {
-                        return false;
-                    }
-                },
-        NORMAL_STATE()
-                {
-                    @Override
-                    public void enter(BoardManager entity)
-                    {
-
-                    }
-
-                    @Override
-                    public void update(BoardManager entity)
-                    {
-                        if (instance.balls.size() < 10)
-                        {
-                            instance.spawnBall(BallSpawns.values()[random.nextInt(BallSpawns.values().length)]);
-                        }
-                    }
-
-                    @Override
-                    public void exit(BoardManager entity)
-                    {
-
-                    }
-
-                    @Override
-                    public boolean onMessage(BoardManager entity, Telegram telegram)
-                    {
-                        return false;
-                    }
-                }
-    }
-
     public void spawnPylon()
     {
         Pylon.generateRandomPylon(rand);
     }
 
+    public void setGameWorld(GameWorld gameWorld)
+    {
+        this.gameWorld = gameWorld;
+    }
+
+    public GameWorld getGameWorld()
+    {
+        return gameWorld;
+    }
+
     enum BallSpawns
     {
-
         BOTTOM_LEFT(new Vector2(10, 10), new Vector2(1f, 1f)),
         BOTTOM_RIGHT(new Vector2(90, 10), new Vector2(-1, 1f)),
         TOP_RIGHT(new Vector2(90, 90), new Vector2(-1f, -1f)),

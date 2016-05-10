@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.GameWorld;
 import com.mygdx.game.components.movables.Movable;
 import com.mygdx.game.components.renderables.PlayerRenderable;
+import com.mygdx.game.subsystems.BoardManagerSubSystem.BoardManager;
 import com.mygdx.game.subsystems.QuadSubsystem;
 import com.mygdx.game.utils.Direction;
 import com.mygdx.game.utils.Quad;
@@ -54,7 +55,8 @@ public abstract class OverallPlayer extends Entity
     protected float width;
     protected float height;
 
-    private Integer score = 10;
+    private Integer score = 1;
+    protected Set<Quad> quads;
 
     public Integer getScore()
     {
@@ -64,6 +66,10 @@ public abstract class OverallPlayer extends Entity
     public void decrementScore()
     {
         score--;
+
+        if (score < 0) {
+            BoardManager.get().getGameWorld().pause();
+        }
     }
 
     public void createBarrier()
@@ -88,7 +94,7 @@ public abstract class OverallPlayer extends Entity
 
         Direction edgeDir = getCollidableEdgeDir();
 
-        new Barrier(new Vector2(movementBounds.x, movementBounds.y), tempWidth, tempHeight, edgeDir);
+        new Barrier(new Vector2(movementBounds.x, movementBounds.y), tempWidth, tempHeight, edgeDir,quads);
     }
 
     public Rectangle getPaddleBounds()

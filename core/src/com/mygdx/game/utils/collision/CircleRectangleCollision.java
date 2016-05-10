@@ -24,7 +24,6 @@ public class CircleRectangleCollision extends Collision
     @Override
     public void calculateTimeToCollision()
     {
-        System.err.println("CircleRectangleCollision::calculateTimeToCollision");
         resetInitialVelocities();
         LineSegment collidableEdge = rectangle.getCollidableEdge();
 
