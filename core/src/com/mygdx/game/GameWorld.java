@@ -5,12 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.game.entities.AiPlayer;
-import com.mygdx.game.entities.Barrier;
-import com.mygdx.game.entities.CornerBumper;
-import com.mygdx.game.entities.Goal;
-import com.mygdx.game.entities.OverallPlayer;
-import com.mygdx.game.entities.Player;
+import com.mygdx.game.entities.*;
 import com.mygdx.game.subsystems.*;
 import com.mygdx.game.subsystems.BoardManagerSubSystem.BoardManager;
 import com.mygdx.game.utils.Direction;
@@ -97,18 +92,18 @@ public class GameWorld implements InputProcessor
     private void createCornerBumpers()
     {
         CornerBumper bottomLeft = new CornerBumper(new Vector2(3, 3), new Vector2(3, 13), new Vector2(13, 3), Color.WHITE);
-        //new Barrier(new Vector2(0, 0), 13, 3);
-        //new Barrier(new Vector2(0, 0), 3, 13);
+        new VisualBarrier(new Vector2(0, 0), 13, 3);
+        new VisualBarrier(new Vector2(0, 0), 3, 13);
         CornerBumper bottomRight = new CornerBumper(new Vector2(97, 3), new Vector2(87, 3), new Vector2(97, 13), Color.WHITE);
-        //new Barrier(new Vector2(87, 0), 13, 3);
-        //new Barrier(new Vector2(97, 0), 3, 13);
+        new VisualBarrier(new Vector2(87, 0), 13, 3);
+        new VisualBarrier(new Vector2(97, 0), 3, 13);
         CornerBumper topLeft = new CornerBumper(new Vector2(3, 97), new Vector2(3, 87), new Vector2(13, 97), Color.WHITE);
-        //new Barrier(new Vector2(0, 87), 3, 13);
-        //new Barrier(new Vector2(0, 97), 13, 3);
+        new VisualBarrier(new Vector2(0, 87), 3, 13);
+        new VisualBarrier(new Vector2(0, 97), 13, 3);
         CornerBumper topRight = new CornerBumper(new Vector2(97, 97), new Vector2(97, 87), new Vector2(87, 97), Color.WHITE);
-        //new Barrier(new Vector2(87, 97), 13, 3);
-        //new Barrier(new Vector2(97, 87), 3, 13);
-        new Barrier(new Vector2(13,0),74,3, Direction.NORTH);
+        new VisualBarrier(new Vector2(87, 97), 13, 3);
+        new VisualBarrier(new Vector2(97, 87), 3, 13);
+//        new Barrier(new Vector2(13,0),74,3, Direction.NORTH);
     }
 
     private void createPlayers()
@@ -166,21 +161,25 @@ public class GameWorld implements InputProcessor
         {
             player1.createBarrier();
             player1Alive = false;
+            renderSubsystem.remove(player1.getRenderable());
         }
         if (player2.getScore() == 0 && player2Alive)
         {
             player2Alive = false;
             player2.createBarrier();
+            renderSubsystem.remove(player2.getRenderable());
         }
         if (player3.getScore() == 0 && player3Alive)
         {
             player3Alive = false;
             player3.createBarrier();
+            renderSubsystem.remove(player3.getRenderable());
         }
         if (player4.getScore() == 0 && player4Alive)
         {
             player4Alive = false;
             player4.createBarrier();
+            renderSubsystem.remove(player4.getRenderable());
         }
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE))
         {

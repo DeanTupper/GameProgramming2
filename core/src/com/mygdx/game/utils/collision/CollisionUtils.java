@@ -89,7 +89,7 @@ public final class CollisionUtils
         float discriminant = b * b - (4 * a * c);
         System.err.println("CollisionUtils::solveQuadraticEquation - a:[" + a + "], b:[" + b + "], c:[" + c + "] - discriminant: " + discriminant);
 
-        if (Math.abs(discriminant) - 0.1f < 0f)
+        if (Math.abs(discriminant) - 0.8f < 0f)
         {
             timeToCollision = -b / (2 * a);
         }
