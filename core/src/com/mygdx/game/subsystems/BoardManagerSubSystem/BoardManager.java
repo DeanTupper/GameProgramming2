@@ -37,7 +37,7 @@ public class BoardManager implements Subsystem
     private final Set<CornerBumper> cornerBumpers = new HashSet<CornerBumper>();
 
     private final boolean spawnBalls = true;
-    private final boolean spawnPylons = false;
+    private final boolean spawnPylons = true;
 
     private static final DefaultStateMachine<BoardManager, BallState> ballState = new DefaultStateMachine<BoardManager, BallState>(BoardManager.get(), BallState.INITIAL_STATE);
 
@@ -72,7 +72,7 @@ public class BoardManager implements Subsystem
 
     private void ballUpdate(long deltaInMillis)
     {
-        if (balls.size() < 1)
+        if (balls.size() < 10)
         {
             if (nextBallSpawn == Integer.MAX_VALUE)
             {
@@ -140,24 +140,23 @@ public class BoardManager implements Subsystem
 
     private Vector2 randomizeVelocity(Vector2 velocity)
     {
-        velocity.x *= 2.0f;
 
-//        if (rand.nextBoolean())
-//        {
-//            velocity.x = velocity.x + rand.nextFloat();
-//        }
-//        else
-//        {
-//            velocity.x = velocity.x - rand.nextFloat();
-//        }
-//        if (rand.nextBoolean())
-//        {
-//            velocity.y = velocity.y + rand.nextFloat();
-//        }
-//        else
-//        {
-//            velocity.y = velocity.y - rand.nextFloat();
-//        }
+        if (rand.nextBoolean())
+        {
+            velocity.x = velocity.x + rand.nextFloat();
+        }
+        else
+        {
+            velocity.x = velocity.x - rand.nextFloat();
+        }
+        if (rand.nextBoolean())
+        {
+            velocity.y = velocity.y + rand.nextFloat();
+        }
+        else
+        {
+            velocity.y = velocity.y - rand.nextFloat();
+        }
         return velocity;
     }
 

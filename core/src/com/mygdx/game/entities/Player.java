@@ -2,12 +2,8 @@ package com.mygdx.game.entities;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.game.GameWorld;
-import com.mygdx.game.components.collidables.RectangleCollidable;
-import com.mygdx.game.components.movables.Movable;
 import com.mygdx.game.components.movables.PaddleMovable;
 import com.mygdx.game.components.renderables.PlayerRenderable;
-import com.mygdx.game.subsystems.CollidableSubsystem;
 import com.mygdx.game.subsystems.MovableSubsystem;
 import com.mygdx.game.subsystems.RenderSubsystem;
 import com.mygdx.game.utils.shapes.Rectangle;

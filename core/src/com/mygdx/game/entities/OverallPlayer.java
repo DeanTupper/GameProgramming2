@@ -54,7 +54,7 @@ public abstract class OverallPlayer extends Entity
     protected float width;
     protected float height;
 
-    private Integer score = 1;
+    private Integer score = 10;
 
     public Integer getScore()
     {
@@ -68,22 +68,22 @@ public abstract class OverallPlayer extends Entity
 
     public void createBarrier()
     {
-        System.out.println("barrier");
-        System.out.println("movementBounds.x = " + movementBounds.x);
-        System.out.println("movementBounds.y = " + movementBounds.y);
-        System.out.println("movementBounds.width = " + movementBounds.width);
-        System.out.println("movementBounds = " + movementBounds);
+//        System.out.println("barrier");
+//        System.out.println("movementBounds.x = " + movementBounds.x);
+//        System.out.println("movementBounds.y = " + movementBounds.y);
+//        System.out.println("movementBounds.width = " + movementBounds.width);
+//        System.out.println("movementBounds = " + movementBounds);
         float tempWidth = movementBounds.width;
         float tempHeight = movementBounds.height;
         if (tempWidth == 0)
         {
             tempWidth = 3;
-            tempHeight = 74;
+            tempHeight = 100;
         }
         if (tempHeight == 0)
         {
             tempHeight = 3;
-            tempWidth = 74;
+            tempWidth = 100;
         }
 
         Direction edgeDir = getCollidableEdgeDir();
@@ -119,5 +119,10 @@ public abstract class OverallPlayer extends Entity
             System.err.println("OverallPlayer::getCollidableEdgeDir- movementBounds: " + movementBounds);
             throw new AssertionError("wat");
         }
+    }
+
+    public PlayerRenderable getRenderable()
+    {
+        return renderable;
     }
 }
