@@ -5,11 +5,14 @@ import com.badlogic.gdx.ai.fsm.State;
 import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.GameWorld;
-import com.mygdx.game.components.collidables.BallCollidable;
+import static com.mygdx.game.GameWorld.player1;
+import static com.mygdx.game.GameWorld.player2;
 import com.mygdx.game.entities.*;
+import com.mygdx.game.subsystems.QuadSubsystem;
 import com.mygdx.game.subsystems.Subsystem;
+import com.mygdx.game.utils.Direction;
 import com.mygdx.game.utils.UpdateDelta;
-import com.mygdx.game.utils.collision.CircleCircleCollision;
+import com.mygdx.game.utils.shapes.Rectangle;
 
 import java.util.HashSet;
 import java.util.Random;
@@ -23,7 +26,6 @@ public class BoardManager implements Subsystem
     private static BoardManager instance;
 
     private static final ThreadLocalRandom random = ThreadLocalRandom.current();
-    private float lastUpdate = 0;
     private final Random rand = new Random();
 
     private long nextBallSpawn = Integer.MAX_VALUE;
@@ -138,22 +140,24 @@ public class BoardManager implements Subsystem
 
     private Vector2 randomizeVelocity(Vector2 velocity)
     {
-        if(rand.nextBoolean())
-        {
-            velocity.x = velocity.x + rand.nextFloat();
-        }
-        else
-        {
-            velocity.x = velocity.x - rand.nextFloat();
-        }
-        if(rand.nextBoolean())
-        {
-            velocity.y = velocity.y + rand.nextFloat();
-        }
-        else
-        {
-            velocity.y = velocity.y - rand.nextFloat();
-        }
+        velocity.x *= 2.0f;
+
+//        if (rand.nextBoolean())
+//        {
+//            velocity.x = velocity.x + rand.nextFloat();
+//        }
+//        else
+//        {
+//            velocity.x = velocity.x - rand.nextFloat();
+//        }
+//        if (rand.nextBoolean())
+//        {
+//            velocity.y = velocity.y + rand.nextFloat();
+//        }
+//        else
+//        {
+//            velocity.y = velocity.y - rand.nextFloat();
+//        }
         return velocity;
     }
 

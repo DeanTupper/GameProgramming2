@@ -66,8 +66,28 @@ public class Line
         return new Line(slope, origin);
     }
 
+    public static Line getLineFromTwoPoints(Vector2 a, Vector2 b)
+    {
+        Vector2 aToB = b.cpy().sub(a.cpy());
+
+        if (aToB.x == 0f)
+        {
+            return new VerticalLine(a.x);
+        }
+        else
+        {
+            float slope = aToB.y / aToB.x;
+            return new Line(slope, a);
+        }
+    }
+
     public Vector2 findIntersectionPointWith(Line other)
     {
+        if (other instanceof VerticalLine)
+        {
+            return findIntersectionPointWith(((VerticalLine) other));
+        }
+
         System.err.println("Line::findIntersectionPointWith - other:[" + other + "]; this: " + this);
         if (this.slope == other.slope)
         {

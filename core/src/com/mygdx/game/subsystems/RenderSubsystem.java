@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.DeanTestGame;
 import com.mygdx.game.GameWorld;
 import com.mygdx.game.components.renderables.Renderable;
@@ -42,6 +43,8 @@ public class RenderSubsystem implements Subsystem
     private TextureRegion texRegion = new TextureRegion(tex);
     BitmapFont font = new BitmapFont();
 
+    private final Set<Quad> barrierQuads;
+
     public static RenderSubsystem get()
     {
         if (instance == null)
@@ -61,6 +64,8 @@ public class RenderSubsystem implements Subsystem
         parameter.color = Color.WHITE;
 
         font = generator.generateFont(parameter);
+
+        barrierQuads = QuadSubsystem.get().getGoalQuads((int) (13f / 10f), (int) (0f / 10f), (int) (97f / 10f), (int) (3f / 10f));
     }
 
     public void initCamera()
@@ -206,10 +211,17 @@ public class RenderSubsystem implements Subsystem
         shapeRenderer.setColor(Player.COLOR_P4);
         shapeRenderer.rect(0.1f, 0f, SIZE_PLAYER_VIEW, SIZE_PLAYER_VIEW);
 
-        if (GameWorld.debugMode)
-        {
-            debugRendering();
-        }
+        shapeRenderer.setColor(Color.YELLOW);
+//        for (Quad quad : barrierQuads)
+//        {
+//            System.err.println("RenderSubsystem::renderWorld - barrierQuads.size(): " + barrierQuads.size());
+//            shapeRenderer.rect(quad.getCol() * 4.5f, 55f + quad.getRow() * 4.5f, 4.5f, 4.5f);
+//        }
+
+//        if (GameWorld.debugMode)
+//        {
+//            debugRendering();
+//        }
 
         shapeRenderer.end();
     }

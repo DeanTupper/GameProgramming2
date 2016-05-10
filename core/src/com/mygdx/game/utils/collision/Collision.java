@@ -46,7 +46,7 @@ public abstract class Collision implements Comparable<Collision>
         {
             timeToCollision -= worldTimeStep;
 
-            System.err.println("Collision::update - worldTimeStep:[" + worldTimeStep + "] - timeToCollision: " + timeToCollision);
+            System.err.println("Collision::update - worldTimeStep:[" + worldTimeStep + "] - timeToCollision: " + timeToCollision + "; this: " + toString());
         }
 
         return this;

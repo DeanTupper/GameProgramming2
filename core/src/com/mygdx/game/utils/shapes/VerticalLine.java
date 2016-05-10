@@ -20,8 +20,6 @@ public class VerticalLine extends Line
             return findIntersectionPointWith((VerticalLine) other);
         }
 
-
-
         return new Vector2(x, (other.slope() * x) + other.yIntercept());
     }
 

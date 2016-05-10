@@ -8,7 +8,6 @@ import com.mygdx.game.utils.shapes.Rectangle;
 public class PaddleMovable extends Movable
 {
     private final Rectangle bounds;
-
     private final Vector2 deltaVelocity;
 
     private final int positiveDirKeyCode;

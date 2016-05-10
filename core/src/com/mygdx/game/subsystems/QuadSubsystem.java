@@ -23,10 +23,10 @@ public class QuadSubsystem implements Subsystem
     private QuadSubsystem()
     {
         quadmap = new QuadMap();
-        p1Goal = getGoalQuads(0,0,10,3);
-        p2Goal = getGoalQuads(7,0,10,10);
-        p3Goal = getGoalQuads(0,7,10,10);
-        p4Goal = getGoalQuads(0,0,3,10);
+        p1Goal = getGoalQuads(0, 0, 10, 3);
+        p2Goal = getGoalQuads(7, 0, 10, 10);
+        p3Goal = getGoalQuads(0, 7, 10, 10);
+        p4Goal = getGoalQuads(0, 0, 3, 10);
     }
 
     public static QuadSubsystem get()
@@ -39,14 +39,23 @@ public class QuadSubsystem implements Subsystem
         return instance;
     }
 
-    private Set<Quad> getGoalQuads(int xStart, int yStart, int xEnd, int yEnd)
+    public Set<Quad> getGoalQuads(int xStart, int yStart, int xEnd, int yEnd)
     {
+        if (yStart == yEnd)
+        {
+            yEnd++;
+
+            if (yEnd > 9) {
+                yEnd = 9;
+            }
+        }
+        System.err.println("QuadSubsystem::getGoalQuads - xStart:[" + xStart + "], yStart:[" + yStart + "], xEnd:[" + xEnd + "], yEnd:[" + yEnd + "]");
         Set<Quad> quadList = new HashSet<Quad>();
         for (float x = xStart; x < xEnd; x++)
         {
             for (float y = yStart; y < yEnd; y++)
             {
-                quadList.add(quadmap.getQuad(x*10,y*10));
+                quadList.add(quadmap.getQuad(x * 10, y * 10));
             }
         }
         return quadList;
@@ -153,7 +162,7 @@ public class QuadSubsystem implements Subsystem
     public Set<Collidable> getGoalCollidable(int player)
     {
         Set<Collidable> collidables = new HashSet<Collidable>();
-        for(Quad current:getGoalQuad(player))
+        for (Quad current : getGoalQuad(player))
         {
             collidables.addAll(current.collidables);
         }

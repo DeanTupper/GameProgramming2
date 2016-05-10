@@ -8,25 +8,34 @@ import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.entities.AiPlayer;
 import com.mygdx.game.entities.Barrier;
 import com.mygdx.game.entities.CornerBumper;
+import com.mygdx.game.entities.Goal;
+import com.mygdx.game.entities.OverallPlayer;
 import com.mygdx.game.entities.Player;
 import com.mygdx.game.subsystems.*;
 import com.mygdx.game.subsystems.BoardManagerSubSystem.BoardManager;
+import com.mygdx.game.utils.Direction;
 import com.mygdx.game.utils.UpdateDelta;
 import com.mygdx.game.utils.shapes.Rectangle;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class GameWorld implements InputProcessor
 {
     public static final float DEFAULT_WORLD_WIDTH = 100f;
     public static final float DEFAULT_WORLD_HEIGHT = 100f;
-    private static final float THRESHOLD_UPDATE_DELTA = 1000L / 60L;
 
-    public static AiPlayer player1;
-    public static AiPlayer player2;
-    public static AiPlayer player3;
-    public static AiPlayer player4;
+    public static OverallPlayer player1;
+    public static OverallPlayer player2;
+    public static OverallPlayer player3;
+    public static OverallPlayer player4;
 
+    private boolean player1Alive = true;
+    private boolean player2Alive = true;
+    private boolean player3Alive = true;
+    private boolean player4Alive = true;
 
-    public static final UpdateDelta INIT_UPDATE_DELTA = UpdateDelta.FAST;
+    public static final UpdateDelta INIT_UPDATE_DELTA = UpdateDelta.SLOWEST;
     public static boolean debugMode = false;
     private UpdateDelta updateDelta = INIT_UPDATE_DELTA;
     public static long updateThreshold = INIT_UPDATE_DELTA.threshold;
@@ -48,11 +57,12 @@ public class GameWorld implements InputProcessor
 
     public GameWorld()
     {
+        quadSubsystem = QuadSubsystem.get();
         worldBounds = new Rectangle(0f, 0f, DEFAULT_WORLD_WIDTH, DEFAULT_WORLD_HEIGHT);
         buildWorld();
 
+
         boardManager = BoardManager.get();
-        quadSubsystem = QuadSubsystem.get();
         collidableSubsystem = CollidableSubsystem.get();
         collidableSubsystem.setGameWorld(this);
         renderSubsystem = RenderSubsystem.get();
@@ -65,32 +75,47 @@ public class GameWorld implements InputProcessor
 
     private void buildWorld()
     {
-        createCornerBumpers();
         createPlayers();
+        createCornerBumpers();
+        createGoals();
+    }
+
+    private void createGoals()
+    {
+        System.err.println("BoardManager::createGoals - player1: " + player1 + "; player2: " + player2);
+        QuadSubsystem quadSubsystem = QuadSubsystem.get();
+        // Bottom
+        new Goal(quadSubsystem.getGoalQuads(0, 0, 10, 2), new Rectangle(0f, 0f, 100f, 3f), Direction.NORTH, player1);
+        // Right
+        new Goal(quadSubsystem.getGoalQuads(8, 0, 10, 10), new Rectangle(97f, 0f, 3f, 100f), Direction.WEST, GameWorld.player2);
+        //Top
+        new Goal(quadSubsystem.getGoalQuads(0, 8, 10, 10), new Rectangle(0f, 97f, 100f, 3f), Direction.SOUTH, GameWorld.player3);
+        // Left
+        new Goal(quadSubsystem.getGoalQuads(0, 0, 2, 10), new Rectangle(0f, 0f, 3f, 100f), Direction.EAST, GameWorld.player4);
     }
 
     private void createCornerBumpers()
     {
         CornerBumper bottomLeft = new CornerBumper(new Vector2(3, 3), new Vector2(3, 13), new Vector2(13, 3), Color.WHITE);
-        new Barrier(new Vector2(0, 0), 13, 3);
-        new Barrier(new Vector2(0, 0), 3, 13);
+        //new Barrier(new Vector2(0, 0), 13, 3);
+        //new Barrier(new Vector2(0, 0), 3, 13);
         CornerBumper bottomRight = new CornerBumper(new Vector2(97, 3), new Vector2(87, 3), new Vector2(97, 13), Color.WHITE);
-        new Barrier(new Vector2(87, 0), 13, 3);
-        new Barrier(new Vector2(97, 0), 3, 13);
+        //new Barrier(new Vector2(87, 0), 13, 3);
+        //new Barrier(new Vector2(97, 0), 3, 13);
         CornerBumper topLeft = new CornerBumper(new Vector2(3, 97), new Vector2(3, 87), new Vector2(13, 97), Color.WHITE);
-        new Barrier(new Vector2(0, 87), 3, 13);
-        new Barrier(new Vector2(0, 97), 13, 3);
+        //new Barrier(new Vector2(0, 87), 3, 13);
+        //new Barrier(new Vector2(0, 97), 13, 3);
         CornerBumper topRight = new CornerBumper(new Vector2(97, 97), new Vector2(97, 87), new Vector2(87, 97), Color.WHITE);
-        new Barrier(new Vector2(87, 97), 13, 3);
-        new Barrier(new Vector2(97, 87), 3, 13);
-//        new Barrier(new Vector2(13,0),74,3);
+        //new Barrier(new Vector2(87, 97), 13, 3);
+        //new Barrier(new Vector2(97, 87), 3, 13);
+        new Barrier(new Vector2(13,0),74,3, Direction.NORTH);
     }
 
     private void createPlayers()
     {
         // Bottom - p1
-//        player1 = new Player(Player.POS_X_MID, Player.POS_Y_BOT, Player.VELOCITY_DELTA_HORIZONTAL, Input.Keys.Q, Input.Keys.E, Player.COLOR_P1);
-        player1 = new AiPlayer(Player.POS_X_MID, Player.POS_Y_BOT, Player.VELOCITY_DELTA_HORIZONTAL,Player.COLOR_P1,1);
+        player1 = new Player(Player.POS_X_MID, Player.POS_Y_BOT, Player.VELOCITY_DELTA_HORIZONTAL, Input.Keys.Q, Input.Keys.E, Player.COLOR_P1);
+//        player1 = new AiPlayer(Player.POS_X_MID, Player.POS_Y_BOT, Player.VELOCITY_DELTA_HORIZONTAL,Player.COLOR_P1,1);
 
         // Right - p2
 //        player2 = new Player(Player.POS_X_RIGHT, Player.POS_Y_MID, Player.VELOCITY_DELTA_VERTICAL, Input.Keys.N, Input.Keys.M, Player.COLOR_P2);
@@ -137,20 +162,24 @@ public class GameWorld implements InputProcessor
         pylonSubsystem.update(deltaInMillis, updateDelta);
 
         AiSubsystem.get().update(deltaInMillis, updateDelta);
-        if (player1.getScore() == 0)
+        if (player1.getScore() == 0 && player1Alive)
         {
             player1.createBarrier();
+            player1Alive = false;
         }
-        if (player2.getScore() == 0)
+        if (player2.getScore() == 0 && player2Alive)
         {
+            player2Alive = false;
             player2.createBarrier();
         }
-        if (player3.getScore() == 0)
+        if (player3.getScore() == 0 && player3Alive)
         {
+            player3Alive = false;
             player3.createBarrier();
         }
-        if (player4.getScore() == 0)
+        if (player4.getScore() == 0 && player4Alive)
         {
+            player4Alive = false;
             player4.createBarrier();
         }
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE))

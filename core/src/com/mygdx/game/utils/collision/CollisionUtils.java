@@ -1,8 +1,10 @@
 package com.mygdx.game.utils.collision;
 
+import static com.badlogic.gdx.math.Interpolation.circle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.utils.shapes.Line;
+import com.mygdx.game.utils.shapes.LineSegment;
 import com.mygdx.game.utils.shapes.Rectangle;
 
 public final class CollisionUtils
@@ -87,7 +89,7 @@ public final class CollisionUtils
         float discriminant = b * b - (4 * a * c);
         System.err.println("CollisionUtils::solveQuadraticEquation - a:[" + a + "], b:[" + b + "], c:[" + c + "] - discriminant: " + discriminant);
 
-        if (Math.abs(discriminant) - 0.035 < 0f)
+        if (Math.abs(discriminant) - 0.1f < 0f)
         {
             timeToCollision = -b / (2 * a);
         }
@@ -126,5 +128,42 @@ public final class CollisionUtils
         }
 
         return timeToCollision;
+    }
+
+    public static float getTimeToCollisionOfCircleWithEdge(Vector2 circleCenter, Vector2 circleVelocity, float radius, Vector2 edgePointA, Vector2 edgePointB)
+    {
+        return getTimeToCollisionOfCircleWithEdge(circleCenter, circleVelocity, radius, new LineSegment(edgePointA, edgePointB));
+    }
+
+    public static float getTimeToCollisionOfCircleWithEdge(Vector2 circleCenter, Vector2 circleVelocity, float radius, LineSegment edge)
+    {
+        Line circleTrajectory = Line.getLineFromPointAndVelocity(circleCenter, circleVelocity);
+
+        Line otherLine = Line.getLineFromTwoPoints(edge.pointA(), edge.pointB());
+        System.err.println("CollisionUtils::getTimeToCollisionOfCircleWithEdge - otherLine: " + otherLine);
+        Vector2 intersectionPoint = circleTrajectory.findIntersectionPointWith(otherLine);
+        System.err.println("CollisionUtils::getTimeToCollisionOfCircleWithEdge - intersectionPoint: " + intersectionPoint + "; edge.pointIsOnLine: " + edge.pointIsOnLine(intersectionPoint));
+
+        if (intersectionPoint != null && edge.pointIsOnLine(intersectionPoint))
+        {
+            Vector2 circleVelNor = circleVelocity.cpy().nor();
+
+            Vector2 closestPointOnCircle = CollisionUtils.getPointOnCircle(circleCenter, circleVelNor, radius);
+
+            float a = circleVelocity.dot(circleVelocity);
+            float b = 2 * (closestPointOnCircle.dot(circleVelocity) - intersectionPoint.dot(circleVelocity));
+            float c = closestPointOnCircle.dot(closestPointOnCircle) + intersectionPoint.dot(intersectionPoint) - (2 * intersectionPoint.dot(closestPointOnCircle));
+
+            return CollisionUtils.solveQuadraticEquation(a, b, c);
+        }
+
+        return Float.MAX_VALUE;
+    }
+
+    public static boolean isPointInRectangle(Vector2 intersectionPoint, Rectangle rect)
+    {
+        boolean pointWithinXBounds = intersectionPoint.x >= rect.x && intersectionPoint.x <= rect.right;
+        boolean pointWithinYBounds = intersectionPoint.y >= rect.y && intersectionPoint.y <= rect.top;
+        return pointWithinXBounds && pointWithinYBounds;
     }
 }

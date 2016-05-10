@@ -15,6 +15,12 @@ public class Movable implements Component
         this.velocity = velocity;
     }
 
+    public Movable()
+    {
+        position = new Vector2();
+        velocity = new Vector2();
+    }
+
     public void move(float worldTimeStep)
     {
         MovableSubsystem.move(this, worldTimeStep);
